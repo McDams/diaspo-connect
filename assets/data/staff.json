@@ -1,0 +1,110 @@
+[
+  {
+    "id": "staff-001", "userId": "u-050", "position": "Fondateur & Directeur", "department": "direction", "accessLevel": "super_admin", "advisorType": null,
+    "collaboratorStatus": "permanent", "workloadPct": 70, "availability": "élevée",
+    "city": "Paris", "mainActivity": "Entrepreneur, fondateur de DiaspoConnect", "specialty": "Stratégie & développement de la structure",
+    "languages": ["Français", "Anglais", "Fon"],
+    "bio": "Diplômé en France après un parcours similaire à celui des filleuls d'aujourd'hui, j'ai fondé DiaspoConnect pour que personne n'ait à affronter seul les premiers mois en France.",
+    "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": "mailto:serge.donou@diaspoconnect.fr",
+    "joinedAt": "2024-06-01"
+  },
+  {
+    "id": "staff-002", "userId": "u-051", "position": "Secrétaire générale", "department": "secretariat", "accessLevel": "secretariat_admin", "advisorType": null,
+    "collaboratorStatus": "bénévole", "workloadPct": 55, "availability": "moyenne",
+    "city": "Lyon", "mainActivity": "Étudiante en gestion administrative", "specialty": "Coordination et suivi de dossiers",
+    "languages": ["Français", "Fon"],
+    "bio": "En charge du bon déroulement administratif au quotidien : je m'assure qu'aucune demande ne reste sans réponse trop longtemps.",
+    "publicVisibility": "public_partiel", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
+    "joinedAt": "2025-02-10"
+  },
+  {
+    "id": "staff-003", "userId": "u-052", "position": "Conseiller démarches administratives", "department": "conseil", "accessLevel": "advisor_admin", "advisorType": "demarches",
+    "collaboratorStatus": "bénévole", "workloadPct": 60, "availability": "moyenne",
+    "city": "Lille", "mainActivity": "Juriste en droit des étrangers", "specialty": "Visa, titre de séjour, démarches préfecture",
+    "languages": ["Français", "Anglais"],
+    "bio": "J'aide les filleuls à décrypter les démarches administratives françaises, souvent la source de stress la plus importante à l'arrivée.",
+    "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
+    "joinedAt": "2025-03-15"
+  },
+  {
+    "id": "staff-004", "userId": "u-053", "position": "Conseillère logement", "department": "conseil", "accessLevel": "housing_admin", "advisorType": "logement",
+    "collaboratorStatus": "actif", "workloadPct": 50, "availability": "moyenne",
+    "city": "Bordeaux", "mainActivity": "Agent immobilier", "specialty": "Recherche de logement étudiant et prévention des arnaques",
+    "languages": ["Français"],
+    "bio": "Spécialisée dans le logement étudiant, j'aide à repérer les annonces fiables et à constituer un dossier de location solide.",
+    "publicVisibility": "public_partiel", "consentPublicDisplay": true, "contactAllowed": false, "contactLink": null,
+    "joinedAt": "2025-04-20"
+  },
+  {
+    "id": "staff-005", "userId": "u-054", "position": "Conseiller emploi / stage / alternance", "department": "conseil", "accessLevel": "career_admin", "advisorType": "emploi",
+    "collaboratorStatus": "bénévole", "workloadPct": 45, "availability": "élevée",
+    "city": "Nantes", "mainActivity": "Consultant en ressources humaines", "specialty": "Insertion professionnelle et recherche de stage/alternance",
+    "languages": ["Français", "Anglais"],
+    "bio": "J'accompagne les filleuls dans leur recherche de job étudiant, stage ou alternance, et leur préparation aux entretiens.",
+    "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
+    "joinedAt": "2025-05-05"
+  },
+  {
+    "id": "staff-006", "userId": "u-055", "position": "Responsable partenariats", "department": "partenariats", "accessLevel": "partnership_admin", "advisorType": null,
+    "collaboratorStatus": "prestataire", "workloadPct": 35, "availability": "faible",
+    "city": "Paris", "mainActivity": "Consultante en développement de partenariats", "specialty": "Relations écoles et entreprises",
+    "languages": ["Français", "Anglais"],
+    "bio": "",
+    "publicVisibility": "interne", "consentPublicDisplay": false, "contactAllowed": false, "contactLink": null,
+    "joinedAt": "2025-06-01"
+  },
+  {
+    "id": "staff-007", "userId": "u-056", "position": "Responsable modération & confiance", "department": "moderation", "accessLevel": "moderation_admin", "advisorType": null,
+    "collaboratorStatus": "bénévole", "workloadPct": 40, "availability": "moyenne",
+    "city": "Strasbourg", "mainActivity": "Étudiante en droit", "specialty": "Sécurité des échanges et traitement des signalements",
+    "languages": ["Français", "Fon"],
+    "bio": "Je veille à ce que chaque signalement soit traité avec sérieux et discrétion, pour que la plateforme reste un espace sûr.",
+    "publicVisibility": "public_partiel", "consentPublicDisplay": true, "contactAllowed": false, "contactLink": null,
+    "joinedAt": "2025-07-01"
+  },
+  {
+    "id": "staff-008", "userId": "u-057", "position": "Support utilisateur", "department": "support", "accessLevel": "support_admin", "advisorType": null,
+    "collaboratorStatus": "actif", "workloadPct": 65, "availability": "élevée",
+    "city": "Grenoble", "mainActivity": "Développeur support", "specialty": "Assistance utilisateurs et résolution de problèmes techniques",
+    "languages": ["Français", "Anglais"],
+    "bio": "Je réponds aux questions et problèmes techniques rencontrés par les utilisateurs sur la plateforme, avec pour objectif une réponse rapide.",
+    "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
+    "joinedAt": "2025-08-10"
+  },
+  {
+    "id": "staff-009", "userId": "u-058", "position": "Community manager", "department": "contenu", "accessLevel": "content_admin", "advisorType": null,
+    "collaboratorStatus": "bénévole", "workloadPct": 30, "availability": "moyenne",
+    "city": "Cotonou", "mainActivity": "Community manager freelance", "specialty": "Réseaux sociaux et communication auprès de la diaspora",
+    "languages": ["Français", "Fon", "Anglais"],
+    "bio": "Je fais vivre la communauté DiaspoConnect sur les réseaux sociaux et relaie les témoignages des filleuls et parrains.",
+    "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
+    "joinedAt": "2025-09-01"
+  },
+  {
+    "id": "staff-010", "userId": "u-059", "position": "Responsable contenu & ressources", "department": "contenu", "accessLevel": "content_admin", "advisorType": null,
+    "collaboratorStatus": "bénévole", "workloadPct": 35, "availability": "faible",
+    "city": "Montpellier", "mainActivity": "Rédacteur indépendant", "specialty": "Rédaction de guides pratiques et mise à jour de la FAQ",
+    "languages": ["Français"],
+    "bio": "Je rédige et actualise les guides pratiques pour que chaque information reste fiable et à jour.",
+    "publicVisibility": "public_partiel", "consentPublicDisplay": true, "contactAllowed": false, "contactLink": null,
+    "joinedAt": "2025-09-20"
+  },
+  {
+    "id": "staff-011", "userId": "u-060", "position": "Vérificatrice de profils / conformité", "department": "conformite", "accessLevel": "compliance_admin", "advisorType": null,
+    "collaboratorStatus": "actif", "workloadPct": 45, "availability": "moyenne",
+    "city": "Paris", "mainActivity": "Chargée de conformité", "specialty": "Vérification d'identité et conformité des annonces",
+    "languages": ["Français"],
+    "bio": "",
+    "publicVisibility": "interne", "consentPublicDisplay": false, "contactAllowed": false, "contactLink": null,
+    "joinedAt": "2025-10-05"
+  },
+  {
+    "id": "staff-012", "userId": "u-061", "position": "Administrateur technique", "department": "technique", "accessLevel": "technical_admin", "advisorType": null,
+    "collaboratorStatus": "permanent", "workloadPct": 50, "availability": "moyenne",
+    "city": "Paris", "mainActivity": "Ingénieur logiciel", "specialty": "Maintenance et fiabilité de la plateforme",
+    "languages": ["Français", "Anglais"],
+    "bio": "",
+    "publicVisibility": "cache", "consentPublicDisplay": false, "contactAllowed": false, "contactLink": null,
+    "joinedAt": "2024-09-01"
+  }
+]

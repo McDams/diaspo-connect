@@ -1,0 +1,11 @@
+[
+  { "id": "direction", "name": "Direction", "shortName": "Direction", "description": "Pilotage global de la structure, vision stratégique et supervision de l'ensemble des pôles.", "icon": "bi-compass", "color": "navy" },
+  { "id": "secretariat", "name": "Secrétariat général", "shortName": "Secrétariat", "description": "Centralisation des informations, tri des demandes, suivi de la complétude des dossiers et relance des utilisateurs.", "icon": "bi-inboxes", "color": "teal" },
+  { "id": "conseil", "name": "Pôle Conseil", "shortName": "Conseil", "description": "Accompagnement individualisé sur les démarches administratives, le logement et l'emploi.", "icon": "bi-people", "color": "terracotta" },
+  { "id": "support", "name": "Pôle Support", "shortName": "Support", "description": "Assistance technique et fonctionnelle aux utilisateurs de la plateforme.", "icon": "bi-headset", "color": "info" },
+  { "id": "moderation", "name": "Pôle Modération & confiance", "shortName": "Modération", "description": "Sécurité des échanges, traitement des signalements, confiance entre les membres.", "icon": "bi-shield-check", "color": "danger" },
+  { "id": "partenariats", "name": "Pôle Partenariats", "shortName": "Partenariats", "description": "Relations avec les écoles, associations et entreprises partenaires.", "icon": "bi-handshake", "color": "purple" },
+  { "id": "contenu", "name": "Pôle Contenu & communication", "shortName": "Contenu", "description": "Production des ressources, guides pratiques et animation des réseaux sociaux.", "icon": "bi-journal-richtext", "color": "warning" },
+  { "id": "technique", "name": "Pôle Technique", "shortName": "Technique", "description": "Fiabilité, maintenance et évolution technique de la plateforme.", "icon": "bi-cpu", "color": "neutral" },
+  { "id": "conformite", "name": "Conformité & vérification", "shortName": "Conformité", "description": "Vérification des profils, contrôle des annonces et conformité générale.", "icon": "bi-patch-check", "color": "success" }
+]

@@ -62,7 +62,7 @@
     render(reports);
 
     document.getElementById("filters-form").addEventListener("input", applyFilters);
-    document.getElementById("reports-list").addEventListener("click", (e) => {
+    document.getElementById("reports-list").addEventListener("click", async (e) => {
       const resolveBtn = e.target.closest("button[data-action='resolve']");
       const rejectBtn = e.target.closest("button[data-action='reject']");
       const btn = resolveBtn || rejectBtn;
@@ -70,6 +70,11 @@
       const report = reports.find((r) => r.id === btn.dataset.id);
       report.status = resolveBtn ? "resolu" : "rejete";
       report.adminNote = resolveBtn ? "Signalement traité, mesures appliquées si nécessaire." : "Signalement examiné, aucune action requise.";
+      await DataStore.insert("auditLog", {
+        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+        action: resolveBtn ? "resolution_signalement" : "rejet_signalement", targetType: "report", targetId: report.id,
+        date: new Date().toISOString(), details: report.adminNote,
+      });
       DCUtils.toast("Signalement mis à jour.", "success");
       applyFilters();
     });

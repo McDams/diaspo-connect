@@ -72,13 +72,20 @@ const ReportModal = (() => {
         adminNote: null,
       };
       await DataStore.insert("reports", report);
-      const users = await DataStore.getUsers();
+      const [users, staffList] = await Promise.all([DataStore.getUsers(), DataStore.getStaff()]);
       const admins = users.filter((u) => u.role === "admin");
+      const moderationStaff = staffList.filter((s) => s.accessLevel === "moderation_admin");
       await Promise.all(admins.map((a) => NotificationCenter.push(a.id, {
         type: "signalement_recu",
         title: "Nouveau signalement",
         text: `Un signalement "${report.reason}" a été déposé.`,
         link: "pages/admin/moderation-messages.html",
+      })));
+      await Promise.all(moderationStaff.map((s) => NotificationCenter.push(s.userId, {
+        type: "signalement_recu",
+        title: "Nouveau signalement",
+        text: `Un signalement "${report.reason}" a été déposé.`,
+        link: "pages/staff/moderation-dashboard.html",
       })));
       bsModal.hide();
       form.reset();

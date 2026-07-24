@@ -61,6 +61,11 @@
         text: `Votre annonce "${listing.title}" a été ${approveBtn ? "validée" : "rejetée"} par l'équipe de modération.`,
         link: "pages/proprietaire/annonces.html",
       });
+      await DataStore.insert("auditLog", {
+        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+        action: approveBtn ? "validation_annonce" : "rejet_annonce", targetType: "housing", targetId: listing.id,
+        date: new Date().toISOString(), details: `Annonce "${listing.title}" ${approveBtn ? "validée" : "rejetée"}.`,
+      });
       DCUtils.toast(approveBtn ? "Annonce validée." : "Annonce rejetée.", "success");
       applyFilters();
     });

@@ -20,6 +20,14 @@ const DataStore = (() => {
     matchings: "matchings.json",
     resources: "resources.json",
     notifications: "notifications.json",
+    staff: "staff.json",
+    departments: "departments.json",
+    tickets: "tickets.json",
+    contactRequests: "contact-requests.json",
+    publicTeam: "public-team.json",
+    permissions: "permissions.json",
+    orgChart: "org-chart.json",
+    auditLog: "audit-log.json",
   };
 
   const cache = {};
@@ -66,6 +74,14 @@ const DataStore = (() => {
     getMatchings: () => load("matchings"),
     getResources: () => load("resources"),
     getNotifications: () => load("notifications"),
+    getStaff: () => load("staff"),
+    getDepartments: () => load("departments"),
+    getTickets: () => load("tickets"),
+    getContactRequests: () => load("contactRequests"),
+    getPublicTeam: () => load("publicTeam"),
+    getPermissions: () => load("permissions"),
+    getOrgChart: () => load("orgChart"),
+    getAuditLog: () => load("auditLog"),
 
     /** Insère un enregistrement dans le cache en mémoire (simulation d'écriture). */
     async insert(key, record) {

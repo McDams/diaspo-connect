@@ -1,0 +1,14 @@
+[
+  { "id": "node-1", "title": "Fondateur & Directeur", "departmentId": "direction", "parentId": null, "staffId": "staff-001" },
+  { "id": "node-2", "title": "Secrétariat général", "departmentId": "secretariat", "parentId": "node-1", "staffId": "staff-002" },
+  { "id": "node-3", "title": "Pôle Conseil", "departmentId": "conseil", "parentId": "node-1", "staffId": null },
+  { "id": "node-3a", "title": "Conseiller démarches", "departmentId": "conseil", "parentId": "node-3", "staffId": "staff-003" },
+  { "id": "node-3b", "title": "Conseillère logement", "departmentId": "conseil", "parentId": "node-3", "staffId": "staff-004" },
+  { "id": "node-3c", "title": "Conseiller emploi", "departmentId": "conseil", "parentId": "node-3", "staffId": "staff-005" },
+  { "id": "node-4", "title": "Pôle Support", "departmentId": "support", "parentId": "node-1", "staffId": "staff-008" },
+  { "id": "node-5", "title": "Pôle Modération & confiance", "departmentId": "moderation", "parentId": "node-1", "staffId": "staff-007" },
+  { "id": "node-6", "title": "Pôle Partenariats", "departmentId": "partenariats", "parentId": "node-1", "staffId": "staff-006" },
+  { "id": "node-7", "title": "Pôle Contenu & communication", "departmentId": "contenu", "parentId": "node-1", "staffId": "staff-009" },
+  { "id": "node-8", "title": "Conformité & vérification", "departmentId": "conformite", "parentId": "node-1", "staffId": "staff-011" },
+  { "id": "node-9", "title": "Pôle Technique", "departmentId": "technique", "parentId": "node-1", "staffId": "staff-012" }
+]

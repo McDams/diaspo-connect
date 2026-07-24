@@ -133,14 +133,26 @@
           body: "L'utilisateur ne pourra plus se connecter tant que le compte est suspendu. Confirmez-vous ?",
           confirmLabel: "Suspendre",
           onConfirm: async () => {
+            const target = users.find((u) => u.id === suspendBtn.dataset.id);
             await DataStore.update("users", suspendBtn.dataset.id, { status: "suspendu" });
+            await DataStore.insert("auditLog", {
+              id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+              action: "suspension_compte", targetType: "user", targetId: target.id, date: new Date().toISOString(),
+              details: `Compte ${target.firstName} ${target.lastName} (${target.role}) suspendu par l'administration.`,
+            });
             DCUtils.toast("Compte suspendu.", "success");
             applyFilters();
           },
         });
       }
       if (reactivateBtn) {
-        DataStore.update("users", reactivateBtn.dataset.id, { status: "actif" }).then(() => {
+        const target = users.find((u) => u.id === reactivateBtn.dataset.id);
+        DataStore.update("users", reactivateBtn.dataset.id, { status: "actif" }).then(async () => {
+          await DataStore.insert("auditLog", {
+            id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+            action: "reactivation_compte", targetType: "user", targetId: target.id, date: new Date().toISOString(),
+            details: `Compte ${target.firstName} ${target.lastName} (${target.role}) réactivé par l'administration.`,
+          });
           DCUtils.toast("Compte réactivé.", "success");
           applyFilters();
         });

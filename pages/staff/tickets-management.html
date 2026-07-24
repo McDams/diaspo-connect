@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centre de tickets — DiaspoConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=2" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=2" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=2" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=2" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=2" rel="stylesheet">
+</head>
+<body data-page="tickets-management">
+  <script>window.DC_ROOT = "../../";</script>
+  <div id="dc-app-header"></div>
+  <div class="dc-shell">
+    <div id="dc-app-sidebar"></div>
+    <div class="dc-content">
+      <h1 class="h4 mb-1">Centre de tickets</h1>
+      <p class="text-body-secondary mb-3">Toutes les demandes entrantes, tous canaux confondus, avec assignation, historique et notes internes.</p>
+
+      <div class="dc-banner dc-banner-info mb-3 d-none" id="scope-banner">
+        <i class="bi bi-info-circle"></i>
+        <span>Vous ne voyez ici que les tickets qui vous sont assignés ou qui relèvent de votre service.</span>
+      </div>
+
+      <form id="filters-form" class="dc-filter-panel mb-3">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label for="f-recherche" class="form-label">Recherche</label>
+            <input type="search" id="f-recherche" class="form-control" placeholder="Réf., nom, email...">
+          </div>
+          <div class="col-md-3">
+            <label for="f-status" class="form-label">Statut</label>
+            <select id="f-status" class="form-select">
+              <option value="all">Tous statuts</option>
+              <option value="nouveau">Nouveau</option>
+              <option value="en_cours">En cours</option>
+              <option value="en_attente_reponse">En attente de réponse</option>
+              <option value="resolu">Résolu</option>
+              <option value="ferme">Fermé</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="f-priority" class="form-label">Priorité</label>
+            <select id="f-priority" class="form-select">
+              <option value="all">Toutes priorités</option>
+              <option value="basse">Basse</option>
+              <option value="normale">Normale</option>
+              <option value="haute">Haute</option>
+              <option value="urgente">Urgente</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="f-service" class="form-label">Service cible</label>
+            <select id="f-service" class="form-select">
+              <option value="all">Tous services</option>
+              <option value="direction">Direction</option>
+              <option value="secretariat">Secrétariat</option>
+              <option value="conseil">Conseil</option>
+              <option value="support">Support</option>
+              <option value="moderation">Modération</option>
+              <option value="partenariats">Partenariats</option>
+              <option value="contenu">Contenu</option>
+              <option value="technique">Technique</option>
+              <option value="conformite">Conformité</option>
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <span id="results-count" class="small text-muted-dc d-block mb-2"></span>
+      <div class="dc-card p-0">
+        <div class="table-responsive">
+          <table class="table dc-table mb-0 align-middle">
+            <thead><tr><th>Réf.</th><th>Demandeur</th><th>Catégorie</th><th>Service</th><th>Priorité</th><th>Statut</th><th>Assigné à</th><th>Créé</th></tr></thead>
+            <tbody id="tickets-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailModalLabel">Ticket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body" id="detailModalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" id="save-ticket-btn">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/core/data-store.js?v=2"></script>
+  <script src="../../assets/js/core/utils.js?v=2"></script>
+  <script src="../../assets/js/core/auth.js?v=2"></script>
+  <script src="../../assets/js/core/permissions.js?v=2"></script>
+  <script src="../../assets/js/core/staff-guard.js?v=2"></script>
+  <script src="../../assets/js/core/notification-center.js?v=2"></script>
+  <script src="../../assets/js/core/ticket-helpers.js?v=2"></script>
+  <script src="../../assets/js/ui/filters.js?v=2"></script>
+  <script src="../../assets/js/ui/layout.js?v=2"></script>
+  <script src="../../assets/js/pages/page-tickets-management.js?v=2"></script>
+</body>
+</html>

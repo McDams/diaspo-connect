@@ -1,0 +1,107 @@
+[
+  {
+    "id": "TCK-2026-001", "requesterName": "Christian Adjahoui", "requesterEmail": "christian.adjahoui@mail.com", "requesterRole": "filleul",
+    "category": "dossier_etudiant", "channel": "contact_form", "targetService": "secretariat", "priority": "normale",
+    "assignedTo": "staff-002", "status": "en_cours", "urgent": false,
+    "createdAt": "2026-07-20T09:00:00", "dueAt": "2026-07-25T09:00:00", "closedAt": null,
+    "history": [
+      { "date": "2026-07-20T09:00:00", "status": "nouveau", "note": "Ticket créé depuis le formulaire de contact.", "byStaffId": null },
+      { "date": "2026-07-20T14:00:00", "status": "en_cours", "note": "Assigné à Aminata Djossou pour vérification du dossier Campus France.", "byStaffId": "staff-002" }
+    ],
+    "internalNotes": [{ "date": "2026-07-20T14:10:00", "byStaffId": "staff-002", "note": "Il manque l'attestation de bourse, à relancer." }],
+    "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-002", "requesterName": "Prosper Zinsou", "requesterEmail": "prosper.zinsou@mail.com", "requesterRole": "filleul",
+    "category": "matching_parrainage", "channel": "contact_form", "targetService": "secretariat", "priority": "normale",
+    "assignedTo": null, "status": "nouveau", "urgent": false,
+    "createdAt": "2026-07-23T10:00:00", "dueAt": "2026-07-27T10:00:00", "closedAt": null,
+    "history": [{ "date": "2026-07-23T10:00:00", "status": "nouveau", "note": "Ticket créé depuis le formulaire de contact.", "byStaffId": null }],
+    "internalNotes": [], "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-003", "requesterName": "Léa Dupont", "requesterEmail": "lea.dupont@mail.fr", "requesterRole": "visiteur",
+    "category": "information_generale", "channel": "contact_form", "targetService": "secretariat", "priority": "basse",
+    "assignedTo": "staff-002", "status": "resolu", "urgent": false,
+    "createdAt": "2026-07-10T08:00:00", "dueAt": "2026-07-14T08:00:00", "closedAt": "2026-07-11T09:00:00",
+    "history": [
+      { "date": "2026-07-10T08:00:00", "status": "nouveau", "note": "Ticket créé depuis le formulaire de contact.", "byStaffId": null },
+      { "date": "2026-07-11T09:00:00", "status": "resolu", "note": "Réponse envoyée avec le lien vers la page Ressources.", "byStaffId": "staff-002" }
+    ],
+    "internalNotes": [], "responseSent": true, "responseText": "Bonjour, vous trouverez toutes les informations sur nos parcours dans la rubrique Ressources du site. Bien cordialement."
+  },
+  {
+    "id": "TCK-2026-004", "requesterName": "Sandrine Amoussou", "requesterEmail": "sandrine.amoussou@mail.com", "requesterRole": "filleul",
+    "category": "probleme_relationnel", "channel": "signalement", "targetService": "moderation", "priority": "haute",
+    "assignedTo": "staff-007", "status": "en_cours", "urgent": true,
+    "createdAt": "2026-07-10T21:00:00", "dueAt": "2026-07-12T21:00:00", "closedAt": null,
+    "history": [
+      { "date": "2026-07-10T21:00:00", "status": "nouveau", "note": "Signalement transformé en ticket (proposition déplacée d'une marraine).", "byStaffId": null },
+      { "date": "2026-07-11T09:00:00", "status": "en_cours", "note": "Accompagnement suspendu le temps de l'examen. Entretien prévu avec la marraine.", "byStaffId": "staff-007" }
+    ],
+    "internalNotes": [{ "date": "2026-07-11T09:05:00", "byStaffId": "staff-007", "note": "Voir report-001 pour le message signalé complet." }],
+    "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-005", "requesterName": "Julien Roche", "requesterEmail": "julien.roche@mail.fr", "requesterRole": "proprietaire",
+    "category": "logement", "channel": "contact_form", "targetService": "conseil", "priority": "normale",
+    "assignedTo": "staff-004", "status": "en_attente_reponse", "urgent": false,
+    "createdAt": "2026-07-15T10:00:00", "dueAt": "2026-07-20T10:00:00", "closedAt": null,
+    "history": [
+      { "date": "2026-07-15T10:00:00", "status": "nouveau", "note": "Ticket créé depuis le formulaire de contact.", "byStaffId": null },
+      { "date": "2026-07-16T09:00:00", "status": "en_attente_reponse", "note": "Question transmise à la conseillère logement, en attente de retour du propriétaire.", "byStaffId": "staff-004" }
+    ],
+    "internalNotes": [{ "date": "2026-07-16T09:05:00", "byStaffId": "staff-004", "note": "Compte propriétaire actuellement suspendu, à vérifier avant toute suite." }],
+    "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-006", "requesterName": "Wilfried Sagbo", "requesterEmail": "wilfried.sagbo@mail.com", "requesterRole": "filleul",
+    "category": "emploi", "channel": "contact_form", "targetService": "conseil", "priority": "normale",
+    "assignedTo": "staff-005", "status": "resolu", "urgent": false,
+    "createdAt": "2026-07-05T10:00:00", "dueAt": "2026-07-09T10:00:00", "closedAt": "2026-07-08T10:00:00",
+    "history": [
+      { "date": "2026-07-05T10:00:00", "status": "nouveau", "note": "Ticket créé depuis le formulaire de contact.", "byStaffId": null },
+      { "date": "2026-07-08T10:00:00", "status": "resolu", "note": "Entretien de préparation réalisé, candidature envoyée.", "byStaffId": "staff-005" }
+    ],
+    "internalNotes": [], "responseSent": true, "responseText": "Bonjour Wilfried, ravi que l'entretien se soit bien passé, tiens-moi au courant de la suite !"
+  },
+  {
+    "id": "TCK-2026-007", "requesterName": "Moussa Diallo", "requesterEmail": "moussa.diallo@mail.com", "requesterRole": "visiteur",
+    "category": "benevolat", "channel": "contact_form", "targetService": "direction", "priority": "basse",
+    "assignedTo": null, "status": "nouveau", "urgent": false,
+    "createdAt": "2026-07-22T11:00:00", "dueAt": "2026-07-29T11:00:00", "closedAt": null,
+    "history": [{ "date": "2026-07-22T11:00:00", "status": "nouveau", "note": "Candidature bénévole reçue depuis 'Rejoindre l'équipe'.", "byStaffId": null }],
+    "internalNotes": [], "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-008", "requesterName": "École Supérieure ABC", "requesterEmail": "contact@esabc-exemple.fr", "requesterRole": "visiteur",
+    "category": "partenariat", "channel": "contact_form", "targetService": "partenariats", "priority": "normale",
+    "assignedTo": "staff-006", "status": "en_cours", "urgent": false,
+    "createdAt": "2026-07-17T09:00:00", "dueAt": "2026-07-24T09:00:00", "closedAt": null,
+    "history": [
+      { "date": "2026-07-17T09:00:00", "status": "nouveau", "note": "Demande de partenariat reçue.", "byStaffId": null },
+      { "date": "2026-07-18T09:00:00", "status": "en_cours", "note": "Premier échange téléphonique réalisé, proposition en cours de rédaction.", "byStaffId": "staff-006" }
+    ],
+    "internalNotes": [], "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-009", "requesterName": "Fatou Adjovi", "requesterEmail": "fatou.adjovi@mail.fr", "requesterRole": "parrain",
+    "category": "support_technique", "channel": "contact_form", "targetService": "support", "priority": "urgente",
+    "assignedTo": "staff-008", "status": "en_cours", "urgent": true,
+    "createdAt": "2026-07-24T07:00:00", "dueAt": "2026-07-24T19:00:00", "closedAt": null,
+    "history": [
+      { "date": "2026-07-24T07:00:00", "status": "nouveau", "note": "Signale une erreur lors de l'envoi de message dans la messagerie.", "byStaffId": null },
+      { "date": "2026-07-24T07:30:00", "status": "en_cours", "note": "Reproduction du bug en cours par le support.", "byStaffId": "staff-008" }
+    ],
+    "internalNotes": [{ "date": "2026-07-24T07:31:00", "byStaffId": "staff-008", "note": "Semble lié au navigateur utilisé, en cours de vérification." }],
+    "responseSent": false, "responseText": null
+  },
+  {
+    "id": "TCK-2026-010", "requesterName": "Claire Marchand", "requesterEmail": "claire.marchand@media-exemple.fr", "requesterRole": "visiteur",
+    "category": "presse_media", "channel": "contact_form", "targetService": "direction", "priority": "normale",
+    "assignedTo": "staff-001", "status": "nouveau", "urgent": false,
+    "createdAt": "2026-07-24T09:00:00", "dueAt": "2026-07-29T09:00:00", "closedAt": null,
+    "history": [{ "date": "2026-07-24T09:00:00", "status": "nouveau", "note": "Demande d'interview pour un article sur la mobilité étudiante.", "byStaffId": null }],
+    "internalNotes": [], "responseSent": false, "responseText": null
+  }
+]

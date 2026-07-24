@@ -79,8 +79,22 @@ const DCUtils = (() => {
       en_cours: { label: "En cours", cls: "dc-badge-warning" },
       resolu: { label: "Résolu", cls: "dc-badge-success" },
       rejete: { label: "Rejeté", cls: "dc-badge-neutral" },
+      nouveau: { label: "Nouveau", cls: "dc-badge-info" },
+      en_attente_reponse: { label: "En attente de réponse", cls: "dc-badge-warning" },
+      ferme: { label: "Fermé", cls: "dc-badge-neutral" },
     };
     const entry = map[status] || { label: status, cls: "dc-badge-neutral" };
+    return `<span class="dc-badge ${entry.cls}">${entry.label}</span>`;
+  }
+
+  function priorityBadge(priority) {
+    const map = {
+      basse: { label: "Basse", cls: "dc-badge-neutral" },
+      normale: { label: "Normale", cls: "dc-badge-info" },
+      haute: { label: "Haute", cls: "dc-badge-warning" },
+      urgente: { label: "Urgente", cls: "dc-badge-danger" },
+    };
+    const entry = map[priority] || { label: priority, cls: "dc-badge-neutral" };
     return `<span class="dc-badge ${entry.cls}">${entry.label}</span>`;
   }
 
@@ -122,5 +136,5 @@ const DCUtils = (() => {
     el.addEventListener("hidden.bs.toast", () => el.remove());
   }
 
-  return { escapeHtml, formatDate, formatDateTime, timeAgo, currency, qs, qsa, debounce, initialsColor, statusBadge, fileStatusBadge, toast };
+  return { escapeHtml, formatDate, formatDateTime, timeAgo, currency, qs, qsa, debounce, initialsColor, statusBadge, fileStatusBadge, priorityBadge, toast };
 })();

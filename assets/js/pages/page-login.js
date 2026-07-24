@@ -4,6 +4,9 @@
     { role: "parrain", label: "Parrain / Marraine", email: "aicha.zannou@mail.fr", icon: "bi-people" },
     { role: "proprietaire", label: "Propriétaire", email: "marc.lefevre@mail.fr", icon: "bi-house-door" },
     { role: "admin", label: "Administrateur", email: "admin@diaspoconnect.fr", icon: "bi-shield-lock" },
+    { role: "staff", label: "Direction (équipe)", email: "serge.donou@diaspoconnect.fr", icon: "bi-compass" },
+    { role: "staff", label: "Secrétariat", email: "aminata.djossou@diaspoconnect.fr", icon: "bi-inboxes" },
+    { role: "staff", label: "Conseiller démarches", email: "fabrice.koudjo@diaspoconnect.fr", icon: "bi-person-badge" },
   ];
 
   function renderDemoAccounts() {
@@ -22,7 +25,14 @@
     });
   }
 
-  async function redirectByRole(role) {
+  async function redirectByRole(role, user) {
+    if (role === "staff") {
+      const staffList = await DataStore.getStaff();
+      const staff = staffList.find((s) => s.userId === user.id);
+      const landing = staff ? await Permissions.landingPageFor(staff.accessLevel) : "staff-dashboard.html";
+      window.location.href = `${window.DC_ROOT}pages/staff/${landing}`;
+      return;
+    }
     window.location.href = `${window.DC_ROOT}pages/${role}/dashboard.html`;
   }
 
@@ -41,7 +51,7 @@
       const result = await Auth.login(email, password);
       if (result.ok) {
         DCUtils.toast(`Bienvenue ${result.user.firstName} !`, "success");
-        setTimeout(() => redirectByRole(result.user.role), 500);
+        setTimeout(() => redirectByRole(result.user.role, result.user), 500);
       } else {
         submitBtn.disabled = false;
         submitBtn.textContent = "Se connecter";
