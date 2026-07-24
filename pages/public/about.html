@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../assets/css/variables.css?v=2" rel="stylesheet">
-  <link href="../../assets/css/base.css?v=2" rel="stylesheet">
-  <link href="../../assets/css/layout.css?v=2" rel="stylesheet">
-  <link href="../../assets/css/components.css?v=2" rel="stylesheet">
-  <link href="../../assets/css/pages.css?v=2" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=3" rel="stylesheet">
 </head>
 <body data-page="about">
   <script>window.DC_ROOT = "../../";</script>
@@ -61,43 +61,64 @@
       <div class="container">
         <div class="row align-items-center g-4">
           <div class="col-lg-6">
-            <span class="section-title-eyebrow">Fonctionnement humain</span>
-            <h2 class="mt-2 mb-3">Une organisation portée par des bénévoles</h2>
-            <p class="text-body-secondary">DiaspoConnect est né d'une conviction simple : les personnes qui ont vécu la même transition sont les mieux placées pour accompagner celles et ceux qui la vivent aujourd'hui. Notre équipe est composée en grande majorité de bénévoles, souvent eux-mêmes étudiants ou jeunes actifs, qui consacrent quelques heures par semaine à un pôle précis : secrétariat, conseil, modération, support, contenu, partenariats ou technique.</p>
-            <p class="text-body-secondary mb-0">Chaque pôle a un périmètre clair et des outils dédiés, pilotés par la direction, pour que l'engagement de chacun reste soutenable dans la durée.</p>
+            <span class="section-title-eyebrow">Fonctionnement</span>
+            <h2 class="mt-2 mb-3">Une organisation par pôles de mission</h2>
+            <p class="text-body-secondary">DiaspoConnect est né d'une conviction simple : les personnes qui ont vécu la même transition sont les mieux placées pour accompagner celles et ceux qui la vivent aujourd'hui. Notre équipe est composée en grande majorité de bénévoles, organisés en pôles de mission clairement délimités : secrétariat, accompagnement, modération, support, contenu, partenariats, conformité et technique.</p>
+            <p class="text-body-secondary mb-0">Par souci de confidentialité pour les personnes engagées, souvent bénévolement, nous ne publions pas leur identité sur ce site. Ce que nous présentons ici, ce sont les missions, les responsabilités et le mode de fonctionnement de chaque pôle.</p>
           </div>
           <div class="col-lg-6">
             <div class="dc-banner dc-banner-info">
               <i class="bi bi-info-circle"></i>
-              <span>Les membres présentés ci-dessous ont explicitement accepté que leur profil soit visible sur ce site. Certains postes existent mais restent volontairement discrets dans l'organigramme, à la demande de la personne concernée.</span>
+              <span>Pour en savoir plus sur la gouvernance et le mode de décision, consultez notre page <a href="organization.html">Organisation</a> et <a href="how-we-work.html">Comment nous fonctionnons</a>.</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ORGANIGRAMME -->
+    <!-- ORGANIGRAMME FONCTIONNEL -->
     <section class="py-5">
       <div class="container">
         <div class="text-center mb-4">
           <span class="section-title-eyebrow">Organisation</span>
-          <h2 class="mt-2">Notre organigramme</h2>
-          <p class="text-body-secondary col-lg-7 mx-auto">Le fondateur pilote l'ensemble des pôles ; le secrétariat général centralise les demandes avant de les orienter vers le bon pôle.</p>
+          <h2 class="mt-2">Notre organigramme fonctionnel</h2>
+          <p class="text-body-secondary col-lg-7 mx-auto">La direction pilote l'ensemble des pôles ; le secrétariat général centralise les demandes avant de les orienter vers le bon pôle. Aucun nom n'est affiché : seules les fonctions et responsabilités le sont.</p>
         </div>
         <div id="orgchart-founder"></div>
-        <div class="dc-orgchart-grid" id="orgchart-grid"></div>
+        <div id="orgchart-grid"></div>
       </div>
     </section>
 
-    <!-- EQUIPE -->
+    <!-- ENGAGEMENTS -->
     <section class="py-5 bg-white">
       <div class="container">
         <div class="text-center mb-4">
-          <span class="section-title-eyebrow">L'équipe</span>
-          <h2 class="mt-2">Ils font vivre DiaspoConnect</h2>
+          <span class="section-title-eyebrow">Nos engagements</span>
+          <h2 class="mt-2">Qualité, sécurité et accompagnement</h2>
         </div>
-        <div class="row g-3" id="team-grid"></div>
-        <p class="dc-consent-note mt-4">Conformément à notre politique de confidentialité, seuls les membres ayant donné leur consentement explicite apparaissent ici, avec le niveau d'information qu'ils ont choisi de partager.</p>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="dc-card p-4 h-100">
+              <i class="bi bi-patch-check text-primary fs-3 mb-2"></i>
+              <h6>Qualité</h6>
+              <p class="text-body-secondary small mb-0">Chaque pôle suit des dossiers avec des délais de traitement suivis et des relances systématiques en cas d'inaction.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dc-card p-4 h-100">
+              <i class="bi bi-shield-lock text-primary fs-3 mb-2"></i>
+              <h6>Sécurité</h6>
+              <p class="text-body-secondary small mb-0">Profils vérifiés, messagerie surveillable, signalement accessible à tout moment et quotas anti-abus sur le parrainage.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dc-card p-4 h-100">
+              <i class="bi bi-people text-primary fs-3 mb-2"></i>
+              <h6>Accompagnement</h6>
+              <p class="text-body-secondary small mb-0">Un point d'entrée unique (le secrétariat) garantit qu'aucune demande ne reste sans réponse ni sans pôle responsable.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -128,13 +149,13 @@
 
   <div id="dc-public-footer"></div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../assets/js/core/data-store.js?v=2"></script>
-  <script src="../../assets/js/core/utils.js?v=2"></script>
-  <script src="../../assets/js/core/auth.js?v=2"></script>
-  <script src="../../assets/js/core/permissions.js?v=2"></script>
-  <script src="../../assets/js/core/notification-center.js?v=2"></script>
-  <script src="../../assets/js/ui/layout.js?v=2"></script>
+  <script src="../../assets/js/core/data-store.js?v=3"></script>
+  <script src="../../assets/js/core/utils.js?v=3"></script>
+  <script src="../../assets/js/core/auth.js?v=3"></script>
+  <script src="../../assets/js/core/permissions.js?v=3"></script>
+  <script src="../../assets/js/core/notification-center.js?v=3"></script>
+  <script src="../../assets/js/ui/layout.js?v=3"></script>
   <script>Layout.mountPublic("about");</script>
-  <script src="../../assets/js/pages/page-about.js?v=2"></script>
+  <script src="../../assets/js/pages/page-about.js?v=3"></script>
 </body>
 </html>

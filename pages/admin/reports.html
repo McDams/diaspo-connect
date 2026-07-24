@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapports — Administration DiaspoConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=3" rel="stylesheet">
+</head>
+<body data-page="reports">
+  <script>window.DC_ROOT = "../../";</script>
+  <div id="dc-app-header"></div>
+  <div class="dc-shell">
+    <div id="dc-app-sidebar"></div>
+    <div class="dc-content">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h1 class="h4 mb-0">Rapports &amp; délais de traitement</h1>
+        <button class="btn btn-outline-secondary btn-sm" id="export-btn"><i class="bi bi-download me-1"></i>Exporter (simulation)</button>
+      </div>
+      <p class="text-body-secondary small mb-4">Indicateurs de performance transverses, calculés à partir des données de démonstration.</p>
+
+      <div class="row g-3 mb-4" id="kpi-row"></div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="dc-card p-3">
+            <h6 class="mb-3">Répartition des tickets par statut</h6>
+            <div id="tickets-breakdown"></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="dc-card p-3">
+            <h6 class="mb-3">Répartition des cartes Kanban par pôle</h6>
+            <div id="cards-breakdown"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/core/data-store.js?v=3"></script>
+  <script src="../../assets/js/core/utils.js?v=3"></script>
+  <script src="../../assets/js/core/auth.js?v=3"></script>
+  <script src="../../assets/js/core/notification-center.js?v=3"></script>
+  <script src="../../assets/js/ui/layout.js?v=3"></script>
+  <script src="../../assets/js/pages/page-admin-reports.js?v=3"></script>
+</body>
+</html>

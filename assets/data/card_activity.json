@@ -1,0 +1,22 @@
+[
+  { "id": "act-001", "cardId": "card-402", "actorId": "staff-002", "actorLabel": "Secrétariat", "action": "created", "detail": "Carte créée depuis le ticket TCK-2026-001.", "createdAt": "2026-07-20T09:00:00" },
+  { "id": "act-002", "cardId": "card-402", "actorId": "staff-002", "actorLabel": "Secrétariat", "action": "moved", "detail": "Déplacée de « Nouvelles demandes » vers « En qualification ».", "createdAt": "2026-07-20T09:30:00" },
+  { "id": "act-003", "cardId": "card-402", "actorId": "staff-002", "actorLabel": "Secrétariat", "action": "commented", "detail": "Relance envoyée le 20/07, sans réponse à ce jour.", "createdAt": "2026-07-22T10:00:00" },
+  { "id": "act-004", "cardId": "card-501", "actorId": "staff-002", "actorLabel": "Secrétariat", "action": "assigned", "detail": "Assignée à Fabrice Kouassi (conseiller démarches).", "createdAt": "2026-07-10T09:15:00" },
+  { "id": "act-005", "cardId": "card-501", "actorId": "system", "actorLabel": "Système", "action": "flagged_overdue", "detail": "Carte marquée en retard (échéance dépassée).", "createdAt": "2026-07-24T00:05:00" },
+  { "id": "act-006", "cardId": "card-703", "actorId": "staff-007", "actorLabel": "Modération", "action": "escalated", "detail": "Dossier escaladé à la direction pour arbitrage.", "createdAt": "2026-07-21T15:00:00" },
+  { "id": "act-007", "cardId": "card-1201", "actorId": "staff-007", "actorLabel": "Modération", "action": "commented", "detail": "Dossier complet transmis, en attente de votre décision.", "createdAt": "2026-07-21T15:05:00" },
+  { "id": "act-008", "cardId": "card-1201", "actorId": "staff-001", "actorLabel": "Direction", "action": "priority_changed", "detail": "Priorité relevée à « urgente ».", "createdAt": "2026-07-22T08:00:00" },
+  { "id": "act-009", "cardId": "card-1001", "actorId": "staff-008", "actorLabel": "Support", "action": "linked", "detail": "Liée au ticket TCK-2026-004.", "createdAt": "2026-07-20T09:00:00" },
+  { "id": "act-010", "cardId": "card-1001", "actorId": "staff-012", "actorLabel": "Technique", "action": "checklist_updated", "detail": "Case « Reproduire le bug » cochée.", "createdAt": "2026-07-21T11:00:00" },
+  { "id": "act-011", "cardId": "card-1001", "actorId": "staff-012", "actorLabel": "Technique", "action": "moved", "detail": "Déplacée de « À faire » vers « En cours ».", "createdAt": "2026-07-21T11:05:00" },
+  { "id": "act-012", "cardId": "card-404", "actorId": "staff-002", "actorLabel": "Secrétariat", "action": "assigned_department", "detail": "Dossier affecté au pôle Accompagnement (logement).", "createdAt": "2026-07-18T14:00:00" },
+  { "id": "act-013", "cardId": "card-404", "actorId": "staff-002", "actorLabel": "Secrétariat", "action": "moved", "detail": "Déplacée vers « Affectées ».", "createdAt": "2026-07-20T09:00:00" },
+  { "id": "act-014", "cardId": "card-803", "actorId": "staff-006", "actorLabel": "Partenariats", "action": "moved", "detail": "Déplacée vers « Partenariat actif ».", "createdAt": "2026-07-10T16:00:00" },
+  { "id": "act-015", "cardId": "card-1101", "actorId": "staff-011", "actorLabel": "Conformité", "action": "created", "detail": "Carte créée suite à réception du document.", "createdAt": "2026-07-21T09:00:00" },
+  { "id": "act-016", "cardId": "card-1101", "actorId": "staff-011", "actorLabel": "Conformité", "action": "checklist_updated", "detail": "Case « Contrôler la lisibilité du document » cochée.", "createdAt": "2026-07-22T09:00:00" },
+  { "id": "act-017", "cardId": "card-102", "actorId": "u-020", "actorLabel": "Précieuse Kpodékon", "action": "moved", "detail": "Déplacée vers « Terminé ».", "createdAt": "2026-07-15T09:00:00" },
+  { "id": "act-018", "cardId": "card-602", "actorId": "staff-008", "actorLabel": "Support", "action": "assigned", "detail": "Ticket technique pris en charge.", "createdAt": "2026-07-20T09:00:00" },
+  { "id": "act-019", "cardId": "card-702", "actorId": "staff-007", "actorLabel": "Modération", "action": "moved", "detail": "Déplacée vers « En instruction ».", "createdAt": "2026-07-21T09:30:00" },
+  { "id": "act-020", "cardId": "card-1202", "actorId": "staff-001", "actorLabel": "Direction", "action": "moved", "detail": "Déplacée vers « En analyse ».", "createdAt": "2026-07-21T09:00:00" }
+]

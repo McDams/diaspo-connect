@@ -132,6 +132,7 @@ const Layout = (() => {
     { id: "compliance-dashboard", label: "Vérification & conformité", icon: "bi-patch-check", href: "compliance-dashboard.html", group: "Espaces métier" },
     { id: "technical-dashboard", label: "Technique", icon: "bi-cpu", href: "technical-dashboard.html", group: "Espaces métier" },
     { id: "tickets-management", label: "Centre de tickets", icon: "bi-ticket-perforated", href: "tickets-management.html", group: "Outils transverses" },
+    { id: "kanban", label: "Mes tâches (Kanban)", icon: "bi-kanban", href: "kanban.html", group: "Outils transverses" },
     { id: "staff-directory", label: "Annuaire interne", icon: "bi-people-fill", href: "staff-directory.html", group: "Outils transverses" },
     { id: "org-management", label: "Organisation", icon: "bi-diagram-3", href: "org-management.html", group: "Outils transverses" },
   ];

@@ -1,11 +1,151 @@
 [
-  { "id": "direction", "name": "Direction", "shortName": "Direction", "description": "Pilotage global de la structure, vision stratégique et supervision de l'ensemble des pôles.", "icon": "bi-compass", "color": "navy" },
-  { "id": "secretariat", "name": "Secrétariat général", "shortName": "Secrétariat", "description": "Centralisation des informations, tri des demandes, suivi de la complétude des dossiers et relance des utilisateurs.", "icon": "bi-inboxes", "color": "teal" },
-  { "id": "conseil", "name": "Pôle Conseil", "shortName": "Conseil", "description": "Accompagnement individualisé sur les démarches administratives, le logement et l'emploi.", "icon": "bi-people", "color": "terracotta" },
-  { "id": "support", "name": "Pôle Support", "shortName": "Support", "description": "Assistance technique et fonctionnelle aux utilisateurs de la plateforme.", "icon": "bi-headset", "color": "info" },
-  { "id": "moderation", "name": "Pôle Modération & confiance", "shortName": "Modération", "description": "Sécurité des échanges, traitement des signalements, confiance entre les membres.", "icon": "bi-shield-check", "color": "danger" },
-  { "id": "partenariats", "name": "Pôle Partenariats", "shortName": "Partenariats", "description": "Relations avec les écoles, associations et entreprises partenaires.", "icon": "bi-handshake", "color": "purple" },
-  { "id": "contenu", "name": "Pôle Contenu & communication", "shortName": "Contenu", "description": "Production des ressources, guides pratiques et animation des réseaux sociaux.", "icon": "bi-journal-richtext", "color": "warning" },
-  { "id": "technique", "name": "Pôle Technique", "shortName": "Technique", "description": "Fiabilité, maintenance et évolution technique de la plateforme.", "icon": "bi-cpu", "color": "neutral" },
-  { "id": "conformite", "name": "Conformité & vérification", "shortName": "Conformité", "description": "Vérification des profils, contrôle des annonces et conformité générale.", "icon": "bi-patch-check", "color": "success" }
+  {
+    "id": "direction",
+    "name": "Direction",
+    "shortName": "Direction",
+    "description": "Pilotage global de la structure, vision stratégique et supervision de l'ensemble des pôles.",
+    "mission": "Fixer le cap de DiaspoConnect, arbitrer les décisions sensibles et garantir la cohérence entre tous les pôles.",
+    "responsibilities": [
+      "Vision stratégique et priorités de la structure",
+      "Arbitrage final sur les dossiers sensibles et les suspensions de compte",
+      "Supervision transverse de la qualité du matching et de la modération",
+      "Représentation de DiaspoConnect auprès des partenaires institutionnels"
+    ],
+    "contactHint": "Direction",
+    "icon": "bi-compass",
+    "color": "navy"
+  },
+  {
+    "id": "secretariat",
+    "name": "Secrétariat général",
+    "shortName": "Secrétariat",
+    "description": "Centralisation des informations, tri des demandes, suivi de la complétude des dossiers et relance des utilisateurs.",
+    "mission": "Être le point d'entrée unique des demandes : trier, qualifier et orienter chaque dossier vers le bon pôle sans délai.",
+    "responsibilities": [
+      "Réception et tri des formulaires de contact et tickets entrants",
+      "Vérification de la complétude des dossiers filleuls et parrains",
+      "Relance des utilisateurs sur les documents ou informations manquantes",
+      "Affectation des dossiers aux conseillers compétents"
+    ],
+    "contactHint": "Secrétariat",
+    "icon": "bi-inboxes",
+    "color": "teal"
+  },
+  {
+    "id": "conseil",
+    "name": "Pôle Accompagnement",
+    "shortName": "Conseil",
+    "description": "Accompagnement individualisé sur les démarches administratives, le logement et l'emploi.",
+    "mission": "Aider chaque filleul à avancer concrètement sur ses démarches, son logement et son insertion professionnelle.",
+    "responsibilities": [
+      "Suivi des dossiers affectés dans les trois domaines (démarches, logement, emploi)",
+      "Réponses aux questions sur les procédures françaises et mise à jour des checklists",
+      "Modération et vérification des annonces de logement et des offres d'emploi/stage/alternance",
+      "Détection et signalement des annonces ou offres suspectes"
+    ],
+    "contactHint": "Pôle Accompagnement",
+    "icon": "bi-people",
+    "color": "terracotta",
+    "subPoles": [
+      { "name": "Accompagnement démarches", "icon": "bi-file-earmark-text", "mission": "Sécuriser les démarches administratives : visa, titre de séjour, banque, assurance, inscription." },
+      { "name": "Accompagnement logement", "icon": "bi-house-door", "mission": "Aider à trouver un logement fiable et prévenir les tentatives d'arnaque locative." },
+      { "name": "Accompagnement emploi", "icon": "bi-briefcase", "mission": "Faciliter l'accès aux jobs saisonniers, stages et alternances compatibles avec le statut étudiant." }
+    ]
+  },
+  {
+    "id": "moderation",
+    "name": "Pôle Modération & confiance",
+    "shortName": "Modération",
+    "description": "Sécurité des échanges, traitement des signalements, confiance entre les membres.",
+    "mission": "Garantir un environnement sain et sécurisé : vérifier les profils, traiter les signalements, sanctionner les abus.",
+    "responsibilities": [
+      "Traitement des signalements (harcèlement, faux profil, arnaque, comportement inapproprié)",
+      "Contrôle discret des messages signalés dans la messagerie interne",
+      "Décision de suspension ou réactivation de comptes",
+      "Suivi des incidents et escalade à la direction si nécessaire"
+    ],
+    "contactHint": "Modération / confiance",
+    "icon": "bi-shield-check",
+    "color": "danger"
+  },
+  {
+    "id": "support",
+    "name": "Pôle Support",
+    "shortName": "Support",
+    "description": "Assistance technique et fonctionnelle aux utilisateurs de la plateforme.",
+    "mission": "Résoudre rapidement les difficultés d'utilisation de la plateforme, quel que soit le profil de l'utilisateur.",
+    "responsibilities": [
+      "Traitement des tickets de support fonctionnel et technique",
+      "Accompagnement à la prise en main de la plateforme",
+      "Remontée des bugs et anomalies au pôle technique",
+      "Suivi de la satisfaction des utilisateurs accompagnés"
+    ],
+    "contactHint": "Support",
+    "icon": "bi-headset",
+    "color": "info"
+  },
+  {
+    "id": "partenariats",
+    "name": "Pôle Partenariats",
+    "shortName": "Partenariats",
+    "description": "Relations avec les écoles, associations et entreprises partenaires.",
+    "mission": "Construire un réseau de partenaires fiables (écoles, associations, entreprises, bailleurs) au bénéfice des filleuls.",
+    "responsibilities": [
+      "Prospection et suivi des partenaires institutionnels et associatifs",
+      "Qualification des demandes de collaboration entrantes",
+      "Négociation de conditions favorables pour la communauté",
+      "Reporting régulier à la direction sur les partenariats actifs"
+    ],
+    "contactHint": "Partenariats",
+    "icon": "bi-handshake",
+    "color": "purple"
+  },
+  {
+    "id": "contenu",
+    "name": "Pôle Contenu & ressources",
+    "shortName": "Contenu",
+    "description": "Production des ressources, guides pratiques et animation des réseaux sociaux.",
+    "mission": "Rendre l'information fiable, claire et accessible à travers guides, FAQ et ressources pédagogiques.",
+    "responsibilities": [
+      "Rédaction et mise à jour des guides et checklists",
+      "Gestion de la FAQ publique",
+      "Animation éditoriale et communication externe",
+      "Veille sur l'évolution des démarches et réglementations"
+    ],
+    "contactHint": "Contenu / ressources",
+    "icon": "bi-journal-richtext",
+    "color": "warning"
+  },
+  {
+    "id": "technique",
+    "name": "Pôle Technique",
+    "shortName": "Technique",
+    "description": "Fiabilité, maintenance et évolution technique de la plateforme.",
+    "mission": "Garantir la disponibilité, la sécurité et l'évolution technique de la plateforme.",
+    "responsibilities": [
+      "Maintenance et supervision technique de la plateforme",
+      "Gestion des paramètres système et des accès",
+      "Suivi des incidents techniques",
+      "Évolution de la plateforme vers un backend de production"
+    ],
+    "contactHint": "Technique",
+    "icon": "bi-cpu",
+    "color": "neutral"
+  },
+  {
+    "id": "conformite",
+    "name": "Pôle Conformité & vérification",
+    "shortName": "Conformité",
+    "description": "Vérification des profils, contrôle des annonces et conformité générale.",
+    "mission": "S'assurer que chaque profil, annonce et offre publiée respecte les règles de la plateforme et la réglementation applicable.",
+    "responsibilities": [
+      "Vérification d'identité et de cohérence des profils",
+      "Contrôle de conformité des annonces logement et offres",
+      "Suivi des demandes de vérification en attente",
+      "Documentation des décisions de conformité pour audit"
+    ],
+    "contactHint": "Conformité / vérification",
+    "icon": "bi-patch-check",
+    "color": "success"
+  }
 ]

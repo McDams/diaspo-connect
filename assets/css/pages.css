@@ -87,10 +87,16 @@
 .dc-orgchart-member-role { font-size: 0.78rem; color: var(--dc-ink-500); }
 .dc-orgchart-hidden { color: var(--dc-ink-500); font-size: 0.85rem; font-style: italic; }
 
-/* --- Fiches équipe --- */
-.dc-team-card { text-align: center; height: 100%; }
-.dc-team-card .dc-avatar-lg { margin: 0 auto 0.75rem; }
-.dc-team-badge-post { font-size: var(--dc-fs-xs); }
+/* --- Organigramme fonctionnel (sans identité) --- */
+.dc-pole-card { background: var(--dc-surface); border: 1px solid var(--dc-ink-100); border-top: 3px solid var(--dc-teal-600); border-radius: var(--dc-radius-md); padding: 1.25rem; height: 100%; box-shadow: var(--dc-shadow-sm); }
+.dc-pole-card h6 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.dc-pole-mission { font-size: 0.85rem; color: var(--dc-ink-600); margin-bottom: 0.75rem; }
+.dc-pole-responsibilities { list-style: none; padding: 0; margin: 0; font-size: 0.82rem; color: var(--dc-ink-500); }
+.dc-pole-responsibilities li { display: flex; gap: 0.5rem; padding: 0.3rem 0; border-top: 1px dashed var(--dc-ink-100); }
+.dc-pole-responsibilities li:first-child { border-top: none; }
+.dc-pole-responsibilities i { color: var(--dc-teal-600); margin-top: 0.15rem; }
+.dc-pole-subpoles { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+.dc-pole-subpole-badge { font-size: 0.72rem; }
 .dc-consent-note {
   font-size: var(--dc-fs-xs);
   color: var(--dc-ink-500);

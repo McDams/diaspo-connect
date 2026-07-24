@@ -1,0 +1,27 @@
+{
+  "general": {
+    "platformName": "DiaspoConnect",
+    "supportEmail": "support@diaspoconnect.exemple",
+    "defaultCountryFocus": "Bénin",
+    "maxActiveMenteesPerMentor": 2,
+    "ticketDefaultSlaHours": 48,
+    "maintenanceMode": false
+  },
+  "featureFlags": [
+    { "id": "flag-kanban-central", "name": "Kanban central admin", "description": "Active la vue Kanban centralisée pour l'administration.", "enabled": true },
+    { "id": "flag-auto-matching-suggestions", "name": "Suggestions de matching automatiques", "description": "Propose automatiquement les meilleurs parrains lors de la création d'un dossier filleul.", "enabled": true },
+    { "id": "flag-message-moderation-ai", "name": "Pré-filtrage IA des messages", "description": "Analyse automatique des messages pour repérer les contenus à risque avant modération humaine.", "enabled": false },
+    { "id": "flag-landlord-onboarding", "name": "Onboarding propriétaire enrichi", "description": "Active le parcours guidé de dépôt d'annonce en plusieurs étapes.", "enabled": true },
+    { "id": "flag-public-impact-stats", "name": "Statistiques publiques d'impact", "description": "Affiche des statistiques d'impact en temps réel sur la page d'accueil.", "enabled": false }
+  ],
+  "notificationDefaults": {
+    "newMentorshipRequest": true,
+    "newMessage": true,
+    "listingApproved": true,
+    "ticketAssigned": true,
+    "reportReceived": true
+  },
+  "roleQuotas": {
+    "mentorMaxActiveMentees": 2
+  }
+}

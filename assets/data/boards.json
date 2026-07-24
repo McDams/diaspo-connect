@@ -1,0 +1,15 @@
+[
+  { "id": "board-filleul", "name": "Mon parcours vers la France", "scope": "personal", "ownerRole": "filleul", "departmentId": null, "description": "Démarches, documents et échéances à suivre avant et après l'arrivée.", "icon": "bi-map" },
+  { "id": "board-parrain", "name": "Suivi de mes filleuls", "scope": "personal", "ownerRole": "parrain", "departmentId": null, "description": "Rappels et actions liées à l'accompagnement de mes filleuls.", "icon": "bi-people" },
+  { "id": "board-proprietaire", "name": "Suivi de mes annonces", "scope": "personal", "ownerRole": "proprietaire", "departmentId": null, "description": "Annonces, candidatures reçues et pièces à traiter.", "icon": "bi-house-door" },
+  { "id": "board-secretariat", "name": "Secrétariat — tri & affectation", "scope": "pole", "ownerRole": "staff", "departmentId": "secretariat", "description": "Tri des demandes entrantes et affectation aux pôles.", "icon": "bi-inboxes" },
+  { "id": "board-conseil", "name": "Pôle Accompagnement — dossiers affectés", "scope": "pole", "ownerRole": "staff", "departmentId": "conseil", "description": "Dossiers démarches, logement et emploi affectés aux conseillers.", "icon": "bi-people" },
+  { "id": "board-support", "name": "Support — tickets", "scope": "pole", "ownerRole": "staff", "departmentId": "support", "description": "Tickets fonctionnels et techniques en attente de réponse.", "icon": "bi-headset" },
+  { "id": "board-moderation", "name": "Modération — signalements & incidents", "scope": "pole", "ownerRole": "staff", "departmentId": "moderation", "description": "Signalements utilisateurs et décisions de modération.", "icon": "bi-shield-check" },
+  { "id": "board-partenariats", "name": "Partenariats — prospects & suivi", "scope": "pole", "ownerRole": "staff", "departmentId": "partenariats", "description": "Prospects, partenaires actifs et demandes de collaboration.", "icon": "bi-handshake" },
+  { "id": "board-contenu", "name": "Contenu — ressources & FAQ", "scope": "pole", "ownerRole": "staff", "departmentId": "contenu", "description": "Guides, FAQ et ressources à créer ou mettre à jour.", "icon": "bi-journal-richtext" },
+  { "id": "board-technique", "name": "Technique — maintenance", "scope": "pole", "ownerRole": "staff", "departmentId": "technique", "description": "Suivi technique, incidents et évolutions de la plateforme.", "icon": "bi-cpu" },
+  { "id": "board-conformite", "name": "Conformité — vérifications", "scope": "pole", "ownerRole": "staff", "departmentId": "conformite", "description": "Vérifications de profils, annonces et documents.", "icon": "bi-patch-check" },
+  { "id": "board-direction", "name": "Direction — pilotage", "scope": "pole", "ownerRole": "staff", "departmentId": "direction", "description": "Suivi stratégique, dossiers sensibles et décisions d'arbitrage.", "icon": "bi-compass" },
+  { "id": "board-central", "name": "Kanban central — vue globale admin", "scope": "global", "ownerRole": "admin", "departmentId": null, "description": "Vue agrégée de tous les tableaux, tous rôles et tous pôles confondus.", "icon": "bi-diagram-3" }
+]

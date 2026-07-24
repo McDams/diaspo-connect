@@ -1,0 +1,12 @@
+[
+  { "id": "lbl-urgent", "name": "Urgent", "color": "#e5484d" },
+  { "id": "lbl-demarches", "name": "Démarches", "color": "#2f6fed" },
+  { "id": "lbl-logement", "name": "Logement", "color": "#c2703d" },
+  { "id": "lbl-emploi", "name": "Emploi", "color": "#8a5cf6" },
+  { "id": "lbl-document", "name": "Document", "color": "#0f9d78" },
+  { "id": "lbl-relance", "name": "Relance", "color": "#f2a63c" },
+  { "id": "lbl-securite", "name": "Sécurité", "color": "#d1364a" },
+  { "id": "lbl-partenariat", "name": "Partenariat", "color": "#7c4dff" },
+  { "id": "lbl-contenu", "name": "Contenu", "color": "#12939a" },
+  { "id": "lbl-technique", "name": "Technique", "color": "#5c6773" }
+]

@@ -8,13 +8,23 @@ const StaffGuard = (() => {
   async function require(moduleId) {
     const root = window.DC_ROOT || "./";
     const session = Auth.getSession();
-    if (!session || session.role !== "staff") {
+    if (!session || (session.role !== "staff" && session.role !== "admin")) {
       window.location.href = `${root}pages/public/login.html`;
       return null;
     }
-    const [user, staffList] = await Promise.all([Auth.getCurrentUser(), DataStore.getStaff()]);
+    const user = await Auth.getCurrentUser();
+    if (!user) {
+      window.location.href = `${root}pages/public/login.html`;
+      return null;
+    }
+    // L'admin plateforme (rôle legacy "admin") a la même mainmise que le super_admin
+    // sur l'espace interne : accès total, sans fiche staff réelle à résoudre.
+    if (user.role === "admin") {
+      return { user, staff: { id: null, userId: user.id, accessLevel: "super_admin", position: "Administrateur plateforme" } };
+    }
+    const staffList = await DataStore.getStaff();
     const staff = staffList.find((s) => s.userId === session.userId);
-    if (!user || !staff) {
+    if (!staff) {
       window.location.href = `${root}pages/public/login.html`;
       return null;
     }

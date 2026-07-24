@@ -28,6 +28,13 @@ const DataStore = (() => {
     permissions: "permissions.json",
     orgChart: "org-chart.json",
     auditLog: "audit-log.json",
+    boards: "boards.json",
+    lists: "lists.json",
+    cards: "cards.json",
+    labels: "labels.json",
+    cardActivity: "card_activity.json",
+    documents: "documents.json",
+    settings: "settings.json",
   };
 
   const cache = {};
@@ -82,6 +89,13 @@ const DataStore = (() => {
     getPermissions: () => load("permissions"),
     getOrgChart: () => load("orgChart"),
     getAuditLog: () => load("auditLog"),
+    getBoards: () => load("boards"),
+    getLists: () => load("lists"),
+    getCards: () => load("cards"),
+    getLabels: () => load("labels"),
+    getCardActivity: () => load("cardActivity"),
+    getDocuments: () => load("documents"),
+    getSettings: () => load("settings"),
 
     /** Insère un enregistrement dans le cache en mémoire (simulation d'écriture). */
     async insert(key, record) {

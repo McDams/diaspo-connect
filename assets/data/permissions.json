@@ -1,62 +1,62 @@
 [
   {
     "accessLevel": "super_admin", "label": "Super administrateur", "description": "Accès total à tous les espaces internes, y compris la gestion des permissions et de l'organisation.",
-    "modules": ["staff-dashboard", "secretariat-dashboard", "advisors-dashboard", "moderation-dashboard", "support-dashboard", "partnerships-dashboard", "content-dashboard", "compliance-dashboard", "technical-dashboard", "tickets-management", "staff-directory", "org-management"],
+    "modules": ["staff-dashboard", "secretariat-dashboard", "advisors-dashboard", "moderation-dashboard", "support-dashboard", "partnerships-dashboard", "content-dashboard", "compliance-dashboard", "technical-dashboard", "tickets-management", "staff-directory", "org-management", "kanban"],
     "canManageAllTickets": true, "canManagePermissions": true, "landingPage": "staff-dashboard.html"
   },
   {
     "accessLevel": "direction_admin", "label": "Direction", "description": "Vue d'ensemble de tous les pôles, pilotage stratégique, sans modification directe des permissions techniques.",
-    "modules": ["staff-dashboard", "secretariat-dashboard", "advisors-dashboard", "moderation-dashboard", "support-dashboard", "partnerships-dashboard", "content-dashboard", "compliance-dashboard", "technical-dashboard", "tickets-management", "staff-directory", "org-management"],
+    "modules": ["staff-dashboard", "secretariat-dashboard", "advisors-dashboard", "moderation-dashboard", "support-dashboard", "partnerships-dashboard", "content-dashboard", "compliance-dashboard", "technical-dashboard", "tickets-management", "staff-directory", "org-management", "kanban"],
     "canManageAllTickets": true, "canManagePermissions": false, "landingPage": "staff-dashboard.html"
   },
   {
     "accessLevel": "secretariat_admin", "label": "Secrétariat", "description": "Centralisation des demandes, tri, assignation aux conseillers, suivi des dossiers incomplets.",
-    "modules": ["secretariat-dashboard", "tickets-management", "staff-directory"],
+    "modules": ["secretariat-dashboard", "tickets-management", "staff-directory", "kanban"],
     "canManageAllTickets": true, "canManagePermissions": false, "landingPage": "secretariat-dashboard.html"
   },
   {
     "accessLevel": "advisor_admin", "label": "Conseiller démarches", "description": "Suivi des dossiers affectés en démarches administratives.",
-    "modules": ["advisors-dashboard", "tickets-management"],
+    "modules": ["advisors-dashboard", "tickets-management", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "advisors-dashboard.html"
   },
   {
     "accessLevel": "housing_admin", "label": "Conseillère logement", "description": "Suivi des dossiers et candidatures logement affectés.",
-    "modules": ["advisors-dashboard", "tickets-management"],
+    "modules": ["advisors-dashboard", "tickets-management", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "advisors-dashboard.html"
   },
   {
     "accessLevel": "career_admin", "label": "Conseiller emploi", "description": "Suivi des dossiers emploi / stage / alternance affectés.",
-    "modules": ["advisors-dashboard", "tickets-management"],
+    "modules": ["advisors-dashboard", "tickets-management", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "advisors-dashboard.html"
   },
   {
     "accessLevel": "moderation_admin", "label": "Modération & confiance", "description": "Traitement des signalements et des messages suspects.",
-    "modules": ["moderation-dashboard", "tickets-management"],
+    "modules": ["moderation-dashboard", "tickets-management", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "moderation-dashboard.html"
   },
   {
     "accessLevel": "support_admin", "label": "Support utilisateur", "description": "Traitement des tickets de support technique et fonctionnel.",
-    "modules": ["support-dashboard", "tickets-management"],
+    "modules": ["support-dashboard", "tickets-management", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "support-dashboard.html"
   },
   {
     "accessLevel": "partnership_admin", "label": "Partenariats", "description": "Suivi des prospects et partenaires actifs.",
-    "modules": ["partnerships-dashboard", "tickets-management"],
+    "modules": ["partnerships-dashboard", "tickets-management", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "partnerships-dashboard.html"
   },
   {
     "accessLevel": "content_admin", "label": "Contenu & communication", "description": "Gestion des ressources, guides, FAQ et communication.",
-    "modules": ["content-dashboard"],
+    "modules": ["content-dashboard", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "content-dashboard.html"
   },
   {
     "accessLevel": "compliance_admin", "label": "Conformité & vérification", "description": "Vérification des profils et conformité des annonces.",
-    "modules": ["compliance-dashboard"],
+    "modules": ["compliance-dashboard", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "compliance-dashboard.html"
   },
   {
     "accessLevel": "technical_admin", "label": "Technique", "description": "Supervision technique de la plateforme.",
-    "modules": ["technical-dashboard"],
+    "modules": ["technical-dashboard", "kanban"],
     "canManageAllTickets": false, "canManagePermissions": false, "landingPage": "technical-dashboard.html"
   }
 ]

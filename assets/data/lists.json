@@ -1,0 +1,61 @@
+[
+  { "id": "list-filleul-todo", "boardId": "board-filleul", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-filleul-progress", "boardId": "board-filleul", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-filleul-waiting", "boardId": "board-filleul", "name": "En attente", "order": 3, "isDoneColumn": false },
+  { "id": "list-filleul-done", "boardId": "board-filleul", "name": "Terminé", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-parrain-todo", "boardId": "board-parrain", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-parrain-progress", "boardId": "board-parrain", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-parrain-waiting", "boardId": "board-parrain", "name": "En attente", "order": 3, "isDoneColumn": false },
+  { "id": "list-parrain-done", "boardId": "board-parrain", "name": "Terminé", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-proprietaire-todo", "boardId": "board-proprietaire", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-proprietaire-progress", "boardId": "board-proprietaire", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-proprietaire-waiting", "boardId": "board-proprietaire", "name": "En attente", "order": 3, "isDoneColumn": false },
+  { "id": "list-proprietaire-done", "boardId": "board-proprietaire", "name": "Terminé", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-secretariat-todo", "boardId": "board-secretariat", "name": "Nouvelles demandes", "order": 1, "isDoneColumn": false },
+  { "id": "list-secretariat-progress", "boardId": "board-secretariat", "name": "En qualification", "order": 2, "isDoneColumn": false },
+  { "id": "list-secretariat-waiting", "boardId": "board-secretariat", "name": "En attente utilisateur", "order": 3, "isDoneColumn": false },
+  { "id": "list-secretariat-done", "boardId": "board-secretariat", "name": "Affectées", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-conseil-todo", "boardId": "board-conseil", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-conseil-progress", "boardId": "board-conseil", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-conseil-waiting", "boardId": "board-conseil", "name": "En attente", "order": 3, "isDoneColumn": false },
+  { "id": "list-conseil-done", "boardId": "board-conseil", "name": "Terminé", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-support-todo", "boardId": "board-support", "name": "Nouveau", "order": 1, "isDoneColumn": false },
+  { "id": "list-support-progress", "boardId": "board-support", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-support-waiting", "boardId": "board-support", "name": "En attente réponse", "order": 3, "isDoneColumn": false },
+  { "id": "list-support-done", "boardId": "board-support", "name": "Résolu", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-moderation-todo", "boardId": "board-moderation", "name": "À examiner", "order": 1, "isDoneColumn": false },
+  { "id": "list-moderation-progress", "boardId": "board-moderation", "name": "En instruction", "order": 2, "isDoneColumn": false },
+  { "id": "list-moderation-waiting", "boardId": "board-moderation", "name": "Escaladé direction", "order": 3, "isDoneColumn": false },
+  { "id": "list-moderation-done", "boardId": "board-moderation", "name": "Décision prise", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-partenariats-todo", "boardId": "board-partenariats", "name": "Prospects", "order": 1, "isDoneColumn": false },
+  { "id": "list-partenariats-progress", "boardId": "board-partenariats", "name": "En discussion", "order": 2, "isDoneColumn": false },
+  { "id": "list-partenariats-waiting", "boardId": "board-partenariats", "name": "En attente retour", "order": 3, "isDoneColumn": false },
+  { "id": "list-partenariats-done", "boardId": "board-partenariats", "name": "Partenariat actif", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-contenu-todo", "boardId": "board-contenu", "name": "À rédiger", "order": 1, "isDoneColumn": false },
+  { "id": "list-contenu-progress", "boardId": "board-contenu", "name": "En rédaction", "order": 2, "isDoneColumn": false },
+  { "id": "list-contenu-waiting", "boardId": "board-contenu", "name": "En relecture", "order": 3, "isDoneColumn": false },
+  { "id": "list-contenu-done", "boardId": "board-contenu", "name": "Publié", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-technique-todo", "boardId": "board-technique", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-technique-progress", "boardId": "board-technique", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-technique-waiting", "boardId": "board-technique", "name": "Bloqué", "order": 3, "isDoneColumn": false },
+  { "id": "list-technique-done", "boardId": "board-technique", "name": "Résolu", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-conformite-todo", "boardId": "board-conformite", "name": "À vérifier", "order": 1, "isDoneColumn": false },
+  { "id": "list-conformite-progress", "boardId": "board-conformite", "name": "En contrôle", "order": 2, "isDoneColumn": false },
+  { "id": "list-conformite-waiting", "boardId": "board-conformite", "name": "Complément demandé", "order": 3, "isDoneColumn": false },
+  { "id": "list-conformite-done", "boardId": "board-conformite", "name": "Vérifié", "order": 4, "isDoneColumn": true },
+
+  { "id": "list-direction-todo", "boardId": "board-direction", "name": "À arbitrer", "order": 1, "isDoneColumn": false },
+  { "id": "list-direction-progress", "boardId": "board-direction", "name": "En analyse", "order": 2, "isDoneColumn": false },
+  { "id": "list-direction-waiting", "boardId": "board-direction", "name": "En attente d'information", "order": 3, "isDoneColumn": false },
+  { "id": "list-direction-done", "boardId": "board-direction", "name": "Tranché", "order": 4, "isDoneColumn": true }
+]
