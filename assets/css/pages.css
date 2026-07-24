@@ -1,0 +1,55 @@
+/* ==========================================================================
+   Ajustements spécifiques à certaines pages
+   ========================================================================== */
+
+/* Authentification */
+.dc-auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(160deg, var(--dc-navy-900), var(--dc-navy-700));
+}
+.dc-auth-card {
+  background: var(--dc-surface);
+  border-radius: var(--dc-radius-lg);
+  box-shadow: var(--dc-shadow-lg);
+  overflow: hidden;
+}
+.dc-auth-side {
+  background: linear-gradient(155deg, var(--dc-teal-700), var(--dc-navy-800));
+  color: #fff;
+  padding: 2.5rem;
+}
+.dc-role-choice {
+  border: 1px solid var(--dc-ink-100);
+  border-radius: var(--dc-radius-md);
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.dc-role-choice:hover { border-color: var(--dc-navy-600); }
+.dc-role-choice.active { border-color: var(--dc-navy-700); background: var(--dc-navy-100); }
+.dc-role-choice input { accent-color: var(--dc-navy-700); }
+
+/* Page 404 */
+.dc-404 { min-height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+.dc-404 .dc-404-code { font-size: 6rem; font-weight: 800; color: var(--dc-navy-700); line-height: 1; }
+
+/* How-it-works steps */
+.dc-step-card { position: relative; padding-left: 3.2rem; }
+.dc-step-num {
+  position: absolute; left: 0; top: 0;
+  width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  background: var(--dc-navy-700); color: #fff; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Charte de sécurité */
+.dc-charte-item { border-left: 3px solid var(--dc-teal-600); padding-left: 1rem; margin-bottom: 1.25rem; }
+
+/* Trust indicators */
+.dc-trust-strip { background: var(--dc-navy-100); border-radius: var(--dc-radius-md); }
+
+@media (max-width: 575.98px) {
+  .dc-auth-side { display: none; }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opportunités — DiaspoConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/variables.css" rel="stylesheet">
+  <link href="../../assets/css/base.css" rel="stylesheet">
+  <link href="../../assets/css/layout.css" rel="stylesheet">
+  <link href="../../assets/css/components.css" rel="stylesheet">
+  <link href="../../assets/css/pages.css" rel="stylesheet">
+</head>
+<body data-page="opportunites">
+  <script>window.DC_ROOT = "../../";</script>
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+  <div id="dc-public-navbar"></div>
+
+  <main id="main-content">
+    <section class="bg-white border-bottom py-4">
+      <div class="container">
+        <h1 class="h3 mb-1">Jobs, stages &amp; alternances</h1>
+        <p class="text-body-secondary mb-0">Des opportunités vérifiées pour financer vos études et construire votre expérience professionnelle.</p>
+      </div>
+    </section>
+
+    <section class="py-4">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-3">
+            <form id="filters-form" class="dc-filter-panel">
+              <h6 class="mb-3"><i class="bi bi-funnel me-1"></i>Filtres</h6>
+              <div class="mb-3">
+                <label for="f-recherche" class="form-label">Recherche</label>
+                <input type="search" id="f-recherche" class="form-control" placeholder="Poste, mot-clé...">
+              </div>
+              <div class="mb-3">
+                <label for="f-type" class="form-label">Type d'offre</label>
+                <select id="f-type" class="form-select">
+                  <option value="all">Tous types</option>
+                  <option value="job_saisonnier">Job saisonnier</option>
+                  <option value="stage">Stage</option>
+                  <option value="alternance">Alternance</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="f-ville" class="form-label">Ville</label>
+                <select id="f-ville" class="form-select"><option value="all">Toutes les villes</option></select>
+              </div>
+              <div class="mb-3">
+                <label for="f-secteur" class="form-label">Secteur</label>
+                <select id="f-secteur" class="form-select"><option value="all">Tous secteurs</option></select>
+              </div>
+              <button type="button" id="reset-filters" class="btn btn-outline-secondary btn-sm w-100">Réinitialiser</button>
+            </form>
+          </div>
+          <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span id="results-count" class="small text-muted-dc">Chargement…</span>
+            </div>
+            <div class="row g-3" id="opp-grid">
+              <div class="col-12 text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailModalLabel">Offre</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body" id="detailModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dc-public-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/core/data-store.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/core/auth.js"></script>
+  <script src="../../assets/js/core/notification-center.js"></script>
+  <script src="../../assets/js/ui/filters.js"></script>
+  <script src="../../assets/js/ui/layout.js"></script>
+  <script>Layout.mountPublic("opportunites");</script>
+  <script src="../../assets/js/pages/page-opportunites.js"></script>
+</body>
+</html>

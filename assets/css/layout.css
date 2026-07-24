@@ -1,0 +1,141 @@
+/* ==========================================================================
+   Layout - navbar publique, header applicatif, sidebar, footer, shell dashboard
+   ========================================================================== */
+
+/* --- Navbar publique --- */
+.dc-navbar {
+  background: var(--dc-surface);
+  box-shadow: var(--dc-shadow-sm);
+  min-height: var(--dc-header-h);
+}
+.dc-navbar .navbar-brand { font-weight: 800; color: var(--dc-navy-900); font-size: 1.2rem; }
+.dc-navbar .navbar-brand span { color: var(--dc-teal-600); }
+.dc-navbar .nav-link { font-weight: 600; color: var(--dc-ink-700); }
+.dc-navbar .nav-link.active, .dc-navbar .nav-link:hover { color: var(--dc-navy-700); }
+
+/* --- Header applicatif (dashboards) --- */
+.dc-app-header {
+  height: var(--dc-header-h);
+  background: var(--dc-surface);
+  border-bottom: 1px solid var(--dc-ink-100);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+.dc-app-header .brand { font-weight: 800; color: var(--dc-navy-900); }
+.dc-app-header .brand span { color: var(--dc-teal-600); }
+
+.dc-notif-btn { position: relative; }
+.dc-notif-dot {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 9px; height: 9px;
+  background: var(--dc-danger);
+  border-radius: 50%;
+  border: 2px solid var(--dc-surface);
+}
+
+/* --- Shell dashboard : sidebar + contenu --- */
+.dc-shell {
+  display: flex;
+  min-height: calc(100vh - var(--dc-header-h));
+}
+
+.dc-sidebar {
+  width: var(--dc-sidebar-w);
+  flex-shrink: 0;
+  background: var(--dc-navy-900);
+  color: #cfd8e6;
+  padding: 1.25rem 0.9rem;
+  position: sticky;
+  top: var(--dc-header-h);
+  height: calc(100vh - var(--dc-header-h));
+  overflow-y: auto;
+  transition: transform 0.25s ease;
+}
+.dc-sidebar .dc-sidebar-section {
+  text-transform: uppercase;
+  font-size: var(--dc-fs-xs);
+  letter-spacing: 0.08em;
+  color: #7c8aa3;
+  margin: 1.1rem 0.7rem 0.4rem;
+}
+.dc-sidebar a.dc-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.62rem 0.75rem;
+  border-radius: var(--dc-radius-sm);
+  color: #cfd8e6;
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 2px;
+}
+.dc-sidebar a.dc-sidebar-link:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.dc-sidebar a.dc-sidebar-link.active { background: var(--dc-teal-600); color: #fff; }
+.dc-sidebar a.dc-sidebar-link .bi { font-size: 1.05rem; }
+.dc-sidebar .dc-sidebar-badge {
+  margin-left: auto;
+  background: var(--dc-danger);
+  color: #fff;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+}
+
+.dc-content {
+  flex-grow: 1;
+  padding: 1.75rem clamp(1rem, 3vw, 2.5rem);
+  min-width: 0;
+}
+
+.dc-sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 35, 61, 0.45);
+  z-index: 1035;
+}
+
+@media (max-width: 991.98px) {
+  .dc-sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--dc-header-h);
+    transform: translateX(-100%);
+    z-index: 1040;
+    box-shadow: var(--dc-shadow-lg);
+  }
+  .dc-sidebar.show { transform: translateX(0); }
+  .dc-sidebar-backdrop.show { display: block; }
+  .dc-content { padding: 1.25rem 1rem 3rem; }
+}
+
+/* --- Footer public --- */
+.dc-footer {
+  background: var(--dc-navy-900);
+  color: #b9c3d4;
+  padding: 3rem 0 1.5rem;
+}
+.dc-footer h6 { color: #fff; font-weight: 700; margin-bottom: 0.9rem; }
+.dc-footer a { color: #b9c3d4; }
+.dc-footer a:hover { color: #fff; }
+.dc-footer .dc-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  font-size: var(--dc-fs-sm);
+  color: #8b97ac;
+}
+
+/* --- Hero --- */
+.dc-hero {
+  background: linear-gradient(155deg, var(--dc-navy-900) 0%, var(--dc-navy-700) 65%, var(--dc-teal-700) 130%);
+  color: #fff;
+  padding: 4.5rem 0 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.dc-hero h1 { color: #fff; font-size: clamp(2rem, 4vw, var(--dc-fs-3xl)); }
+.dc-hero p.lead { color: #dbe4f2; }
+.dc-hero .dc-hero-stat { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--dc-radius-md); }

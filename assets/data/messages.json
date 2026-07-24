@@ -1,0 +1,31 @@
+[
+  {
+    "id": "conv-001", "matchingId": "match-001", "participants": ["u-022", "u-012"], "lastMessageAt": "2026-07-23T18:20:00",
+    "messages": [
+      { "id": "m-001", "senderId": "u-022", "text": "Bonjour Aïcha, merci d'avoir accepté de m'accompagner ! J'arrive à Lille le 28 août.", "sentAt": "2025-09-25T10:00:00", "flagged": false },
+      { "id": "m-002", "senderId": "u-012", "text": "Bienvenue Rosine ! N'hésite pas si tu as des questions sur le logement, je connais bien le quartier Vauban.", "sentAt": "2025-09-25T10:15:00", "flagged": false },
+      { "id": "m-003", "senderId": "u-022", "text": "Merci beaucoup, est-ce que tu peux m'aider à comprendre le dossier CAF ?", "sentAt": "2026-07-23T18:20:00", "flagged": false }
+    ]
+  },
+  {
+    "id": "conv-002", "matchingId": "match-002", "participants": ["u-027", "u-017"], "lastMessageAt": "2026-07-22T09:05:00",
+    "messages": [
+      { "id": "m-010", "senderId": "u-027", "text": "Salut Yannick, je viens de valider mon dossier CROUS, merci pour tes conseils !", "sentAt": "2026-07-20T08:00:00", "flagged": false },
+      { "id": "m-011", "senderId": "u-017", "text": "Super nouvelle ! On se voit toujours jeudi pour visiter le campus ?", "sentAt": "2026-07-22T09:05:00", "flagged": false }
+    ]
+  },
+  {
+    "id": "conv-003", "matchingId": "match-006", "participants": ["u-024", "u-014"], "lastMessageAt": "2026-07-10T20:45:00",
+    "messages": [
+      { "id": "m-020", "senderId": "u-024", "text": "Bonjour Grace, j'ai une question sur mon stage à Bordeaux.", "sentAt": "2026-07-08T14:00:00", "flagged": false },
+      { "id": "m-021", "senderId": "u-014", "text": "Bien sûr, dis-moi tout.", "sentAt": "2026-07-08T14:10:00", "flagged": false },
+      { "id": "m-022", "senderId": "u-014", "text": "On pourrait se voir en dehors du cadre de l'accompagnement, juste toi et moi ce week-end ?", "sentAt": "2026-07-10T20:45:00", "flagged": true, "flagReason": "proposition_deplacee" }
+    ]
+  },
+  {
+    "id": "conv-004", "matchingId": "match-003", "participants": ["u-030", "u-010"], "lastMessageAt": "2026-07-20T16:05:00",
+    "messages": [
+      { "id": "m-030", "senderId": "u-030", "text": "Bonjour Fatou, je m'appelle Bethy, je viens de faire une demande de matching avec vous. J'arrive à Lyon en septembre et je cherche surtout de l'aide pour le logement.", "sentAt": "2026-07-20T16:05:00", "flagged": false }
+    ]
+  }
+]

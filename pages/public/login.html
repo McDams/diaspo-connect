@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — DiaspoConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/variables.css" rel="stylesheet">
+  <link href="../../assets/css/base.css" rel="stylesheet">
+  <link href="../../assets/css/layout.css" rel="stylesheet">
+  <link href="../../assets/css/components.css" rel="stylesheet">
+  <link href="../../assets/css/pages.css" rel="stylesheet">
+</head>
+<body data-page="login">
+  <script>window.DC_ROOT = "../../";</script>
+  <div class="dc-auth-shell py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-9">
+          <div class="dc-auth-card row g-0">
+            <div class="col-lg-5 dc-auth-side d-none d-sm-flex flex-column justify-content-between">
+              <a href="../../index.html" class="text-white text-decoration-none fw-bold fs-5">Diaspo<span style="color:#cfe8dd">Connect</span></a>
+              <div>
+                <h3 class="text-white">Content de vous revoir.</h3>
+                <p class="opacity-75 small mb-0">Retrouvez votre accompagnement, vos messages et le suivi de vos démarches.</p>
+              </div>
+              <p class="small opacity-50 mb-0">Prototype de démonstration — aucune donnée réelle.</p>
+            </div>
+            <div class="col-lg-7">
+              <div class="p-4 p-lg-5">
+                <h4 class="mb-1">Connexion</h4>
+                <p class="text-body-secondary small mb-4">Accédez à votre espace filleul, parrain, propriétaire ou admin.</p>
+
+                <div class="mb-4">
+                  <p class="small fw-semibold mb-2">Comptes de démonstration :</p>
+                  <div class="d-flex flex-wrap gap-2" id="demo-accounts"></div>
+                  <p class="small text-muted-dc mt-2 mb-0">Mot de passe démo pré-rempli automatiquement.</p>
+                </div>
+
+                <form id="login-form" novalidate>
+                  <div class="mb-3">
+                    <label for="l-email" class="form-label dc-required">Email</label>
+                    <input type="email" class="form-control" id="l-email" name="email" required>
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="l-password" class="form-label dc-required">Mot de passe</label>
+                    <input type="password" class="form-control" id="l-password" name="password" required minlength="6">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100 mb-3">Se connecter</button>
+                </form>
+                <p class="small text-center mb-0">Pas encore de compte ?
+                  <a href="register-filleul.html">Filleul</a> ·
+                  <a href="register-parrain.html">Parrain</a> ·
+                  <a href="register-proprietaire.html">Propriétaire</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/core/data-store.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/core/auth.js"></script>
+  <script src="../../assets/js/ui/forms.js"></script>
+  <script src="../../assets/js/pages/page-login.js"></script>
+</body>
+</html>

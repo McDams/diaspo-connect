@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord filleul — DiaspoConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/variables.css" rel="stylesheet">
+  <link href="../../assets/css/base.css" rel="stylesheet">
+  <link href="../../assets/css/layout.css" rel="stylesheet">
+  <link href="../../assets/css/components.css" rel="stylesheet">
+  <link href="../../assets/css/pages.css" rel="stylesheet">
+</head>
+<body data-page="dashboard">
+  <script>window.DC_ROOT = "../../";</script>
+  <div id="dc-app-header"></div>
+  <div class="dc-shell">
+    <div id="dc-app-sidebar"></div>
+    <div class="dc-content">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+        <div>
+          <h1 class="h4 mb-1">Bonjour <span id="welcome-name">-</span> !</h1>
+          <p class="text-body-secondary mb-0">Voici où en est votre préparation pour la France.</p>
+        </div>
+        <span id="file-status-badge"></span>
+      </div>
+
+      <div class="dc-banner dc-banner-info mb-4">
+        <i class="bi bi-info-circle"></i>
+        <span>Rappel : votre VLS-TS doit être validé dans les 3 mois suivant votre arrivée en France.</span>
+      </div>
+
+      <div class="dc-card p-3 mb-4" id="onboarding-card">
+        <h6 class="mb-3"><i class="bi bi-signpost-2 text-primary me-2"></i>Votre parcours sur DiaspoConnect</h6>
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2" id="onboarding-steps"></div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+          <div class="dc-card p-3 h-100">
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div class="dc-completeness-ring" id="completeness-ring"><span id="completeness-value">0%</span></div>
+              <div>
+                <h6 class="mb-0">Complétude du profil</h6>
+                <p class="small text-muted-dc mb-0">Plus il est complet, meilleur est le matching.</p>
+              </div>
+            </div>
+            <a href="profil.html" class="btn btn-outline-primary btn-sm w-100">Compléter mon profil</a>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="dc-card p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0"><i class="bi bi-list-check text-primary me-2"></i>Checklist d'arrivée</h6>
+              <span id="checklist-progress-label" class="small text-muted-dc"></span>
+            </div>
+            <div class="progress mb-3" style="height:8px;"><div class="progress-bar bg-primary" id="checklist-progress-bar" style="width:0%"></div></div>
+            <div id="checklist-preview"></div>
+            <a href="ressources.html" class="small">Voir la checklist complète <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="dc-card p-3 h-100">
+            <h6 class="mb-3"><i class="bi bi-people text-primary me-2"></i>Mon accompagnement</h6>
+            <div id="matching-card-body"><div class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary"></div></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="dc-card p-3 h-100">
+            <h6 class="mb-3"><i class="bi bi-chat-dots text-primary me-2"></i>Accès rapide</h6>
+            <div class="d-grid gap-2">
+              <a href="messagerie.html" class="btn btn-outline-primary text-start"><i class="bi bi-chat-dots me-2"></i>Messagerie</a>
+              <a href="logements.html" class="btn btn-outline-primary text-start"><i class="bi bi-house-door me-2"></i>Rechercher un logement</a>
+              <a href="opportunites.html" class="btn btn-outline-primary text-start"><i class="bi bi-briefcase me-2"></i>Voir les opportunités</a>
+              <a href="../public/aide.html" class="btn btn-outline-secondary text-start"><i class="bi bi-question-circle me-2"></i>Besoin d'aide ?</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <h6 class="mb-3"><i class="bi bi-house-door text-primary me-2"></i>Logements recommandés</h6>
+          <div class="row g-3" id="reco-housing"><div class="col-12 text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></div></div>
+        </div>
+        <div class="col-lg-6">
+          <h6 class="mb-3"><i class="bi bi-briefcase text-primary me-2"></i>Opportunités recommandées</h6>
+          <div class="row g-3" id="reco-opp"><div class="col-12 text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/core/data-store.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/core/auth.js"></script>
+  <script src="../../assets/js/core/checklist.js"></script>
+  <script src="../../assets/js/core/notification-center.js"></script>
+  <script src="../../assets/js/engine/matching-engine.js"></script>
+  <script src="../../assets/js/ui/layout.js"></script>
+  <script src="../../assets/js/pages/page-filleul-dashboard.js"></script>
+</body>
+</html>

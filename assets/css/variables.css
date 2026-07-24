@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Design tokens - DiaspoConnect
+   Palette : sobre et institutionnelle (bleu nuit) + accents par rôle
+   ========================================================================== */
+:root {
+  /* Couleurs de marque */
+  --dc-navy-900: #10233d;
+  --dc-navy-800: #16304f;
+  --dc-navy-700: #1f3a5f;
+  --dc-navy-600: #2b4d78;
+  --dc-navy-100: #e8eef6;
+
+  --dc-teal-700: #23624f;
+  --dc-teal-600: #2e7d6b;
+  --dc-teal-100: #e2f2ed;
+
+  --dc-terracotta-700: #92501f;
+  --dc-terracotta-600: #b5642b;
+  --dc-terracotta-100: #f8e9dd;
+
+  --dc-purple-700: #453970;
+  --dc-purple-600: #5b4b8a;
+  --dc-purple-100: #ece9f6;
+
+  /* Neutres */
+  --dc-ink-900: #1a1f2b;
+  --dc-ink-700: #3d4452;
+  --dc-ink-500: #67707e;
+  --dc-ink-300: #a2aab5;
+  --dc-ink-100: #e4e7ec;
+  --dc-bg: #f5f7fa;
+  --dc-surface: #ffffff;
+
+  /* États / statuts */
+  --dc-success: #1d8a5b;
+  --dc-success-bg: #e3f5ec;
+  --dc-warning: #b57a12;
+  --dc-warning-bg: #fbf0dc;
+  --dc-danger: #b3352c;
+  --dc-danger-bg: #fbe7e5;
+  --dc-info: #2563a8;
+  --dc-info-bg: #e5eefb;
+  --dc-neutral: #5a6472;
+  --dc-neutral-bg: #eceef1;
+
+  /* Typo */
+  --dc-font-base: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --dc-fs-xs: 0.75rem;
+  --dc-fs-sm: 0.875rem;
+  --dc-fs-md: 1rem;
+  --dc-fs-lg: 1.15rem;
+  --dc-fs-xl: 1.5rem;
+  --dc-fs-2xl: 2rem;
+  --dc-fs-3xl: 2.75rem;
+
+  /* Rayons / ombres / espaces */
+  --dc-radius-sm: 8px;
+  --dc-radius-md: 14px;
+  --dc-radius-lg: 20px;
+  --dc-shadow-sm: 0 1px 2px rgba(16, 35, 61, 0.06), 0 1px 3px rgba(16, 35, 61, 0.08);
+  --dc-shadow-md: 0 6px 16px rgba(16, 35, 61, 0.08);
+  --dc-shadow-lg: 0 16px 40px rgba(16, 35, 61, 0.12);
+  --dc-sidebar-w: 264px;
+  --dc-header-h: 68px;
+
+  /* Overrides Bootstrap (palette cohérente avec le thème) */
+  --bs-primary: var(--dc-navy-700);
+  --bs-primary-rgb: 31, 58, 95;
+  --bs-body-font-family: var(--dc-font-base);
+  --bs-body-color: var(--dc-ink-900);
+  --bs-body-bg: var(--dc-bg);
+  --bs-border-radius: var(--dc-radius-sm);
+  --bs-border-radius-lg: var(--dc-radius-md);
+}

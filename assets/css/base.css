@@ -1,0 +1,69 @@
+/* ==========================================================================
+   Base - reset léger, typographie, accessibilité
+   ========================================================================== */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--dc-font-base);
+  color: var(--dc-ink-900);
+  background-color: var(--dc-bg);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--dc-navy-900);
+  letter-spacing: -0.01em;
+}
+
+a { color: var(--dc-navy-700); text-decoration: none; }
+a:hover { color: var(--dc-navy-600); }
+
+p.lead { color: var(--dc-ink-700); }
+
+small, .text-muted-dc { color: var(--dc-ink-500) !important; }
+
+/* Focus visible clair pour la navigation clavier */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--dc-navy-600);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.btn { border-radius: var(--dc-radius-sm); font-weight: 600; }
+.btn-primary { background-color: var(--dc-navy-700); border-color: var(--dc-navy-700); }
+.btn-primary:hover, .btn-primary:focus { background-color: var(--dc-navy-800); border-color: var(--dc-navy-800); }
+.btn-outline-primary { color: var(--dc-navy-700); border-color: var(--dc-navy-700); }
+.btn-outline-primary:hover { background-color: var(--dc-navy-700); border-color: var(--dc-navy-700); }
+
+.btn-teal { background-color: var(--dc-teal-600); border-color: var(--dc-teal-600); color: #fff; }
+.btn-teal:hover { background-color: var(--dc-teal-700); border-color: var(--dc-teal-700); color: #fff; }
+
+.section-title-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--dc-fs-xs);
+  font-weight: 700;
+  color: var(--dc-teal-700);
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--dc-navy-900);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  z-index: 2000;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }
+
+::selection { background: var(--dc-navy-100); }
+
+.container-narrow { max-width: 880px; }

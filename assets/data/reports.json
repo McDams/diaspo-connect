@@ -1,0 +1,27 @@
+[
+  {
+    "id": "report-001", "reporterId": "u-024", "targetType": "message", "targetId": "m-022", "conversationId": "conv-003",
+    "reason": "proposition_deplacee", "description": "Ma marraine m'a proposé de nous voir en dehors du cadre de l'accompagnement, ça m'a mise mal à l'aise.",
+    "status": "en_cours", "createdAt": "2026-07-10T21:00:00", "adminNote": "Accompagnement suspendu le temps de l'examen. Entretien avec la marraine prévu."
+  },
+  {
+    "id": "report-002", "reporterId": "u-029", "targetType": "user", "targetId": "u-015",
+    "reason": "faux_profil", "description": "Le profil du parrain Ismaël Tchobo ne semble pas encore vérifié, plusieurs infos ne correspondent pas à son école affichée.",
+    "status": "ouvert", "createdAt": "2026-07-18T10:00:00", "adminNote": null
+  },
+  {
+    "id": "report-003", "reporterId": "u-031", "targetType": "annonce", "targetId": "housing-006",
+    "reason": "tentative_arnaque", "description": "Le propriétaire demande un virement avant toute visite, ça ressemble à une arnaque au logement.",
+    "status": "ouvert", "createdAt": "2026-07-21T09:30:00", "adminNote": null
+  },
+  {
+    "id": "report-004", "reporterId": "u-028", "targetType": "message", "targetId": "m-999",
+    "reason": "harcelement", "description": "Messages répétés et insistants de la part d'un contact obtenu via la messagerie.",
+    "status": "resolu", "createdAt": "2026-05-14T09:00:00", "adminNote": "Utilisateur averti par l'administration, compte placé sous surveillance."
+  },
+  {
+    "id": "report-005", "reporterId": "u-025", "targetType": "user", "targetId": "u-019",
+    "reason": "comportement_inapproprie", "description": "Ton jugé trop direct lors d'un échange, signalement par précaution.",
+    "status": "rejete", "createdAt": "2026-04-02T09:00:00", "adminNote": "Vérification effectuée : aucun manquement à la charte constaté. Signalement classé sans suite."
+  }
+]

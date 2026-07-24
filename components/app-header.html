@@ -1,0 +1,43 @@
+<header class="dc-app-header d-flex align-items-center px-3 px-lg-4">
+  <button class="btn btn-outline-secondary d-lg-none me-2" id="dc-sidebar-toggle" aria-label="Ouvrir le menu latéral" aria-controls="dc-sidebar">
+    <i class="bi bi-list"></i>
+  </button>
+  <a href="{{ROOT}}index.html" class="brand text-decoration-none me-3">Diaspo<span>Connect</span></a>
+
+  <div class="ms-auto d-flex align-items-center gap-2">
+    <a href="{{ROOT}}index.html" class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex">
+      <i class="bi bi-box-arrow-up-right me-1"></i>Site public
+    </a>
+
+    <div class="dropdown">
+      <button class="btn btn-outline-secondary dc-notif-btn" type="button" id="dc-notif-dropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+        <i class="bi bi-bell"></i>
+        <span id="dc-notif-badge" class="dc-notif-dot d-none"></span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-end p-0 shadow-lg" style="width: 320px;" aria-labelledby="dc-notif-dropdown">
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+          <strong class="small">Notifications</strong>
+        </div>
+        <div id="dc-notif-dropdown-body" style="max-height: 360px; overflow-y:auto;"></div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="btn btn-light d-flex align-items-center gap-2 border" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="dc-current-user-initials dc-avatar dc-avatar-sm"></span>
+        <span class="d-none d-md-flex flex-column text-start lh-sm">
+          <span class="dc-current-user-name fw-semibold small"></span>
+          <span class="dc-current-user-role small text-muted-dc"></span>
+        </span>
+        <i class="bi bi-chevron-down small"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow-lg">
+        <li><a class="dropdown-item" id="dc-params-link" href="parametres.html"><i class="bi bi-gear me-2"></i>Paramètres</a></li>
+        <li><a class="dropdown-item" href="{{ROOT}}pages/public/aide.html"><i class="bi bi-question-circle me-2"></i>Aide &amp; support</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="#" id="dc-logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+<div class="dc-sidebar-backdrop" id="dc-sidebar-backdrop"></div>
