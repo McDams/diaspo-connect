@@ -66,6 +66,7 @@
       <td class="text-end">
         <button class="btn btn-sm btn-outline-secondary" data-action="view" data-id="${u.id}">Détail</button>
         <button class="btn btn-sm btn-outline-secondary" data-action="edit" data-id="${u.id}">Modifier</button>
+        ${u.role !== "admin" && u.status === "actif" ? `<button class="btn btn-sm btn-outline-primary" data-action="impersonate" data-id="${u.id}" title="Voir la plateforme comme cet utilisateur"><i class="bi bi-person-badge"></i></button>` : ""}
         ${u.status === "actif"
           ? `<button class="btn btn-sm btn-outline-danger" data-action="suspend" data-id="${u.id}">Suspendre</button>`
           : `<button class="btn btn-sm btn-outline-success" data-action="reactivate" data-id="${u.id}">Réactiver</button>`}
@@ -217,8 +218,34 @@
       const editBtn = e.target.closest("button[data-action='edit']");
       const suspendBtn = e.target.closest("button[data-action='suspend']");
       const reactivateBtn = e.target.closest("button[data-action='reactivate']");
+      const impersonateBtn = e.target.closest("button[data-action='impersonate']");
       if (viewBtn) openDetail(viewBtn.dataset.id);
       if (editBtn) openUserForm(users.find((u) => u.id === editBtn.dataset.id));
+      if (impersonateBtn) {
+        const target = users.find((u) => u.id === impersonateBtn.dataset.id);
+        ConfirmModal.open({
+          title: "Incarner cet utilisateur",
+          body: `Vous allez visualiser la plateforme comme ${target.firstName} ${target.lastName} (${ROLE_LABELS[target.role] || target.role}). Un bandeau restera visible pour revenir à votre compte admin à tout moment. Confirmez-vous ?`,
+          confirmLabel: "Incarner",
+          variant: "primary",
+          onConfirm: async () => {
+            const result = await Auth.startImpersonation(target.id);
+            if (!result.ok) { DCUtils.toast(result.message, "danger"); return; }
+            await DataStore.insert("auditLog", {
+              id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
+              action: "impersonation_demarree", targetType: "user", targetId: target.id, date: new Date().toISOString(),
+              details: `Incarnation de ${target.firstName} ${target.lastName} (${target.role}) démarrée par l'administration.`,
+            });
+            let destination = `pages/${target.role}/dashboard.html`;
+            if (target.role === "staff") {
+              const staffList = await DataStore.getStaff();
+              const staffRecord = staffList.find((s) => s.userId === target.id);
+              destination = staffRecord ? `pages/staff/${await Permissions.landingPageFor(staffRecord.accessLevel)}` : "pages/staff/staff-dashboard.html";
+            }
+            window.location.href = `${window.DC_ROOT}${destination}`;
+          },
+        });
+      }
       if (suspendBtn) {
         ConfirmModal.open({
           title: "Suspendre ce compte",

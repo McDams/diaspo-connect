@@ -491,8 +491,16 @@ const KanbanBoard = (() => {
     modal.addEventListener("hidden.bs.modal", () => modal.remove());
   }
 
-  function openCreateModal(root) {
-    const lists = STATE.config.mode === "central" ? [] : STATE.columns;
+  const ROLE_LABELS_FOR_OWNER = { mentore: "Mentoré", mentor: "Mentor", proprietaire: "Propriétaire" };
+
+  async function openCreateModal(root) {
+    const isCentral = STATE.config.mode === "central";
+    let allBoards = [], allUsers = [];
+    if (isCentral) {
+      [allBoards, allUsers] = await Promise.all([DataStore.getBoards(), DataStore.getUsers()]);
+      allBoards = allBoards.filter((b) => b.scope !== "global");
+    }
+
     let modal = document.getElementById("dc-kanban-create-modal");
     if (modal) modal.remove();
     modal = document.createElement("div");
@@ -501,16 +509,18 @@ const KanbanBoard = (() => {
     modal.innerHTML = `
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header"><h5 class="modal-title">Nouvelle carte</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-header"><h5 class="modal-title">Nouvelle carte${isCentral ? " (pour n'importe quel rôle)" : ""}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
           <div class="modal-body">
             <form id="kc-form" novalidate>
+              ${isCentral ? `<div class="mb-3"><label class="form-label dc-required">Espace / rôle cible</label><select class="form-select" id="kc-board">${allBoards.map((b) => `<option value="${b.id}">${DCUtils.escapeHtml(b.name)}</option>`).join("")}</select></div>` : ""}
               <div class="mb-3"><label class="form-label dc-required">Titre</label><input type="text" class="form-control" id="kc-title" required><div class="invalid-feedback">Le titre est obligatoire.</div></div>
               <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" id="kc-desc" rows="2"></textarea></div>
               <div class="row g-3">
-                <div class="col-sm-6"><label class="form-label">Colonne</label><select class="form-select" id="kc-list">${(lists.length ? lists : STATE.columns).map((c) => `<option value="${c.key}">${DCUtils.escapeHtml(c.name)}</option>`).join("")}</select></div>
+                <div class="col-sm-6"><label class="form-label">Colonne</label><select class="form-select" id="kc-list"></select></div>
                 <div class="col-sm-6"><label class="form-label">Priorité</label><select class="form-select" id="kc-priority"><option value="basse">Basse</option><option value="normale" selected>Normale</option><option value="haute">Haute</option><option value="urgente">Urgente</option></select></div>
                 <div class="col-sm-6"><label class="form-label">Échéance</label><input type="date" class="form-control" id="kc-due"></div>
-                <div class="col-sm-6"><label class="form-label">Assigné(e)</label><select class="form-select" id="kc-assignee"><option value="">—</option>${assignableOptions()}</select></div>
+                <div class="col-sm-6" id="kc-owner-wrap" style="display:none;"><label class="form-label">Titulaire (verra la carte dans son espace)</label><select class="form-select" id="kc-owner"></select></div>
+                <div class="col-sm-6" id="kc-assignee-wrap"><label class="form-label">Assigné(e)</label><select class="form-select" id="kc-assignee"><option value="">—</option>${assignableOptions()}</select></div>
               </div>
               <button type="submit" class="btn btn-primary w-100 mt-3">Créer la carte</button>
             </form>
@@ -520,22 +530,56 @@ const KanbanBoard = (() => {
     document.body.appendChild(modal);
     const bsModal = new bootstrap.Modal(modal);
     bsModal.show();
+
+    async function refreshBoardDependentFields() {
+      if (!isCentral) {
+        const listSelect = modal.querySelector("#kc-list");
+        listSelect.innerHTML = STATE.columns.map((c) => `<option value="${c.key}">${DCUtils.escapeHtml(c.name)}</option>`).join("");
+        return;
+      }
+      const boardId = modal.querySelector("#kc-board").value;
+      const board = allBoards.find((b) => b.id === boardId);
+      const lists = (await DataStore.getLists()).filter((l) => l.boardId === boardId).sort((a, b) => a.order - b.order);
+      modal.querySelector("#kc-list").innerHTML = lists.map((l) => `<option value="${l.id}">${DCUtils.escapeHtml(l.name)}</option>`).join("");
+
+      const ownerWrap = modal.querySelector("#kc-owner-wrap");
+      const assigneeWrap = modal.querySelector("#kc-assignee-wrap");
+      if (board.scope === "personal") {
+        ownerWrap.style.display = "";
+        assigneeWrap.style.display = "none";
+        const eligible = allUsers.filter((u) => u.role === board.ownerRole);
+        modal.querySelector("#kc-owner").innerHTML = eligible.map((u) => `<option value="${u.id}">${DCUtils.escapeHtml(u.firstName)} ${DCUtils.escapeHtml(u.lastName)} (${ROLE_LABELS_FOR_OWNER[u.role] || u.role})</option>`).join("") || `<option value="">Aucun utilisateur de ce rôle</option>`;
+      } else {
+        ownerWrap.style.display = "none";
+        assigneeWrap.style.display = "";
+      }
+    }
+    if (isCentral) modal.querySelector("#kc-board").addEventListener("change", refreshBoardDependentFields);
+    await refreshBoardDependentFields();
+
     modal.querySelector("#kc-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const title = modal.querySelector("#kc-title").value.trim();
       if (!title) { modal.querySelector("#kc-title").classList.add("is-invalid"); return; }
-      const assignee = modal.querySelector("#kc-assignee").value;
       const actor = { id: STATE.config.currentUser.id, label: STATE.config.currentUser.label };
-      const listId = STATE.config.mode === "central" ? null : modal.querySelector("#kc-list").value;
+      const boardId = isCentral ? modal.querySelector("#kc-board").value : STATE.config.boardId;
+      const board = isCentral ? allBoards.find((b) => b.id === boardId) : null;
+      const listId = modal.querySelector("#kc-list").value;
+      const isPersonalTarget = isCentral ? board.scope === "personal" : STATE.config.selfOwned;
+      const ownerId = isCentral
+        ? (isPersonalTarget ? modal.querySelector("#kc-owner").value : null)
+        : (STATE.config.selfOwned ? STATE.config.currentUser.id : null);
+      const assignee = isPersonalTarget ? "" : modal.querySelector("#kc-assignee").value;
+
       await KanbanEngine.createCard({
-        boardId: STATE.config.mode === "central" ? (STATE.config.defaultBoardId || "board-direction") : STATE.config.boardId,
+        boardId,
         listId: listId || (STATE.columns[0] && STATE.columns[0].key),
         title, description: modal.querySelector("#kc-desc").value.trim(),
         priority: modal.querySelector("#kc-priority").value,
         dueDate: modal.querySelector("#kc-due").value || null,
         assignees: assignee ? [assignee] : [],
-        ownerId: STATE.config.mode === "board" && STATE.config.selfOwned ? STATE.config.currentUser.id : null,
-        department: STATE.config.departmentId || null,
+        ownerId: ownerId || null,
+        department: isCentral ? (board.departmentId || null) : (STATE.config.departmentId || null),
       }, actor);
       DCUtils.toast("Carte créée.", "success");
       bsModal.hide();

@@ -11,6 +11,7 @@
  */
 const Auth = (() => {
   const SESSION_KEY = "dc_session";
+  const IMPERSONATION_KEY = "dc_impersonation";
 
   function getSession() {
     try {
@@ -105,5 +106,58 @@ const Auth = (() => {
     return { ok: true, user };
   }
 
-  return { login, logout, register, getSession, getCurrentUser, guard };
+  // --- Impersonation (admin/super_admin uniquement) -----------------------
+  //
+  // L'admin peut "incarner" un utilisateur pour voir la plateforme sous ses
+  // yeux. La session active est remplacée par celle de la cible ; la session
+  // admin d'origine est mise de côté (sessionStorage) pour être restaurée à
+  // tout moment via stopImpersonation(). Auth.guard() ne change pas : il lit
+  // toujours getSession(), qui renvoie la session active (cible pendant
+  // l'incarnation) - c'est précisément ce qui fait fonctionner la simulation.
+
+  function getImpersonationInfo() {
+    try {
+      const raw = sessionStorage.getItem(IMPERSONATION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** Démarre l'incarnation d'un utilisateur cible. Réservé à admin/super_admin, non imbricable. */
+  async function startImpersonation(targetUserId) {
+    const current = getSession();
+    if (!current || current.role !== "admin") {
+      return { ok: false, message: "Seul un administrateur peut incarner un autre compte." };
+    }
+    if (getImpersonationInfo()) {
+      return { ok: false, message: "Une incarnation est déjà en cours. Revenez à votre compte avant d'en démarrer une autre." };
+    }
+    const users = await DataStore.getUsers();
+    const target = users.find((u) => u.id === targetUserId);
+    if (!target) return { ok: false, message: "Utilisateur introuvable." };
+    if (target.role === "admin") return { ok: false, message: "Impossible d'incarner un autre compte administrateur." };
+
+    sessionStorage.setItem(IMPERSONATION_KEY, JSON.stringify({
+      adminSession: current,
+      adminLabel: null, // rempli au besoin par l'appelant si le nom admin doit être affiché
+      targetUserId: target.id,
+      targetLabel: `${target.firstName} ${target.lastName}`,
+      targetRole: target.role,
+      startedAt: new Date().toISOString(),
+    }));
+    setSession({ userId: target.id, role: target.role });
+    return { ok: true, target };
+  }
+
+  /** Restaure la session admin d'origine et met fin à l'incarnation en cours. */
+  function stopImpersonation() {
+    const info = getImpersonationInfo();
+    if (!info) return null;
+    sessionStorage.removeItem(IMPERSONATION_KEY);
+    setSession(info.adminSession);
+    return info;
+  }
+
+  return { login, logout, register, getSession, getCurrentUser, guard, startImpersonation, stopImpersonation, getImpersonationInfo };
 })();

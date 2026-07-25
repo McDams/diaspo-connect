@@ -133,6 +133,29 @@ const Layout = (() => {
 
     const notifDropdown = document.getElementById("dc-notif-dropdown-body");
     if (notifDropdown) await NotificationCenter.mount(notifDropdown, user.id);
+
+    mountImpersonationBanner();
+  }
+
+  /** Bandeau persistant affiché sur toute page authentifiée tant qu'une incarnation admin est active. */
+  function mountImpersonationBanner() {
+    const info = Auth.getImpersonationInfo();
+    let banner = document.getElementById("dc-impersonation-banner");
+    if (!info) { if (banner) banner.remove(); return; }
+    if (banner) return; // déjà affiché sur cette page
+    banner = document.createElement("div");
+    banner.id = "dc-impersonation-banner";
+    banner.className = "dc-impersonation-banner";
+    banner.setAttribute("role", "status");
+    banner.innerHTML = `
+      <i class="bi bi-person-badge"></i>
+      <span>Vous visualisez la plateforme en tant que <strong>${DCUtils.escapeHtml(info.targetLabel)}</strong> (${ROLE_LABELS[info.targetRole] || info.targetRole}).</span>
+      <button type="button" class="btn btn-sm btn-light ms-auto" id="dc-stop-impersonation-btn">Revenir à mon compte admin</button>`;
+    document.body.prepend(banner);
+    document.getElementById("dc-stop-impersonation-btn").addEventListener("click", () => {
+      Auth.stopImpersonation();
+      window.location.href = `${window.DC_ROOT || "./"}pages/admin/utilisateurs.html`;
+    });
   }
 
   /** Header + sidebar pour les espaces authentifiés historiques (mentore/mentor/proprietaire/admin). */
