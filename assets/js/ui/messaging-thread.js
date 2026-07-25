@@ -142,6 +142,26 @@ const MessagingThread = (() => {
     });
   }
 
+  /**
+   * Filet de secours (`onPoll`) : revérifie périodiquement la source canonique
+   * pour rattraper un évènement BroadcastChannel manqué (onglet en arrière-plan
+   * throttlé, navigateur sans BroadcastChannel...). Fusionne dans `conv.messages`
+   * tout message présent côté source mais absent localement. Le jour où
+   * `DataStore.load()` est remplacé par un vrai appel réseau, ce même code
+   * recommencera à détecter de véritables messages arrivés d'ailleurs.
+   */
+  async function pollResync(convId) {
+    const canonical = await DataStore.getMessages();
+    const canonicalConv = canonical.find((c) => c.id === convId);
+    const conv = conversations.find((c) => c.id === convId);
+    if (!canonicalConv || !conv) return false;
+    const missing = canonicalConv.messages.filter((cm) => !conv.messages.some((m) => m.id === cm.id));
+    if (!missing.length) return false;
+    conv.messages.push(...missing);
+    conv.lastMessageAt = canonicalConv.lastMessageAt;
+    return true;
+  }
+
   function subscribeActive() {
     if (unsubscribe) unsubscribe();
     typingUserId = null;
@@ -169,6 +189,12 @@ const MessagingThread = (() => {
         conv.messages.forEach((m) => { if (messageIds.includes(m.id)) { m.read = true; m.readAt = now; } });
         renderMessages(conv);
       },
+      onPoll: async () => {
+        const conv = conversations.find((c) => c.id === activeConvId);
+        if (!conv) return;
+        const changed = await pollResync(activeConvId);
+        if (changed) { markIncomingAsRead(conv); renderMessages(conv); renderList(); }
+      },
     });
   }
 
@@ -185,6 +211,18 @@ const MessagingThread = (() => {
           renderList();
           const other = otherParticipant(conv);
           DCUtils.toast(`Nouveau message de ${other.firstName} ${other.lastName}.`, "info");
+          await NotificationCenter.push(currentUser.id, {
+            type: "nouveau_message", title: "Nouveau message",
+            text: `${other.firstName} ${other.lastName} vous a envoyé un message.`,
+            link: "messagerie.html",
+          });
+        },
+        onPoll: async () => {
+          if (conv.id === activeConvId) return;
+          const changed = await pollResync(conv.id);
+          if (!changed) return;
+          renderList();
+          const other = otherParticipant(conv);
           await NotificationCenter.push(currentUser.id, {
             type: "nouveau_message", title: "Nouveau message",
             text: `${other.firstName} ${other.lastName} vous a envoyé un message.`,

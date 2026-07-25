@@ -15,7 +15,7 @@
       mode: "central",
       currentUser: { id: user.id, label: `${user.firstName} ${user.lastName}`, matchId: user.id },
       assignableUsers,
-      canCreate: true,
+      canCreate: RBAC.hasFullAccess("admin"),
       showDepartmentFilter: true,
       showAssigneeFilter: true,
       defaultBoardId: "board-direction",

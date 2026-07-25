@@ -22,36 +22,37 @@ Concrètement, un visiteur non authentifié peut lire : la liste complète des u
 
 ## 1. Sécurité des comptes
 
-🟠 **Élevée** — **Limitation documentée** (partiellement atténuée)
+🟠 **Élevée** — **Limitation documentée** (partiellement atténuée) + **Corrigé** (auto-suspension)
 
 - Authentification simulée : `Auth` stocke la session dans `sessionStorage` (jamais `localStorage`), ce qui limite la persistance à l'onglet/la session navigateur — bon réflexe pour un mock, mais **aucun mot de passe n'est réellement vérifié** (pas de hash, pas de backend d'authentification).
 - Pas de verrouillage après tentatives échouées, pas de 2FA, pas d'expiration de session — hors périmètre d'un frontend sans backend.
-- 🟡 **Corrigé** : `assets/js/pages/page-admin-utilisateurs.js` — les boutons "Suspendre" / "Réactiver" ne vérifiaient pas si la cible est le compte admin courant. Un admin peut se suspendre lui-même sans confirmation supplémentaire (testé en session : `u-001` a pu se suspendre lui-même via son propre bouton d'action). *Non corrigé dans cette session par choix de portée (nécessiterait une règle métier "on ne peut pas s'auto-suspendre" à valider avec le produit) — **Reporté**, signalé ici pour suivi.*
+- ✅ **Corrigé** : `assets/js/pages/page-admin-utilisateurs.js` — un admin pouvait se suspendre lui-même (testé en session : `u-001` a pu se suspendre lui-même via son propre bouton d'action). Corrigé par : (1) le bouton "Suspendre" est désormais désactivé sur la propre ligne de l'admin connecté (`disabled` + `title` explicite) ; (2) un garde-fou dans le handler de clic bloque quand même l'action et affiche un toast si elle était déclenchée ; (3) le formulaire d'édition (`submitUserForm`) empêche également l'admin de changer son propre rôle hors `"admin"` ou de désactiver son propre statut. Vérifié en navigateur : le bouton apparaît bien désactivé sur la ligne de l'admin connecté.
 
 ## 2. Permissions / rôles
 
-🟡 **Moyenne** — **Corrigé** (contrôle) + **Reporté** (renforcement)
+🟢 **Corrigé / vérifié**
 
 - `RBAC.MATRIX` définit une grille fine module × action par rôle staff + rôles simples (`mentore`, `mentor`, `proprietaire`) ; `FULL_ACCESS_ROLES = ["admin", "super_admin"]` outrepasse tout, conformément à l'exigence produit "l'admin et le super admin doivent pouvoir faire tout ce que les autres rôles font".
 - `StaffGuard` synthétise un enregistrement staff virtuel (`accessLevel: "super_admin"`) pour le rôle `admin` legacy, garantissant l'accès aux pages staff sans dépendre d'une fiche `staff.json` réelle.
-- 🟡 Vérifié : `RBAC.toggle()` mute la matrice **en mémoire uniquement** (non persisté au reload) — cohérent avec le reste du mock, mais le toast "Permission mise à jour (simulation frontend)" pourrait être plus explicite pour un testeur non averti.
-- 🟡 **Reporté** : les boutons `canCreate` des tableaux Kanban (`kanban-board.js` et les 5 pages `page-*-kanban.js`) sont câblés en dur par page plutôt que dérivés de `RBAC.can(roleKey, "kanban", "create")`. Le comportement observé est correct pour tous les rôles testés, mais la source de vérité est dupliquée (règle métier écrite deux fois : une fois dans RBAC.MATRIX, une fois en dur dans chaque page). Recommandation : faire lire `canCreate` directement depuis `RBAC.can()` pour éliminer ce risque de divergence future.
+- 🟡 Vérifié : `RBAC.toggle()` mute la matrice **en mémoire uniquement** (non persisté au reload) — cohérent avec le reste du mock.
+- ✅ **Corrigé** : les boutons `canCreate` des 5 tableaux Kanban (`page-mentore-kanban.js`, `page-mentor-kanban.js`, `page-proprietaire-kanban.js`, `page-staff-kanban.js`, `page-admin-kanban.js`) étaient câblés en dur (`canCreate: true`) plutôt que dérivés de `RBAC.can(roleKey, "kanban", "create")`. Remplacé par un appel réel à `RBAC.can()` (ou `RBAC.hasFullAccess()` pour l'admin et le staff `super_admin`/`direction_admin`), et ajouté `core/rbac.js` aux 4 pages qui ne le chargeaient pas encore (`mentor/kanban.html`, `mentore/kanban.html`, `proprietaire/kanban.html`, `staff/kanban.html`). Vérifié en navigateur pour un mentoré, un membre staff `secretariat_admin` et l'admin : le bouton "Nouvelle carte" apparaît toujours de façon cohérente avec `RBAC.MATRIX`, sans erreur console. La source de vérité est désormais unique.
 
 ## 3. Qualité des formulaires
 
-🟡 **Moyenne** — **Reporté** (audit de couverture, pas de bug bloquant trouvé)
+🟢 **Corrigé / vérifié**
 
-- Le module `FormValidation` (règles `required`, `email`, `phone`, `validateForm`) est utilisé de façon cohérente sur les formulaires de création/édition les plus sensibles (utilisateurs, ressources, bannières...).
-- Aucune régression trouvée sur les formulaires testés en navigateur pendant les phases précédentes (matching manuel, création de carte Kanban, formulaire utilisateur).
-- Recommandation non traitée ici : passer en revue systématiquement chaque formulaire du dépôt pour confirmer que 100% des champs obligatoires sont couverts (l'inventaire exhaustif n'a pas été refait dans cette session, l'échantillon vérifié ne l'a pas montré en défaut).
+- Inventaire exhaustif effectué : 32 fichiers HTML avec `<form>`. Sur les formulaires de saisie réelle (hors formulaires de filtre, qui n'ont pas besoin de validation), tous utilisent déjà `FormValidation` — sauf un.
+- ✅ **Corrigé** : `pages/admin/system-settings.html` (formulaire "Réglages généraux" : nom de la plateforme, email support, quota mentorés/mentor, délai SLA) n'avait **aucune validation** — les champs n'avaient même pas d'attribut `name`, indispensable pour `FormValidation.validateForm()`. Ajouté les attributs `name`, les blocs `.invalid-feedback`, et un schéma de validation (`required`/`email`/`number`/`minValue(1)`) câblé dans `page-admin-system-settings.js`. Vérifié en navigateur : un email invalide est rejeté avec message d'erreur.
+- **Bonus trouvé en corrigeant ce formulaire** : le champ quota (`s-quota`) avait un attribut HTML `max="2"` codé en dur — soit exactement la valeur alors stockée dans `settings.json`. Cela interdisait à tout admin d'augmenter un jour ce quota au-delà de 2, rendant le réglage inutilisable pour son propre objet. Supprimé ; vérifié en navigateur que la valeur peut désormais être portée à 5 (ou plus) et persiste dans le cache `DataStore`.
 
 ## 4. Robustesse de la messagerie
 
-🟡 **Moyenne** — **Corrigé** (vérification) + **Reporté** (gap architectural)
+🟢 **Corrigé / vérifié**
 
 - `MessagingTransport` (BroadcastChannel) + `MessagingThread` fournissent réception quasi temps réel, accusés de lecture, indicateur de frappe (TTL 3s), badges non lus — testés avec deux onglets simultanés dans les phases précédentes.
 - Tout le texte de message est échappé via `DCUtils.escapeHtml(m.text)` avant injection dans le DOM (`assets/js/ui/messaging-thread.js:129`) — pas de faille XSS trouvée sur ce canal, y compris sur l'indicateur de frappe (nom d'utilisateur échappé aussi).
-- 🟡 **Reporté** : `MessagingTransport.subscribe()` expose un hook `onPoll` pensé pour un futur remplacement par polling/WebSocket/SSE réel, mais **aucun appelant ne l'utilise actuellement** — le mécanisme repose entièrement sur `BroadcastChannel`, qui ne fonctionne qu'entre onglets du même navigateur/même appareil. Deux utilisateurs sur deux machines différentes ne verraient pas leurs messages arriver "en temps réel" avec l'implémentation actuelle (ils les verraient au prochain rechargement de page). C'est le principal écart entre "l'architecture est prête pour du temps réel" (vrai, l'abstraction existe) et "le temps réel fonctionne cross-device" (faux dans ce prototype, nécessite un vrai serveur WebSocket/SSE).
+- ✅ **Corrigé** : le hook `onPoll` de `MessagingTransport.subscribe()` était défini mais **jamais utilisé par aucun appelant**. Câblé désormais dans `assets/js/ui/messaging-thread.js` (`subscribeActive()` et `subscribeInactiveConversations()`) via une nouvelle fonction `pollResync()` qui revérifie périodiquement (toutes les 4s) la source canonique (`DataStore.getMessages()`) et fusionne tout message présent côté source mais absent localement — un filet de secours pour un évènement `BroadcastChannel` manqué (onglet en arrière-plan throttlé, navigateur sans support `BroadcastChannel`). Vérifié en navigateur : le cycle de poll s'exécute sans erreur console sur plusieurs itérations.
+- **Limitation documentée persistante** (non corrigible sans backend) : le transport réel reste `BroadcastChannel`, qui ne fonctionne qu'entre onglets du même navigateur/même appareil — deux utilisateurs sur deux machines différentes ne recevraient leurs messages qu'au prochain rechargement, pas "en temps réel". Le hook `onPoll` désormais câblé est le point d'extension exact où brancher un vrai polling réseau ou un remplacement WebSocket/SSE le jour où un backend existera — l'architecture est prête, mais son exécution actuelle (dans un `DataStore` 100% en mémoire par onglet) ne peut pas, par construction, découvrir un message envoyé depuis un autre appareil.
 
 ## 5. Cohérence du système Kanban par rôle
 
@@ -143,7 +144,7 @@ Contrôle d'intégrité référentielle automatisé exécuté sur l'ensemble des
 
 🟢 **Corrigé / vérifié**
 
-`RBAC.ACTIONS` = read/create/update/delete/assign/validate/moderate/export/impersonate. `RBAC.can(roleKey, module, action)` est le point d'entrée unique utilisé par les écrans admin pour afficher/masquer les boutons. Reporté au point 2 : les tableaux Kanban ne consultent pas encore systématiquement cette fonction pour leur propre `canCreate`.
+`RBAC.ACTIONS` = read/create/update/delete/assign/validate/moderate/export/impersonate. `RBAC.can(roleKey, module, action)` est le point d'entrée unique utilisé par les écrans admin pour afficher/masquer les boutons, désormais également par les 5 tableaux Kanban pour leur `canCreate` (voir point 2, corrigé).
 
 ## 16. Exposition des données publiques
 
@@ -151,34 +152,35 @@ Voir le constat prioritaire en tête de document — 🔴 **Critique**, **limita
 
 ## 17. Gestion des erreurs
 
-🟡 **Moyenne** — **Reporté**
+🟢 **Corrigé / vérifié**
 
-- `DataStore.load()` capture les échecs `fetch` (`res.ok` check + `.catch`), logue en `console.error`, et propage l'erreur — mais **aucune page ne l'intercepte pour afficher un message d'erreur utilisateur** (pas de toast "impossible de charger les données", pas d'état de repli visible). En pratique, sur ce prototype statique servi localement, ce cas ne se produit jamais (les JSON existent toujours), donc le risque réel est faible, mais c'est un angle mort si un fichier venait à manquer ou à être renommé sans mise à jour de `FILES`.
-- Recommandation non traitée : ajouter un `try/catch` générique dans chaque `init()` de page avec un état d'erreur visible (bannière `dc-banner-danger` + message), au lieu de laisser la page rester silencieusement vide.
+- `DataStore.load()` capture les échecs `fetch` (`res.ok` check + `.catch`), logue en `console.error`, et propage l'erreur — mais **aucune page n'interceptait cela pour afficher un message d'erreur utilisateur** (pas de toast, pas d'état de repli visible).
+- ✅ **Corrigé** de façon centralisée (plutôt qu'en dupliquant un `try/catch` dans chacun des ~73 `init()` de page) : `assets/js/core/data-store.js`, dans le `.catch()` unique de `load()`, ajoute désormais un `DCUtils.toast(...)` visible en cas d'échec de chargement, en plus du `console.error` existant — puisque `DataStore` est le point d'accès unique à toutes les données, ce correctif couvre automatiquement toutes les pages sans les modifier une à une.
 
 ## 18. Validations frontend
 
-Voir point 3 — même constat, pas de défaut bloquant trouvé sur l'échantillon vérifié, couverture non ré-auditée exhaustivement.
+Voir point 3 — corrigé : le seul gap réel trouvé (formulaire paramètres système) est comblé.
 
 ## 19. Risques d'abus / dérive
 
-🟠 **Élevée** — **Limitation documentée** + 1 gap **Reporté**
+🟠 **Élevée** — **Limitation documentée** (structurelle) + gaps applicatifs **corrigés**
 
-- Le risque le plus sérieux reste l'exposition publique des données JSON (point 16), qui rend tout "cloisonnement par rôle" strictement cosmétique en l'absence de backend — un attaquant n'a jamais besoin de contourner l'UI, il lui suffit d'appeler l'URL du fichier de données.
-- Auto-suspension admin possible sans garde-fou (point 1) — reporté.
+- Le risque le plus sérieux reste l'exposition publique des données JSON (point 16), qui rend tout "cloisonnement par rôle" strictement cosmétique en l'absence de backend — un attaquant n'a jamais besoin de contourner l'UI, il lui suffit d'appeler l'URL du fichier de données. Non corrigible sans backend réel.
+- ✅ **Corrigé** : auto-suspension admin possible sans garde-fou (point 1).
 - `RBAC.toggle()` et les mutations `settings`/`permissions` ne sont jamais persistées au-delà du cache mémoire de l'onglet — un admin "malveillant" ne peut donc pas dégrader durablement les permissions d'un rôle dans ce prototype (la mutation se perd au reload), ce qui limite involontairement ce vecteur de dérive dans le contexte actuel.
 
 ## 20. Points faibles d'architecture
 
-- 🔴 Absence de backend = absence de toute sécurité réelle des données (point 16), c'est le point faible structurant de tout le reste.
-- 🟡 Duplication de règles métier RBAC vs `canCreate` codé en dur dans les pages Kanban (point 2/15).
-- 🟡 `MessagingTransport` prêt pour un vrai transport réseau mais le hook `onPoll` n'est câblé par aucun consommateur (point 4) — l'écart entre "architecturé pour" et "fonctionne réellement en" cross-device doit être clair pour la suite du projet.
-- 🟡 Aucun état d'erreur utilisateur en cas d'échec de chargement de données (point 17).
+- 🔴 Absence de backend = absence de toute sécurité réelle des données (point 16), c'est le point faible structurant de tout le reste — **non corrigible côté frontend**, prérequis pour toute mise en production.
+- ✅ Duplication de règles métier RBAC vs `canCreate` codé en dur dans les pages Kanban (point 2/15) — corrigée.
+- ✅ Hook `onPoll` de `MessagingTransport` câblé (point 4) — reste toutefois un filet de secours limité par l'absence de backend (voir limitation documentée au point 4).
+- ✅ État d'erreur utilisateur ajouté en cas d'échec de chargement de données (point 17).
 
 ---
 
 ## Synthèse des corrections effectuées dans cette session
 
+**Premier passage (journal d'audit + XSS + cohérence JSON) :**
 1. Créé `assets/js/core/audit.js` — schéma d'audit centralisé et standardisé.
 2. Retrofité 11 sites d'écriture d'audit (7 fichiers admin + 1 fichier staff) vers `AuditLog.record()`.
 3. Corrigé un bug de capture `before`/`after` (ordre lecture/mutation inversé) dans 6 fichiers.
@@ -186,18 +188,21 @@ Voir point 3 — même constat, pas de défaut bloquant trouvé sur l'échantill
 5. Ajouté `<script src=".../core/audit.js">` aux 73 pages chargeant `ui/layout.js`.
 6. Corrigé une faille XSS réelle : la bannière d'annonce publique (`layout.js`, `mountSiteBanner`) injectait `title`/`body` non échappés — désormais passés par `DCUtils.escapeHtml`.
 7. Corrigé une coquille de style : `AUDIENCE_LABELS.mentor` contenait un doublon résiduel du renommage ("Mentors / mentors" → "Mentors").
-8. Sweep XSS sur 139 sites `innerHTML =` du projet : un seul gap réel trouvé (point 6 ci-dessus), la messagerie et les autres écrans admin échappent déjà systématiquement le texte utilisateur.
+8. Sweep XSS sur 139 sites `innerHTML =` du projet : un seul gap réel trouvé (point 6 ci-dessus).
 9. Contrôle d'intégrité référentielle automatisé sur 15+ relations inter-fichiers JSON : 0 anomalie.
 10. Vérification en navigateur (suspension de compte, permission togglée, incarnation démarrée/arrêtée) confirmant que les nouvelles entrées d'audit s'écrivent avec le schéma complet et sans erreur console.
-11. Bump du cache-bust (`?v=15` → `?v=16`) sur l'ensemble des fichiers HTML pour refléter tous les changements JS de cette phase.
 
-## Reporté / hors périmètre de cette session
+**Second passage (traitement de tous les points restés "Reportés") :**
+11. **Auto-suspension admin** (point 1) : bouton désactivé sur sa propre ligne + garde-fous dans les handlers de suspension et d'édition de rôle/statut (`page-admin-utilisateurs.js`). Vérifié en navigateur.
+12. **`canCreate` Kanban** (points 2/15) : les 5 pages `page-*-kanban.js` dérivent désormais `canCreate` de `RBAC.can()`/`RBAC.hasFullAccess()` au lieu d'un `true` codé en dur ; `core/rbac.js` ajouté aux 4 pages qui ne le chargeaient pas. Vérifié en navigateur pour 3 rôles différents.
+13. **Formulaire "Paramètres système" sans validation** (points 3/18) : ajout des attributs `name`, des blocs d'erreur et d'un schéma `FormValidation` complet. Bonus : suppression d'un `max="2"` codé en dur qui plafonnait injustement le quota mentorés/mentor à sa valeur initiale.
+14. **Hook `onPoll` jamais câblé** (point 4) : implémenté via une fonction `pollResync()` dans `messaging-thread.js`, appelée toutes les 4s comme filet de secours si un évènement `BroadcastChannel` est manqué. Vérifié en navigateur (aucune erreur sur plusieurs cycles).
+15. **Aucun état d'erreur utilisateur sur échec de chargement** (point 17) : ajout d'un `DCUtils.toast()` centralisé dans `DataStore.load()`, couvrant toutes les pages sans les modifier individuellement.
+16. Bump du cache-bust (`?v=15` → `?v=16` → `?v=17`) sur l'ensemble des fichiers HTML pour refléter tous les changements JS/HTML de cette phase.
 
-- Auto-suspension admin sans garde-fou (point 1).
-- `canCreate` Kanban non dérivé de `RBAC.can()` (points 2/15).
-- Couverture exhaustive de `FormValidation` sur 100% des formulaires (points 3/18).
-- Câblage réel du hook `onPoll` de `MessagingTransport` (point 4).
-- Accessibilité du menu (Phase 6, à traiter juste après cette phase).
-- Performance/bundling (point 9) — non prioritaire pour un prototype de démonstration.
-- Vérification ligne à ligne de `database/schema.sql` (Phase 7, à venir).
-- États d'erreur utilisateur en cas d'échec de `DataStore.load()` (point 17).
+## Volontairement non traité (hors périmètre même après ce second passage)
+
+- **Accessibilité du menu** — objet explicite de la Phase 6, qui suit immédiatement ; traiter ici aurait dupliqué ce travail.
+- **Performance/bundling** (point 9) — non prioritaire pour un prototype de démonstration, pas un défaut fonctionnel.
+- **Vérification ligne à ligne de `database/schema.sql`** — objet explicite de la Phase 7.
+- **Exposition publique des données JSON** (point 16) et **absence de vraie sécurité des comptes** (point 1, hash/2FA/expiration) — non corrigibles sans un vrai backend ; ce sont des limitations structurelles du prototype, pas des oublis.

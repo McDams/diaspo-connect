@@ -9,7 +9,7 @@
       boardId: "board-mentor",
       currentUser: { id: user.id, label: `${user.firstName} ${user.lastName}`, matchId: user.id },
       assignableUsers: [],
-      canCreate: true,
+      canCreate: RBAC.can("mentor", "kanban", "create"),
       selfOwned: true,
     });
   }

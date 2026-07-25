@@ -68,7 +68,9 @@
         <button class="btn btn-sm btn-outline-secondary" data-action="edit" data-id="${u.id}">Modifier</button>
         ${u.role !== "admin" && u.status === "actif" ? `<button class="btn btn-sm btn-outline-primary" data-action="impersonate" data-id="${u.id}" title="Voir la plateforme comme cet utilisateur"><i class="bi bi-person-badge"></i></button>` : ""}
         ${u.status === "actif"
-          ? `<button class="btn btn-sm btn-outline-danger" data-action="suspend" data-id="${u.id}">Suspendre</button>`
+          ? (u.id === adminUser.id
+              ? `<button class="btn btn-sm btn-outline-danger" data-action="suspend" data-id="${u.id}" disabled title="Vous ne pouvez pas suspendre votre propre compte">Suspendre</button>`
+              : `<button class="btn btn-sm btn-outline-danger" data-action="suspend" data-id="${u.id}">Suspendre</button>`)
           : `<button class="btn btn-sm btn-outline-success" data-action="reactivate" data-id="${u.id}">Réactiver</button>`}
       </td>
     </tr>`;
@@ -164,6 +166,14 @@
 
     if (id) {
       const user = users.find((u) => u.id === id);
+      if (user.id === adminUser.id && role !== "admin") {
+        DCUtils.toast("Vous ne pouvez pas retirer votre propre rôle administrateur.", "danger");
+        return;
+      }
+      if (user.id === adminUser.id && document.getElementById("uf-status").value !== "actif") {
+        DCUtils.toast("Vous ne pouvez pas désactiver votre propre compte.", "danger");
+        return;
+      }
       const roleChanged = user.role !== role;
       const before = { firstName: user.firstName, lastName: user.lastName, email: user.email, phone: user.phone, city: user.city, role: user.role, status: user.status, verified: user.verified };
       Object.assign(user, {
@@ -250,6 +260,10 @@
         });
       }
       if (suspendBtn) {
+        if (suspendBtn.dataset.id === adminUser.id) {
+          DCUtils.toast("Vous ne pouvez pas suspendre votre propre compte.", "danger");
+          return;
+        }
         ConfirmModal.open({
           title: "Suspendre ce compte",
           body: "L'utilisateur ne pourra plus se connecter tant que le compte est suspendu. Confirmez-vous ?",

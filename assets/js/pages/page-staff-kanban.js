@@ -36,7 +36,7 @@
       boardId,
       currentUser: { id: ctx.user.id, label: `${ctx.user.firstName} ${ctx.user.lastName}`, matchId: ctx.staff.id },
       assignableUsers,
-      canCreate: true,
+      canCreate: RBAC.hasFullAccess(ctx.staff.accessLevel) || RBAC.can(ctx.staff.accessLevel, "kanban", "create"),
       showAssigneeFilter: assignableUsers.length > 1,
       departmentId: department,
     });

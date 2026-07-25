@@ -62,6 +62,9 @@ const DataStore = (() => {
       .catch((err) => {
         delete pending[key];
         console.error(err);
+        if (typeof DCUtils !== "undefined" && DCUtils.toast) {
+          DCUtils.toast("Impossible de charger certaines données. Vérifiez votre connexion et rechargez la page.", "danger");
+        }
         throw err;
       });
     return pending[key];

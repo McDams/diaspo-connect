@@ -1,6 +1,13 @@
 (function () {
   let settings;
 
+  const GENERAL_FORM_SCHEMA = {
+    platformName: [FormValidation.rules.required],
+    supportEmail: [FormValidation.rules.required, FormValidation.rules.email],
+    maxMentees: [FormValidation.rules.required, FormValidation.rules.number, FormValidation.rules.minValue(1)],
+    slaHours: [FormValidation.rules.required, FormValidation.rules.number, FormValidation.rules.minValue(1)],
+  };
+
   function flagRow(flag) {
     return `<div class="form-check form-switch mb-3">
       <input class="form-check-input flag-toggle" type="checkbox" role="switch" id="flag-${flag.id}" data-id="${flag.id}" ${flag.enabled ? "checked" : ""}>
@@ -24,6 +31,7 @@
 
     document.getElementById("general-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!FormValidation.validateForm(e.target, GENERAL_FORM_SCHEMA)) return;
       const previous = { ...settings.general };
       Object.assign(settings.general, {
         platformName: document.getElementById("s-name").value,
