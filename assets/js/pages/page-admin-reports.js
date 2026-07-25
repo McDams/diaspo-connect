@@ -18,8 +18,8 @@
     if (!admin) return;
     await Layout.mountApp("admin", "reports", admin);
 
-    const [tickets, cards, departments, matchings] = await Promise.all([
-      DataStore.getTickets(), DataStore.getCards(), DataStore.getDepartments(), DataStore.getMatchings(),
+    const [tickets, cards, departments, matchings, auditLog] = await Promise.all([
+      DataStore.getTickets(), DataStore.getCards(), DataStore.getDepartments(), DataStore.getMatchings(), DataStore.getAuditLog(),
     ]);
 
     const resolved = tickets.filter((t) => t.closedAt);
@@ -43,6 +43,13 @@
 
     document.getElementById("cards-breakdown").innerHTML = departments
       .map((d) => barRow(d.shortName || d.name, activeCards.filter((c) => c.department === d.id).length, activeCards.length, "primary")).join("");
+
+    const auditCounts = {};
+    auditLog.forEach((a) => { auditCounts[a.action] = (auditCounts[a.action] || 0) + 1; });
+    const sortedActions = Object.entries(auditCounts).sort((a, b) => b[1] - a[1]);
+    document.getElementById("audit-breakdown").innerHTML = sortedActions.length
+      ? sortedActions.map(([action, count]) => barRow(action.replace(/_/g, " "), count, auditLog.length, "dark")).join("")
+      : `<div class="dc-empty-state py-3"><p class="small mb-0">Aucune action tracée.</p></div>`;
 
     document.getElementById("export-btn").addEventListener("click", () => DCUtils.toast("Export généré (simulation) — à connecter à un vrai moteur de reporting côté backend.", "info"));
   }

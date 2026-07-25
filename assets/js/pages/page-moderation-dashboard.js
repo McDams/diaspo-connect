@@ -13,7 +13,7 @@
     document.getElementById("kpi-open-reports").textContent = openReports.length;
     const flagged = messages.flatMap((c) => c.messages.filter((m) => m.flagged).map((m) => ({ ...m, conv: c })));
     document.getElementById("kpi-flagged-messages").textContent = flagged.length;
-    const toReview = users.filter((u) => (u.role === "parrain" || u.role === "proprietaire") && !u.verified);
+    const toReview = users.filter((u) => (u.role === "mentor" || u.role === "proprietaire") && !u.verified);
     document.getElementById("kpi-to-review").textContent = toReview.length;
     const decided = reports.filter((r) => r.status === "resolu" || r.status === "rejete");
     document.getElementById("kpi-decided").textContent = decided.length;

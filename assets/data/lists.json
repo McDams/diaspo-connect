@@ -1,13 +1,13 @@
 [
-  { "id": "list-filleul-todo", "boardId": "board-filleul", "name": "À faire", "order": 1, "isDoneColumn": false },
-  { "id": "list-filleul-progress", "boardId": "board-filleul", "name": "En cours", "order": 2, "isDoneColumn": false },
-  { "id": "list-filleul-waiting", "boardId": "board-filleul", "name": "En attente", "order": 3, "isDoneColumn": false },
-  { "id": "list-filleul-done", "boardId": "board-filleul", "name": "Terminé", "order": 4, "isDoneColumn": true },
+  { "id": "list-mentore-todo", "boardId": "board-mentore", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-mentore-progress", "boardId": "board-mentore", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-mentore-waiting", "boardId": "board-mentore", "name": "En attente", "order": 3, "isDoneColumn": false },
+  { "id": "list-mentore-done", "boardId": "board-mentore", "name": "Terminé", "order": 4, "isDoneColumn": true },
 
-  { "id": "list-parrain-todo", "boardId": "board-parrain", "name": "À faire", "order": 1, "isDoneColumn": false },
-  { "id": "list-parrain-progress", "boardId": "board-parrain", "name": "En cours", "order": 2, "isDoneColumn": false },
-  { "id": "list-parrain-waiting", "boardId": "board-parrain", "name": "En attente", "order": 3, "isDoneColumn": false },
-  { "id": "list-parrain-done", "boardId": "board-parrain", "name": "Terminé", "order": 4, "isDoneColumn": true },
+  { "id": "list-mentor-todo", "boardId": "board-mentor", "name": "À faire", "order": 1, "isDoneColumn": false },
+  { "id": "list-mentor-progress", "boardId": "board-mentor", "name": "En cours", "order": 2, "isDoneColumn": false },
+  { "id": "list-mentor-waiting", "boardId": "board-mentor", "name": "En attente", "order": 3, "isDoneColumn": false },
+  { "id": "list-mentor-done", "boardId": "board-mentor", "name": "Terminé", "order": 4, "isDoneColumn": true },
 
   { "id": "list-proprietaire-todo", "boardId": "board-proprietaire", "name": "À faire", "order": 1, "isDoneColumn": false },
   { "id": "list-proprietaire-progress", "boardId": "board-proprietaire", "name": "En cours", "order": 2, "isDoneColumn": false },

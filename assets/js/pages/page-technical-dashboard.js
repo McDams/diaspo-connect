@@ -10,7 +10,7 @@
 
   const MOCK_LOGS = [
     { level: "info", text: "Chargement des données JSON réussi (10 collections métier + 8 collections internes)." },
-    { level: "info", text: "Session filleul ouverte (rosine.agossou@mail.com)." },
+    { level: "info", text: "Session mentoré ouverte (rosine.agossou@mail.com)." },
     { level: "warn", text: "Tentative de connexion avec un email inconnu." },
     { level: "info", text: "Nouveau ticket créé via formulaire de contact (service : secretariat)." },
     { level: "error", text: "Échec simulé : requête réseau annulée (utilisateur a changé de page)." },

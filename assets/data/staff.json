@@ -4,7 +4,7 @@
     "collaboratorStatus": "permanent", "workloadPct": 70, "availability": "élevée",
     "city": "Paris", "mainActivity": "Entrepreneur, fondateur de DiaspoConnect", "specialty": "Stratégie & développement de la structure",
     "languages": ["Français", "Anglais", "Fon"],
-    "bio": "Diplômé en France après un parcours similaire à celui des filleuls d'aujourd'hui, j'ai fondé DiaspoConnect pour que personne n'ait à affronter seul les premiers mois en France.",
+    "bio": "Diplômé en France après un parcours similaire à celui des mentorés d'aujourd'hui, j'ai fondé DiaspoConnect pour que personne n'ait à affronter seul les premiers mois en France.",
     "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": "mailto:serge.donou@diaspoconnect.fr",
     "joinedAt": "2024-06-01"
   },
@@ -22,7 +22,7 @@
     "collaboratorStatus": "bénévole", "workloadPct": 60, "availability": "moyenne",
     "city": "Lille", "mainActivity": "Juriste en droit des étrangers", "specialty": "Visa, titre de séjour, démarches préfecture",
     "languages": ["Français", "Anglais"],
-    "bio": "J'aide les filleuls à décrypter les démarches administratives françaises, souvent la source de stress la plus importante à l'arrivée.",
+    "bio": "J'aide les mentorés à décrypter les démarches administratives françaises, souvent la source de stress la plus importante à l'arrivée.",
     "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
     "joinedAt": "2025-03-15"
   },
@@ -40,7 +40,7 @@
     "collaboratorStatus": "bénévole", "workloadPct": 45, "availability": "élevée",
     "city": "Nantes", "mainActivity": "Consultant en ressources humaines", "specialty": "Insertion professionnelle et recherche de stage/alternance",
     "languages": ["Français", "Anglais"],
-    "bio": "J'accompagne les filleuls dans leur recherche de job étudiant, stage ou alternance, et leur préparation aux entretiens.",
+    "bio": "J'accompagne les mentorés dans leur recherche de job étudiant, stage ou alternance, et leur préparation aux entretiens.",
     "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
     "joinedAt": "2025-05-05"
   },
@@ -76,7 +76,7 @@
     "collaboratorStatus": "bénévole", "workloadPct": 30, "availability": "moyenne",
     "city": "Cotonou", "mainActivity": "Community manager freelance", "specialty": "Réseaux sociaux et communication auprès de la diaspora",
     "languages": ["Français", "Fon", "Anglais"],
-    "bio": "Je fais vivre la communauté DiaspoConnect sur les réseaux sociaux et relaie les témoignages des filleuls et parrains.",
+    "bio": "Je fais vivre la communauté DiaspoConnect sur les réseaux sociaux et relaie les témoignages des mentorés et mentors.",
     "publicVisibility": "public_complet", "consentPublicDisplay": true, "contactAllowed": true, "contactLink": null,
     "joinedAt": "2025-09-01"
   },

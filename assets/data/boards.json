@@ -1,6 +1,6 @@
 [
-  { "id": "board-filleul", "name": "Mon parcours vers la France", "scope": "personal", "ownerRole": "filleul", "departmentId": null, "description": "Démarches, documents et échéances à suivre avant et après l'arrivée.", "icon": "bi-map" },
-  { "id": "board-parrain", "name": "Suivi de mes filleuls", "scope": "personal", "ownerRole": "parrain", "departmentId": null, "description": "Rappels et actions liées à l'accompagnement de mes filleuls.", "icon": "bi-people" },
+  { "id": "board-mentore", "name": "Mon parcours vers la France", "scope": "personal", "ownerRole": "mentore", "departmentId": null, "description": "Démarches, documents et échéances à suivre avant et après l'arrivée.", "icon": "bi-map" },
+  { "id": "board-mentor", "name": "Suivi de mes mentorés", "scope": "personal", "ownerRole": "mentor", "departmentId": null, "description": "Rappels et actions liées à l'accompagnement de mes mentorés.", "icon": "bi-people" },
   { "id": "board-proprietaire", "name": "Suivi de mes annonces", "scope": "personal", "ownerRole": "proprietaire", "departmentId": null, "description": "Annonces, candidatures reçues et pièces à traiter.", "icon": "bi-house-door" },
   { "id": "board-secretariat", "name": "Secrétariat — tri & affectation", "scope": "pole", "ownerRole": "staff", "departmentId": "secretariat", "description": "Tri des demandes entrantes et affectation aux pôles.", "icon": "bi-inboxes" },
   { "id": "board-conseil", "name": "Pôle Accompagnement — dossiers affectés", "scope": "pole", "ownerRole": "staff", "departmentId": "conseil", "description": "Dossiers démarches, logement et emploi affectés aux conseillers.", "icon": "bi-people" },

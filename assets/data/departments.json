@@ -23,7 +23,7 @@
     "mission": "Être le point d'entrée unique des demandes : trier, qualifier et orienter chaque dossier vers le bon pôle sans délai.",
     "responsibilities": [
       "Réception et tri des formulaires de contact et tickets entrants",
-      "Vérification de la complétude des dossiers filleuls et parrains",
+      "Vérification de la complétude des dossiers mentorés et mentors",
       "Relance des utilisateurs sur les documents ou informations manquantes",
       "Affectation des dossiers aux conseillers compétents"
     ],
@@ -36,7 +36,7 @@
     "name": "Pôle Accompagnement",
     "shortName": "Conseil",
     "description": "Accompagnement individualisé sur les démarches administratives, le logement et l'emploi.",
-    "mission": "Aider chaque filleul à avancer concrètement sur ses démarches, son logement et son insertion professionnelle.",
+    "mission": "Aider chaque mentoré à avancer concrètement sur ses démarches, son logement et son insertion professionnelle.",
     "responsibilities": [
       "Suivi des dossiers affectés dans les trois domaines (démarches, logement, emploi)",
       "Réponses aux questions sur les procédures françaises et mise à jour des checklists",
@@ -89,7 +89,7 @@
     "name": "Pôle Partenariats",
     "shortName": "Partenariats",
     "description": "Relations avec les écoles, associations et entreprises partenaires.",
-    "mission": "Construire un réseau de partenaires fiables (écoles, associations, entreprises, bailleurs) au bénéfice des filleuls.",
+    "mission": "Construire un réseau de partenaires fiables (écoles, associations, entreprises, bailleurs) au bénéfice des mentorés.",
     "responsibilities": [
       "Prospection et suivi des partenaires institutionnels et associatifs",
       "Qualification des demandes de collaboration entrantes",

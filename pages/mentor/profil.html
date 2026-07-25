@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon profil — DiaspoConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=10" rel="stylesheet">
+</head>
+<body data-page="profil">
+  <script>window.DC_ROOT = "../../";</script>
+  <div id="dc-app-header"></div>
+  <div class="dc-shell">
+    <div id="dc-app-sidebar"></div>
+    <div class="dc-content">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+        <h1 class="h4 mb-0">Mon profil</h1>
+        <span id="verified-badge"></span>
+      </div>
+
+      <form id="profile-form" class="dc-form-section" novalidate>
+        <h6 class="mb-3"><i class="bi bi-person me-2"></i>Identité</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6"><label class="form-label">Prénom</label><input type="text" class="form-control" name="firstName" disabled></div>
+          <div class="col-md-6"><label class="form-label">Nom</label><input type="text" class="form-control" name="lastName" disabled></div>
+          <div class="col-md-6"><label class="form-label">Email</label><input type="email" class="form-control" name="email" disabled></div>
+        </div>
+
+        <h6 class="mb-3"><i class="bi bi-mortarboard me-2"></i>Parcours en France</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6"><label for="city" class="form-label dc-required">Ville</label><input type="text" class="form-control" id="city" name="city" required><div class="invalid-feedback"></div></div>
+          <div class="col-md-6"><label for="school" class="form-label dc-required">Établissement</label><input type="text" class="form-control" id="school" name="school" required><div class="invalid-feedback"></div></div>
+          <div class="col-md-6">
+            <label for="studyField" class="form-label dc-required">Domaine d'étude</label>
+            <select class="form-select" id="studyField" name="studyField" required>
+              <option>Informatique</option><option>Data Science</option><option>Gestion</option><option>Droit</option>
+              <option>Ingénierie civile</option><option>Marketing</option><option>Médecine</option><option>Biologie</option><option>Sciences politiques</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="col-md-6"><label for="yearsInFrance" class="form-label dc-required">Années en France</label><input type="number" class="form-control" id="yearsInFrance" name="yearsInFrance" min="0" required><div class="invalid-feedback"></div></div>
+          <div class="col-md-6">
+            <label for="availability" class="form-label">Disponibilité</label>
+            <select class="form-select" id="availability" name="availability">
+              <option value="élevée">Élevée</option><option value="moyenne">Moyenne</option><option value="faible">Faible</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Langues parlées</label>
+            <div class="d-flex flex-wrap gap-3 pt-2">
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="languages" value="Français" id="lang-fr"><label class="form-check-label" for="lang-fr">Français</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="languages" value="Fon" id="lang-fon"><label class="form-check-label" for="lang-fon">Fon</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="languages" value="Anglais" id="lang-en"><label class="form-check-label" for="lang-en">Anglais</label></div>
+            </div>
+          </div>
+        </div>
+
+        <h6 class="mb-3"><i class="bi bi-hand-thumbs-up me-2"></i>Accompagnement proposé</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <div class="d-flex flex-wrap gap-3">
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="helpTypes" value="démarches administratives" id="h1"><label class="form-check-label" for="h1">Démarches administratives</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="helpTypes" value="logement" id="h2"><label class="form-check-label" for="h2">Logement</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="helpTypes" value="vie quotidienne" id="h3"><label class="form-check-label" for="h3">Vie quotidienne</label></div>
+              <div class="form-check"><input class="form-check-input" type="checkbox" name="helpTypes" value="orientation études" id="h4"><label class="form-check-label" for="h4">Orientation études</label></div>
+            </div>
+          </div>
+          <div class="col-12"><label for="bio" class="form-label">Bio</label><textarea class="form-control" id="bio" name="bio" rows="3"></textarea></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/core/data-store.js?v=10"></script>
+  <script src="../../assets/js/core/utils.js?v=10"></script>
+  <script src="../../assets/js/core/auth.js?v=10"></script>
+  <script src="../../assets/js/core/notification-center.js?v=10"></script>
+  <script src="../../assets/js/ui/forms.js?v=10"></script>
+  <script src="../../assets/js/ui/layout.js?v=10"></script>
+  <script src="../../assets/js/pages/page-mentor-profil.js?v=10"></script>
+</body>
+</html>

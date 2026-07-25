@@ -1,6 +1,6 @@
 /**
  * Filters - petites fonctions pures réutilisées par les moteurs de recherche
- * (parrains, logements, opportunités). Chaque page reste responsable de son
+ * (mentors, logements, opportunités). Chaque page reste responsable de son
  * état de filtre et du rendu, ce module ne fait que les prédicats.
  */
 const Filters = (() => {

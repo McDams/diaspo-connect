@@ -1,11 +1,11 @@
 /**
- * MatchingEngine - logique métier de mise en relation filleul / parrain.
+ * MatchingEngine - logique métier de mise en relation mentoré / mentor.
  *
  * Règles appliquées (cf. cahier des charges) :
- *  - un parrain/marraine ne peut pas dépasser 2 filleuls actifs (en attente
+ *  - un mentor ne peut pas dépasser 2 mentorés actifs (en attente
  *    non compris) simultanément ;
- *  - seul le filleul choisit une préférence de sexe, et elle est prioritaire :
- *    si elle est renseignée, un parrain de sexe différent est écarté ;
+ *  - seul le mentoré choisit une préférence de sexe, et elle est prioritaire :
+ *    si elle est renseignée, un mentor de sexe différent est écarté ;
  *  - le score de compatibilité pondère ville, école/établissement, domaine
  *    d'étude, langues parlées, budget, disponibilité et type d'accompagnement.
  */
@@ -75,7 +75,7 @@ const MatchingEngine = (() => {
     return mentor.status === "actif" && remainingQuota(mentor, matchings) > 0;
   }
 
-  /** Classe les parrains pour un filleul donné, du plus au moins compatible. */
+  /** Classe les mentors pour un mentoré donné, du plus au moins compatible. */
   function rankMentors(mentee, mentors, matchings) {
     return mentors
       .map((mentor) => {
@@ -101,7 +101,7 @@ const MatchingEngine = (() => {
       }
     }
     if (!isMentorEligible(mentor, matchings)) {
-      return { ok: false, error: "QUOTA_ATTEINT", message: "Ce parrain/marraine accompagne déjà 2 filleuls actifs. Choisissez un autre profil." };
+      return { ok: false, error: "QUOTA_ATTEINT", message: "Ce mentor accompagne déjà 2 mentorés actifs. Choisissez un autre profil." };
     }
     if (mentee.sexPreference && mentee.sexPreference !== "aucune" && mentor.sex !== mentee.sexPreference) {
       return { ok: false, error: "INCOMPATIBLE_SEXE", message: "Ce profil ne correspond pas à votre préférence de sexe." };
@@ -116,7 +116,7 @@ const MatchingEngine = (() => {
       status: "en_attente",
       requestedAt: now,
       respondedAt: null,
-      statusHistory: [{ status: "en_attente", date: now, note: "Demande envoyée par le filleul" }],
+      statusHistory: [{ status: "en_attente", date: now, note: "Demande envoyée par le mentoré" }],
       endReason: null,
     };
     return { ok: true, matching };

@@ -89,7 +89,7 @@
       </div>
       <strong class="small d-block mb-1">Profil recherché</strong>
       <ul class="small text-body-secondary">${o.requirements.map((r) => `<li>${DCUtils.escapeHtml(r)}</li>`).join("")}</ul>
-      <div class="dc-banner dc-banner-info"><i class="bi bi-shield-check"></i><span>Offre vérifiée par l'équipe de modération. Connectez-vous à votre espace filleul pour candidater.</span></div>
+      <div class="dc-banner dc-banner-info"><i class="bi bi-shield-check"></i><span>Offre vérifiée par l'équipe de modération. Connectez-vous à votre espace mentoré pour candidater.</span></div>
     `;
     new bootstrap.Modal(document.getElementById("detailModal")).show();
   }

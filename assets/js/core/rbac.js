@@ -99,8 +99,8 @@ const RBAC = (() => {
       kanban: ["read", "create", "update"],
       calendar: ["read"],
     },
-    filleul: { kanban: ["read", "create", "update"] },
-    parrain: { kanban: ["read", "create", "update"] },
+    mentore: { kanban: ["read", "create", "update"] },
+    mentor: { kanban: ["read", "create", "update"] },
     proprietaire: { kanban: ["read", "create", "update"] },
   };
 
@@ -144,7 +144,7 @@ const RBAC = (() => {
     housing_admin: "Conseillère logement", career_admin: "Conseiller emploi", moderation_admin: "Modération & confiance",
     support_admin: "Support utilisateur", partnership_admin: "Partenariats", content_admin: "Contenu & ressources",
     compliance_admin: "Conformité & vérification", technical_admin: "Technique",
-    filleul: "Filleul", parrain: "Parrain / Marraine", proprietaire: "Propriétaire",
+    mentore: "Mentoré", mentor: "Mentor", proprietaire: "Propriétaire",
   };
   const MODULES = ["users", "mentorship", "housing", "opportunities", "tickets", "moderation", "content", "documents", "kanban", "settings", "permissions", "audit", "reports", "calendar"];
 

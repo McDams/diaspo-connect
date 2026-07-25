@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ann-001",
+    "title": "Nouvelle session d'inscription",
+    "body": "Les inscriptions pour la rentrée de septembre 2026 sont ouvertes : créez votre profil mentoré dès maintenant pour être mis(e) en relation avec un mentor.",
+    "audience": "tous",
+    "startsAt": "2026-07-01T00:00:00",
+    "endsAt": "2026-09-15T23:59:59",
+    "createdBy": "u-001",
+    "createdAt": "2026-06-28T09:00:00"
+  },
+  {
+    "id": "ann-002",
+    "title": "Maintenance programmée",
+    "body": "Une maintenance technique est prévue le 30 juillet de 2h à 4h du matin. La plateforme sera brièvement indisponible.",
+    "audience": "tous",
+    "startsAt": "2026-07-28T00:00:00",
+    "endsAt": "2026-07-30T06:00:00",
+    "createdBy": "u-050",
+    "createdAt": "2026-07-20T09:00:00"
+  },
+  {
+    "id": "ann-003",
+    "title": "Rappel quota mentorat",
+    "body": "Pour préserver la qualité de l'accompagnement, chaque mentor reste limité à 2 mentorés actifs simultanément.",
+    "audience": "mentor",
+    "startsAt": "2026-01-01T00:00:00",
+    "endsAt": "2026-12-31T23:59:59",
+    "createdBy": "u-001",
+    "createdAt": "2026-01-05T09:00:00"
+  }
+]

@@ -94,6 +94,32 @@ const KanbanBoard = (() => {
       </div>`;
   }
 
+  const VIEW_TABS = [
+    { key: "board", label: "Tableau", icon: "bi-kanban" },
+    { key: "list", label: "Liste", icon: "bi-list-ul" },
+    { key: "calendar", label: "Calendrier", icon: "bi-calendar3" },
+    { key: "overdue", label: "En retard", icon: "bi-exclamation-triangle" },
+    { key: "blocked", label: "Bloquées", icon: "bi-slash-circle" },
+    { key: "done", label: "Terminées", icon: "bi-check2-circle" },
+  ];
+
+  function buildViewTabs(container) {
+    const nav = document.createElement("div");
+    nav.className = "dc-kanban-view-tabs";
+    nav.setAttribute("role", "tablist");
+    nav.setAttribute("aria-label", "Vue du tableau de tâches");
+    nav.innerHTML = VIEW_TABS.map((v) => `<button type="button" class="dc-kanban-view-tab ${v.key === "board" ? "active" : ""}" data-view="${v.key}" role="tab" aria-selected="${v.key === "board"}"><i class="bi ${v.icon} me-1"></i>${v.label}</button>`).join("");
+    container.appendChild(nav);
+    nav.querySelectorAll("[data-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        STATE.viewMode = btn.dataset.view;
+        nav.querySelectorAll("[data-view]").forEach((b) => { b.classList.toggle("active", b === btn); b.setAttribute("aria-selected", b === btn ? "true" : "false"); });
+        refresh(container.closest(".dc-kanban-root"));
+      });
+    });
+    return nav;
+  }
+
   function buildToolbar(container, config) {
     const bar = document.createElement("div");
     bar.className = "dc-kanban-toolbar";
@@ -155,33 +181,165 @@ const KanbanBoard = (() => {
 
   async function refresh(root) {
     const filters = currentFilters(root);
-    let cards;
+    let cards, lists;
     if (STATE.config.mode === "central") {
       const ctx = await KanbanEngine.centralContext(filters);
       STATE.users = ctx.users; STATE.staff = ctx.staff; STATE.departments = ctx.departments; STATE.labels = ctx.labels;
       cards = ctx.cards.map((c) => ({ ...c, __boardName: (ctx.boards.find((b) => b.id === c.boardId) || {}).name }));
       if (filters.assigneeOrOwner) cards = cards.filter((c) => (c.assignees || []).includes(filters.assigneeOrOwner) || c.ownerId === filters.assigneeOrOwner);
-      STATE.columns = groupCentral(cards);
     } else {
       const ctx = await KanbanEngine.boardContext(STATE.config.boardId);
       STATE.labels = ctx.labels; STATE.users = ctx.users; STATE.staff = ctx.staff;
-      let cards = ctx.cards;
-      // Un board "personnel" (filleul/parrain/proprietaire) est un modèle partagé par tous les
+      lists = ctx.lists;
+      cards = ctx.cards;
+      // Un board "personnel" (mentore/mentor/proprietaire) est un modèle partagé par tous les
       // membres du rôle : chacun ne doit voir QUE ses propres cartes, jamais celles des autres.
       if (STATE.config.selfOwned) cards = cards.filter((c) => c.ownerId === STATE.config.currentUser.matchId);
       cards = KanbanEngine.applyFilters(cards, filters);
       if (filters.assigneeOrOwner) cards = cards.filter((c) => (c.assignees || []).includes(filters.assigneeOrOwner) || c.ownerId === filters.assigneeOrOwner);
-      STATE.columns = groupBoard(ctx.lists, cards);
     }
-    renderColumns(root);
+    STATE.flatCards = cards;
+    STATE.lists = lists;
+
+    const mode = STATE.viewMode || "board";
+    if (mode === "board") {
+      STATE.columns = STATE.config.mode === "central" ? groupCentral(cards) : groupBoard(lists, cards);
+      renderColumns(root);
+    } else if (mode === "calendar") {
+      renderCalendar(root, cards);
+    } else {
+      const quick = mode === "overdue" ? cards.filter((c) => KanbanEngine.isOverdue(c))
+        : mode === "blocked" ? cards.filter((c) => c.blocked)
+        : mode === "done" ? cards.filter((c) => c.status === "done")
+        : cards;
+      renderList(root, quick);
+    }
+  }
+
+  function ensureViewBody(root) {
+    const body = root.querySelector(".dc-kanban-view-body");
+    body.innerHTML = "";
+    return body;
   }
 
   function renderColumns(root) {
-    const holder = root.querySelector(".dc-kanban-columns");
+    const body = ensureViewBody(root);
+    const holder = document.createElement("div");
+    holder.className = "dc-kanban-columns";
     holder.innerHTML = STATE.columns.map((c) => columnHtml(c, { labels: STATE.labels, users: STATE.users, staff: STATE.staff, showBoardTag: STATE.config.mode === "central" })).join("");
+    body.appendChild(holder);
     wireCardEvents(holder);
     wireDragDrop(holder);
   }
+
+  function listRowHtml(card) {
+    const { overdue, dueSoon } = cardMeta(card);
+    const assignees = (card.assignees || []).map((id) => avatarChip(id, STATE.users, STATE.staff)).join("") || (card.ownerId ? avatarChip(card.ownerId, STATE.users, STATE.staff) : "");
+    return `<tr class="dc-kanban-list-row" data-card-id="${card.id}" tabindex="0" role="button" aria-label="${DCUtils.escapeHtml(card.title)}">
+      <td>
+        <div class="fw-semibold small">${DCUtils.escapeHtml(card.title)}</div>
+        ${STATE.config.mode === "central" && card.__boardName ? `<div class="text-muted-dc small">${DCUtils.escapeHtml(card.__boardName)}</div>` : ""}
+      </td>
+      <td><span class="dc-badge dc-priority-${card.priority}">${{ basse: "Basse", normale: "Normale", haute: "Haute", urgente: "Urgente" }[card.priority] || card.priority}</span></td>
+      <td class="small ${overdue ? "text-danger fw-semibold" : dueSoon ? "text-warning" : ""}">${card.dueDate ? DCUtils.formatDate(card.dueDate) : "-"}</td>
+      <td>${assignees || `<span class="small text-muted-dc">Non assignée</span>`}</td>
+      <td>${card.blocked ? `<span class="dc-badge dc-badge-danger">Bloquée</span>` : `<span class="dc-badge dc-badge-neutral">${STATUS_LABELS[card.status] || card.status}</span>`}</td>
+    </tr>`;
+  }
+
+  function renderList(root, cards) {
+    const body = ensureViewBody(root);
+    const wrap = document.createElement("div");
+    wrap.className = "dc-card p-0";
+    wrap.innerHTML = `
+      <div class="table-responsive">
+        <table class="table dc-table mb-0 align-middle">
+          <thead><tr><th>Carte</th><th>Priorité</th><th>Échéance</th><th>Assigné(e)</th><th>Statut</th></tr></thead>
+          <tbody>${cards.map(listRowHtml).join("") || `<tr><td colspan="5"><p class="dc-empty-mini py-3">Aucune carte pour cette vue.</p></td></tr>`}</tbody>
+        </table>
+      </div>`;
+    body.appendChild(wrap);
+    wireCardEvents(wrap);
+  }
+
+  function renderCalendar(root, cards) {
+    const body = ensureViewBody(root);
+    if (!STATE.calendarMonth) STATE.calendarMonth = new Date(KanbanEngine.TODAY.getFullYear(), KanbanEngine.TODAY.getMonth(), 1);
+    if (STATE.calendarSelected === undefined) STATE.calendarSelected = toDateKey(KanbanEngine.TODAY);
+    const month = STATE.calendarMonth;
+    const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+    const weekdays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+    const dated = cards.filter((c) => c.dueDate);
+
+    const firstOfMonth = new Date(month);
+    const startOffset = (firstOfMonth.getDay() + 6) % 7;
+    const gridStart = new Date(firstOfMonth);
+    gridStart.setDate(firstOfMonth.getDate() - startOffset);
+    const cells = Array.from({ length: 42 }, (_, i) => { const d = new Date(gridStart); d.setDate(gridStart.getDate() + i); return d; });
+
+    const wrap = document.createElement("div");
+    wrap.className = "row g-3";
+    wrap.innerHTML = `
+      <div class="col-lg-8">
+        <div class="dc-card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0"><i class="bi bi-calendar3 me-2 text-primary"></i>${monthNames[month.getMonth()]} ${month.getFullYear()}</h6>
+            <div class="btn-group btn-group-sm">
+              <button type="button" class="btn btn-outline-secondary" data-cal-nav="-1"><i class="bi bi-chevron-left"></i></button>
+              <button type="button" class="btn btn-outline-secondary" data-cal-nav="1"><i class="bi bi-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="dc-calendar-grid">
+            ${weekdays.map((w) => `<div class="dc-calendar-weekday">${w}</div>`).join("")}
+            ${cells.map((d) => {
+              const key = toDateKey(d);
+              const outside = d.getMonth() !== month.getMonth();
+              const isToday = key === toDateKey(KanbanEngine.TODAY);
+              const isSelected = key === STATE.calendarSelected;
+              const dayCards = dated.filter((c) => c.dueDate === key);
+              const dots = dayCards.slice(0, 4).map((c) => `<span class="dc-calendar-dot ${KanbanEngine.isOverdue(c) ? "dot-overdue" : isToday ? "dot-today" : "dot-upcoming"}"></span>`).join("");
+              if (outside) return `<div class="dc-calendar-day is-outside" aria-hidden="true"><span class="dc-calendar-day-num">${d.getDate()}</span></div>`;
+              return `<div class="dc-calendar-day ${isToday ? "is-today" : ""} ${isSelected ? "is-selected" : ""}" data-date="${key}" role="button" tabindex="0" aria-pressed="${isSelected}" aria-label="${d.toLocaleDateString("fr-FR", { day: "2-digit", month: "long" })}${dayCards.length ? `, ${dayCards.length} échéance(s)` : ""}">
+                <span class="dc-calendar-day-num">${d.getDate()}</span>
+                <span class="dc-calendar-day-dots">${dots}</span>
+              </div>`;
+            }).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="dc-card p-3" id="dc-kanban-day-panel"></div>
+      </div>`;
+    body.appendChild(wrap);
+
+    wrap.querySelectorAll("[data-cal-nav]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const delta = Number(btn.dataset.calNav);
+        STATE.calendarMonth = new Date(month.getFullYear(), month.getMonth() + delta, 1);
+        renderCalendar(root, STATE.flatCards);
+      });
+    });
+    wrap.querySelectorAll(".dc-calendar-day:not(.is-outside)").forEach((el) => {
+      const select = () => { STATE.calendarSelected = el.dataset.date; renderCalendar(root, STATE.flatCards); };
+      el.addEventListener("click", select);
+      el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(); } });
+    });
+    renderDayPanel(wrap, dated);
+  }
+
+  function renderDayPanel(wrap, dated) {
+    const panel = wrap.querySelector("#dc-kanban-day-panel");
+    const key = STATE.calendarSelected;
+    const dayCards = dated.filter((c) => c.dueDate === key);
+    const label = key ? new Date(key + "T12:00:00").toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" }) : "Sélectionnez un jour";
+    panel.innerHTML = `<h6 class="mb-3"><i class="bi bi-calendar-event me-2 text-primary"></i>${label}</h6>` +
+      (dayCards.length
+        ? `<div class="dc-kanban-daylist">${dayCards.map((c) => cardHtml(c, { labels: STATE.labels, users: STATE.users, staff: STATE.staff, showBoardTag: STATE.config.mode === "central" })).join("")}</div>`
+        : `<p class="dc-empty-mini">Aucune échéance ce jour-là.</p>`);
+    wireCardEvents(panel);
+  }
+
+  function toDateKey(d) { return d.toISOString().slice(0, 10); }
 
   function wireCardEvents(holder) {
     holder.querySelectorAll(".dc-kanban-card").forEach((el) => {
@@ -393,15 +551,16 @@ const KanbanBoard = (() => {
    */
   async function mount(container, config) {
     const departments = config.showDepartmentFilter ? await DataStore.getDepartments() : [];
-    STATE = { config, columns: [], labels: [], users: [], staff: [], departments, assignableUsers: config.assignableUsers || [] };
+    STATE = { config, columns: [], labels: [], users: [], staff: [], departments, assignableUsers: config.assignableUsers || [], viewMode: "board" };
     container.innerHTML = "";
     const root = document.createElement("div");
     root.className = "dc-kanban-root";
     container.appendChild(root);
+    buildViewTabs(root);
     buildToolbar(root, config);
-    const columnsHolder = document.createElement("div");
-    columnsHolder.className = "dc-kanban-columns";
-    root.appendChild(columnsHolder);
+    const viewBody = document.createElement("div");
+    viewBody.className = "dc-kanban-view-body";
+    root.appendChild(viewBody);
 
     root.querySelectorAll(".dc-kanban-filter").forEach((el) => el.addEventListener("change", () => refresh(root)));
     root.querySelector(".dc-kanban-search").addEventListener("input", DCUtils.debounce(() => refresh(root), 300));

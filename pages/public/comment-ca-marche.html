@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../assets/css/variables.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/base.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/layout.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/components.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/pages.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=10" rel="stylesheet">
 </head>
 <body data-page="comment-ca-marche">
   <script>window.DC_ROOT = "../../";</script>
@@ -33,19 +33,19 @@
           <div class="col-md-6 col-lg-3">
             <div class="dc-step-card"><div class="dc-step-num">1</div>
               <h6>Inscription et profil</h6>
-              <p class="small text-body-secondary">Le filleul renseigne son projet (ville, école, domaine, budget, langues) et peut indiquer une préférence de sexe pour son parrain ou sa marraine.</p>
+              <p class="small text-body-secondary">Le mentoré renseigne son projet (ville, école, domaine, budget, langues) et peut indiquer une préférence de sexe pour son mentor.</p>
             </div>
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="dc-step-card"><div class="dc-step-num">2</div>
               <h6>Calcul de compatibilité</h6>
-              <p class="small text-body-secondary">Le moteur de matching classe les parrains disponibles selon la ville, l'établissement, le domaine d'étude, les langues, la disponibilité et le type d'accompagnement recherché.</p>
+              <p class="small text-body-secondary">Le moteur de matching classe les mentors disponibles selon la ville, l'établissement, le domaine d'étude, les langues, la disponibilité et le type d'accompagnement recherché.</p>
             </div>
           </div>
           <div class="col-md-6 col-lg-3">
             <div class="dc-step-card"><div class="dc-step-num">3</div>
               <h6>Demande &amp; validation</h6>
-              <p class="small text-body-secondary">Le filleul envoie une demande. Le parrain ou la marraine l'accepte ou la refuse. Le statut passe alors de "en attente" à "validée" puis "active".</p>
+              <p class="small text-body-secondary">Le mentoré envoie une demande. Le mentor l'accepte ou la refuse. Le statut passe alors de "en attente" à "validée" puis "active".</p>
             </div>
           </div>
           <div class="col-md-6 col-lg-3">
@@ -65,19 +65,19 @@
             <h3 class="mb-3"><i class="bi bi-sliders text-primary me-2"></i>Le fonctionnement du matching</h3>
             <p class="text-body-secondary">Le score de compatibilité affiché sur chaque profil combine plusieurs critères pondérés :</p>
             <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between"><span>Compatibilité de sexe (si exigée par le filleul)</span><strong>Critère éliminatoire</strong></li>
+              <li class="list-group-item d-flex justify-content-between"><span>Compatibilité de sexe (si exigée par le mentoré)</span><strong>Critère éliminatoire</strong></li>
               <li class="list-group-item d-flex justify-content-between"><span>Ville / établissement souhaité</span><strong>Forte pondération</strong></li>
               <li class="list-group-item d-flex justify-content-between"><span>Domaine d'étude</span><strong>Pondération moyenne-haute</strong></li>
               <li class="list-group-item d-flex justify-content-between"><span>Langues parlées en commun</span><strong>Pondération moyenne</strong></li>
-              <li class="list-group-item d-flex justify-content-between"><span>Disponibilité du parrain</span><strong>Ajustement</strong></li>
+              <li class="list-group-item d-flex justify-content-between"><span>Disponibilité du mentor</span><strong>Ajustement</strong></li>
               <li class="list-group-item d-flex justify-content-between"><span>Type d'accompagnement recherché</span><strong>Ajustement</strong></li>
             </ul>
           </div>
           <div class="col-lg-6">
             <h3 class="mb-3"><i class="bi bi-shield-lock text-primary me-2"></i>Les règles de sécurité</h3>
             <div class="dc-charte-item">
-              <h6 class="mb-1">Quota de parrainage</h6>
-              <p class="small text-body-secondary mb-0">Un parrain ou une marraine ne peut pas accompagner plus de 2 filleuls actifs simultanément, afin de rester disponible et à l'écoute.</p>
+              <h6 class="mb-1">Quota de mentorat</h6>
+              <p class="small text-body-secondary mb-0">Un mentor ne peut pas accompagner plus de 2 mentorés actifs simultanément, afin de rester disponible et à l'écoute.</p>
             </div>
             <div class="dc-charte-item">
               <h6 class="mb-1">Messagerie encadrée</h6>
@@ -102,8 +102,8 @@
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <ol class="dc-timeline">
-              <li class="is-done"><span class="dc-timeline-dot"></span><strong>En attente</strong> — la demande est envoyée, le parrain n'a pas encore répondu.<div class="dc-timeline-date">Étape 1</div></li>
-              <li class="is-done"><span class="dc-timeline-dot"></span><strong>Validée</strong> — le parrain accepte la demande.<div class="dc-timeline-date">Étape 2</div></li>
+              <li class="is-done"><span class="dc-timeline-dot"></span><strong>En attente</strong> — la demande est envoyée, le mentor n'a pas encore répondu.<div class="dc-timeline-date">Étape 1</div></li>
+              <li class="is-done"><span class="dc-timeline-dot"></span><strong>Validée</strong> — le mentor accepte la demande.<div class="dc-timeline-date">Étape 2</div></li>
               <li class="is-current"><span class="dc-timeline-dot"></span><strong>Active</strong> — l'accompagnement est en cours, la messagerie est ouverte.<div class="dc-timeline-date">Étape 3</div></li>
               <li><span class="dc-timeline-dot"></span><strong>Suspendue</strong> — en cas de signalement, le temps de l'examen par l'administration.<div class="dc-timeline-date">Si nécessaire</div></li>
               <li><span class="dc-timeline-dot"></span><strong>Terminée</strong> — fin de l'accompagnement, à l'amiable ou après décision admin.<div class="dc-timeline-date">Étape finale</div></li>
@@ -111,7 +111,7 @@
           </div>
         </div>
         <div class="text-center mt-4">
-          <a href="register-filleul.html" class="btn btn-primary btn-lg">Commencer mon inscription</a>
+          <a href="register-mentore.html" class="btn btn-primary btn-lg">Commencer mon inscription</a>
         </div>
       </div>
     </section>
@@ -119,11 +119,11 @@
 
   <div id="dc-public-footer"></div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../assets/js/core/data-store.js?v=3"></script>
-  <script src="../../assets/js/core/utils.js?v=3"></script>
-  <script src="../../assets/js/core/auth.js?v=3"></script>
-  <script src="../../assets/js/core/notification-center.js?v=3"></script>
-  <script src="../../assets/js/ui/layout.js?v=3"></script>
+  <script src="../../assets/js/core/data-store.js?v=10"></script>
+  <script src="../../assets/js/core/utils.js?v=10"></script>
+  <script src="../../assets/js/core/auth.js?v=10"></script>
+  <script src="../../assets/js/core/notification-center.js?v=10"></script>
+  <script src="../../assets/js/ui/layout.js?v=10"></script>
   <script>Layout.mountPublic("comment-ca-marche");</script>
 </body>
 </html>

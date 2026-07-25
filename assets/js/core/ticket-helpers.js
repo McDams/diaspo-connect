@@ -7,7 +7,7 @@ const TicketHelpers = (() => {
   const CATEGORY_LABELS = {
     information_generale: "Information générale",
     dossier_etudiant: "Dossier étudiant",
-    matching_parrainage: "Matching / parrainage",
+    matching_mentorat: "Matching / mentorat",
     logement: "Logement",
     emploi: "Emploi / stage / alternance",
     probleme_relationnel: "Problème relationnel",

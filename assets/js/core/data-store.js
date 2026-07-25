@@ -35,6 +35,7 @@ const DataStore = (() => {
     cardActivity: "card_activity.json",
     documents: "documents.json",
     settings: "settings.json",
+    announcements: "announcements.json",
   };
 
   const cache = {};
@@ -96,6 +97,7 @@ const DataStore = (() => {
     getCardActivity: () => load("cardActivity"),
     getDocuments: () => load("documents"),
     getSettings: () => load("settings"),
+    getAnnouncements: () => load("announcements"),
 
     /** Insère un enregistrement dans le cache en mémoire (simulation d'écriture). */
     async insert(key, record) {
@@ -111,6 +113,15 @@ const DataStore = (() => {
       if (!item) return null;
       Object.assign(item, patch);
       return item;
+    },
+
+    /** Retire un enregistrement du cache en mémoire (simulation de suppression), en mutant la collection en place. */
+    async remove(key, id) {
+      const collection = await load(key);
+      const index = collection.findIndex((r) => r.id === id);
+      if (index === -1) return false;
+      collection.splice(index, 1);
+      return true;
     },
 
     nextId,

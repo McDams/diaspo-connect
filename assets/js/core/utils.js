@@ -98,7 +98,7 @@ const DCUtils = (() => {
     return `<span class="dc-badge ${entry.cls}">${entry.label}</span>`;
   }
 
-  /** Badge dédié au statut de dossier d'un filleul (distinct des statuts de matching/signalement). */
+  /** Badge dédié au statut de dossier d'un mentoré (distinct des statuts de matching/signalement). */
   function fileStatusBadge(status) {
     const map = {
       en_preparation: { label: "Dossier en préparation", cls: "dc-badge-warning" },

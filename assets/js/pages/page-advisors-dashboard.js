@@ -6,7 +6,7 @@
  */
 (function () {
   const DOMAIN_LABELS = { demarches: "démarches administratives", logement: "logement", emploi: "emploi / stage / alternance" };
-  const DOMAIN_CATEGORY = { demarches: ["dossier_etudiant", "matching_parrainage", "information_generale"], logement: ["logement"], emploi: ["emploi"] };
+  const DOMAIN_CATEGORY = { demarches: ["dossier_etudiant", "matching_mentorat", "information_generale"], logement: ["logement"], emploi: ["emploi"] };
 
   async function init() {
     const ctx = await StaffGuard.require("advisors-dashboard");
@@ -58,7 +58,7 @@
           <div class="progress" style="height:5px;"><div class="progress-bar bg-primary" style="width:${pct}%"></div></div></div>
           <span class="small text-muted-dc">${pct}%</span>
         </div>`;
-      }).join("") : `<div class="dc-empty-state py-3"><p class="small mb-0">Aucun filleul suivi pour le moment.</p></div>`;
+      }).join("") : `<div class="dc-empty-state py-3"><p class="small mb-0">Aucun mentoré suivi pour le moment.</p></div>`;
     }
 
     if (domain === "logement") {

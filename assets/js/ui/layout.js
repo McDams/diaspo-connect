@@ -26,11 +26,45 @@ const Layout = (() => {
       markActive(document, currentPage);
       await reflectSessionInPublicNav();
       wireMobileNavClose();
+      await mountSiteBanner();
     }
     const footHost = document.getElementById("dc-public-footer");
     if (footHost) {
       footHost.outerHTML = await fetchPartial("components/footer-public.html");
     }
+  }
+
+  /**
+   * Bannière d'information publique : affiche la première annonce active
+   * (fenêtre startsAt/endsAt courante) destinée à "tous". Un visiteur qui la
+   * ferme ne la revoit plus pour la session en cours (sessionStorage, pas de
+   * persistance permanente côté client).
+   */
+  async function mountSiteBanner() {
+    const host = document.getElementById("dc-site-banner");
+    if (!host || typeof DataStore === "undefined") return;
+    const DEMO_TODAY = new Date("2026-07-25T09:00:00");
+    const dismissed = JSON.parse(sessionStorage.getItem("dc_dismissed_banners") || "[]");
+    const announcements = await DataStore.getAnnouncements();
+    const active = announcements.find((a) => (
+      a.audience === "tous" &&
+      new Date(a.startsAt) <= DEMO_TODAY && DEMO_TODAY <= new Date(a.endsAt) &&
+      !dismissed.includes(a.id)
+    ));
+    if (!active) { host.innerHTML = ""; return; }
+    host.innerHTML = `
+      <div class="dc-site-banner" role="status">
+        <div class="container d-flex align-items-center gap-2 py-2">
+          <i class="bi bi-megaphone flex-shrink-0"></i>
+          <span class="flex-grow-1 small"><strong>${active.title}</strong> — ${active.body}</span>
+          <button type="button" class="btn-close btn-close-white flex-shrink-0" aria-label="Fermer" id="dc-site-banner-close"></button>
+        </div>
+      </div>`;
+    document.getElementById("dc-site-banner-close").addEventListener("click", () => {
+      dismissed.push(active.id);
+      sessionStorage.setItem("dc_dismissed_banners", JSON.stringify(dismissed));
+      host.innerHTML = "";
+    });
   }
 
   async function reflectSessionInPublicNav() {
@@ -64,8 +98,8 @@ const Layout = (() => {
   }
 
   const ROLE_LABELS = {
-    filleul: "Filleul",
-    parrain: "Parrain / Marraine",
+    mentore: "Mentoré",
+    mentor: "Mentor",
     proprietaire: "Propriétaire",
     admin: "Administrateur",
     staff: "Équipe DiaspoConnect",
@@ -101,7 +135,7 @@ const Layout = (() => {
     if (notifDropdown) await NotificationCenter.mount(notifDropdown, user.id);
   }
 
-  /** Header + sidebar pour les espaces authentifiés historiques (filleul/parrain/proprietaire/admin). */
+  /** Header + sidebar pour les espaces authentifiés historiques (mentore/mentor/proprietaire/admin). */
   async function mountApp(role, currentPage, user) {
     const headerHost = document.getElementById("dc-app-header");
     if (headerHost) {

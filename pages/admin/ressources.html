@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../assets/css/variables.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/base.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/layout.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/components.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/pages.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=10" rel="stylesheet">
 </head>
 <body data-page="ressources">
   <script>window.DC_ROOT = "../../";</script>
@@ -19,17 +19,41 @@
   <div class="dc-shell">
     <div id="dc-app-sidebar"></div>
     <div class="dc-content">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-        <h1 class="h4 mb-0">Ressources &amp; FAQ</h1>
-        <button class="btn btn-primary btn-sm" id="new-resource-btn"><i class="bi bi-plus-circle me-1"></i>Nouvelle ressource</button>
-      </div>
+      <h1 class="h4 mb-4">Ressources &amp; FAQ</h1>
 
-      <div class="dc-card p-0">
-        <div class="table-responsive">
-          <table class="table dc-table mb-0 align-middle">
-            <thead><tr><th>Titre</th><th>Catégorie</th><th>Mise à jour</th><th></th></tr></thead>
-            <tbody id="resources-tbody"></tbody>
-          </table>
+      <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-resources">Guides &amp; FAQ</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-banners">Bannières / annonces</button></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab-resources">
+          <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-primary btn-sm" id="new-resource-btn"><i class="bi bi-plus-circle me-1"></i>Nouvelle ressource</button>
+          </div>
+          <div class="dc-card p-0">
+            <div class="table-responsive">
+              <table class="table dc-table mb-0 align-middle">
+                <thead><tr><th>Titre</th><th>Catégorie</th><th>Mise à jour</th><th></th></tr></thead>
+                <tbody id="resources-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-banners">
+          <p class="text-body-secondary small">Bannière affichée en haut des pages publiques pendant sa fenêtre de diffusion (visible par tous, ou ciblée par rôle).</p>
+          <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-primary btn-sm" id="new-banner-btn"><i class="bi bi-plus-circle me-1"></i>Nouvelle bannière</button>
+          </div>
+          <div class="dc-card p-0">
+            <div class="table-responsive">
+              <table class="table dc-table mb-0 align-middle">
+                <thead><tr><th>Titre</th><th>Audience</th><th>Diffusion</th><th>Statut</th><th class="text-end">Actions</th></tr></thead>
+                <tbody id="banners-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -94,13 +118,65 @@
     </div>
   </div>
 
+  <div class="modal fade" id="bannerModal" tabindex="-1" aria-labelledby="bannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="banner-form" novalidate>
+          <div class="modal-header">
+            <h5 class="modal-title" id="bannerModalLabel">Bannière</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="banner-id">
+            <div class="mb-3">
+              <label for="banner-title" class="form-label dc-required">Titre</label>
+              <input type="text" class="form-control" id="banner-title" name="title" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+              <label for="banner-body" class="form-label dc-required">Message</label>
+              <textarea class="form-control" id="banner-body" name="body" rows="3" required></textarea>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="banner-audience" class="form-label">Audience</label>
+                <select class="form-select" id="banner-audience">
+                  <option value="tous">Tous les visiteurs</option>
+                  <option value="mentore">Mentorés</option>
+                  <option value="mentor">Mentors / mentors</option>
+                  <option value="proprietaire">Propriétaires</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="banner-start" class="form-label dc-required">Début</label>
+                <input type="date" class="form-control" id="banner-start" name="startsAt" required>
+                <div class="invalid-feedback"></div>
+              </div>
+              <div class="col-md-4">
+                <label for="banner-end" class="form-label dc-required">Fin</label>
+                <input type="date" class="form-control" id="banner-end" name="endsAt" required>
+                <div class="invalid-feedback"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../assets/js/core/data-store.js?v=3"></script>
-  <script src="../../assets/js/core/utils.js?v=3"></script>
-  <script src="../../assets/js/core/auth.js?v=3"></script>
-  <script src="../../assets/js/core/notification-center.js?v=3"></script>
-  <script src="../../assets/js/ui/modals.js?v=3"></script>
-  <script src="../../assets/js/ui/layout.js?v=3"></script>
-  <script src="../../assets/js/pages/page-admin-ressources.js?v=3"></script>
+  <script src="../../assets/js/core/data-store.js?v=10"></script>
+  <script src="../../assets/js/core/utils.js?v=10"></script>
+  <script src="../../assets/js/core/auth.js?v=10"></script>
+  <script src="../../assets/js/core/notification-center.js?v=10"></script>
+  <script src="../../assets/js/ui/modals.js?v=10"></script>
+  <script src="../../assets/js/ui/forms.js?v=10"></script>
+  <script src="../../assets/js/ui/layout.js?v=10"></script>
+  <script src="../../assets/js/pages/page-admin-ressources.js?v=10"></script>
 </body>
 </html>

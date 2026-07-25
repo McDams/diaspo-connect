@@ -1,6 +1,6 @@
 /**
  * KanbanEngine - logique métier du système de tâches type Trello, partagée par
- * tous les espaces (filleul/parrain/proprietaire/staff/admin). Opère sur les
+ * tous les espaces (mentore/mentor/proprietaire/staff/admin). Opère sur les
  * collections DataStore (boards/lists/cards/labels/cardActivity) : aujourd'hui
  * en mémoire, demain via API sans changer l'interface exposée ici.
  *

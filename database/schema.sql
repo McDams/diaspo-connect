@@ -3,8 +3,8 @@
 -- ============================================================================
 -- Ce schéma est la cible backend du prototype frontend. Les entités et
 -- statuts correspondent 1:1 aux fichiers JSON de /assets/data et aux règles
--- métier implémentées côté frontend (quota de 2 filleuls actifs par parrain,
--- statuts de parrainage, modération logement/emploi, RBAC interne, Kanban).
+-- métier implémentées côté frontend (quota de 2 mentorés actifs par mentor,
+-- statuts de mentorat, modération logement/emploi, RBAC interne, Kanban).
 --
 -- Conventions :
 --   - PK           : BIGSERIAL (identifiants internes simples et lisibles)
@@ -20,7 +20,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto; -- pour gen_random_uuid() si besoin cô
 -- TYPES ÉNUMÉRÉS
 -- ============================================================================
 
-CREATE TYPE user_role_enum            AS ENUM ('filleul', 'parrain', 'proprietaire', 'staff', 'admin');
+CREATE TYPE user_role_enum            AS ENUM ('mentore', 'mentor', 'proprietaire', 'staff', 'admin');
 CREATE TYPE staff_access_level_enum   AS ENUM ('super_admin', 'direction_admin', 'secretariat_admin', 'advisor_admin', 'housing_admin', 'career_admin', 'moderation_admin', 'support_admin', 'partnership_admin', 'content_admin', 'compliance_admin', 'technical_admin');
 CREATE TYPE account_status_enum       AS ENUM ('active', 'suspended', 'pending_verification', 'archived');
 CREATE TYPE gender_enum               AS ENUM ('homme', 'femme', 'autre', 'non_precise');
@@ -36,7 +36,7 @@ CREATE TYPE position_type_enum        AS ENUM ('direction', 'coordination', 'acc
 CREATE TYPE visibility_enum           AS ENUM ('public_complet', 'public_partiel', 'interne', 'cache');
 CREATE TYPE verification_status_enum  AS ENUM ('en_attente', 'verifie', 'rejete');
 CREATE TYPE document_status_enum      AS ENUM ('en_attente', 'valide', 'rejete');
-CREATE TYPE request_category_enum     AS ENUM ('information_generale', 'dossier_etudiant', 'matching_parrainage', 'logement', 'emploi', 'probleme_relationnel', 'support_technique', 'signalement_securite', 'partenariat', 'benevolat', 'presse_media');
+CREATE TYPE request_category_enum     AS ENUM ('information_generale', 'dossier_etudiant', 'matching_mentorat', 'logement', 'emploi', 'probleme_relationnel', 'support_technique', 'signalement_securite', 'partenariat', 'benevolat', 'presse_media');
 CREATE TYPE board_scope_enum          AS ENUM ('personal', 'pole', 'global');
 CREATE TYPE rbac_action_enum          AS ENUM ('read', 'create', 'update', 'delete', 'assign', 'validate', 'moderate', 'export', 'impersonate');
 
@@ -98,7 +98,7 @@ CREATE TABLE user_roles (
   granted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   PRIMARY KEY (user_id, role_id)
 );
-COMMENT ON TABLE user_roles IS 'Permet à terme un utilisateur multi-rôles (ex. staff + filleul) sans changer le schéma.';
+COMMENT ON TABLE user_roles IS 'Permet à terme un utilisateur multi-rôles (ex. staff + mentoré) sans changer le schéma.';
 
 CREATE TABLE profiles (
   user_id            BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
@@ -125,7 +125,7 @@ CREATE TABLE mentee_profiles (
   created_at              TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at              TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-COMMENT ON TABLE mentee_profiles IS 'Seuls les filleuls peuvent renseigner mentor_gender_preference (règle métier appliquée en API).';
+COMMENT ON TABLE mentee_profiles IS 'Seuls les mentorés peuvent renseigner mentor_gender_preference (règle métier appliquée en API).';
 
 CREATE TABLE mentor_profiles (
   user_id           BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
@@ -240,7 +240,7 @@ CREATE TABLE availability_slots (
 );
 
 -- ============================================================================
--- C. PARRAINAGE / ACCOMPAGNEMENT
+-- C. MENTORAT / ACCOMPAGNEMENT
 -- ============================================================================
 
 CREATE TABLE mentorship_preferences (
@@ -279,7 +279,7 @@ CREATE TABLE mentorship_matches (
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-COMMENT ON TABLE mentorship_matches IS 'Le quota de 2 filleuls actifs par parrain (règle métier n°1) est vérifié en base via un index partiel + contrôle applicatif à la création.';
+COMMENT ON TABLE mentorship_matches IS 'Le quota de 2 mentorés actifs par mentor (règle métier n°1) est vérifié en base via un index partiel + contrôle applicatif à la création.';
 CREATE UNIQUE INDEX uq_one_active_match_per_mentee ON mentorship_matches(mentee_id) WHERE status = 'active';
 CREATE INDEX idx_mentorship_matches_mentor_active ON mentorship_matches(mentor_id) WHERE status = 'active';
 
@@ -911,6 +911,6 @@ CREATE TRIGGER trg_cards_updated_at BEFORE UPDATE ON cards FOR EACH ROW EXECUTE 
 
 -- ============================================================================
 -- Fin du schéma — ~68 tables couvrant : accès (13), structure interne (4),
--- parrainage (9), logement (5), emploi (4), communication (9), Kanban (14),
+-- mentorat (9), logement (5), emploi (4), communication (9), Kanban (14),
 -- gouvernance/conformité (8), CMS (7).
 -- ============================================================================

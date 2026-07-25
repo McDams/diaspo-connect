@@ -1,7 +1,7 @@
 (function () {
   const DEMO_ACCOUNTS = [
-    { role: "filleul", label: "Filleul", email: "rosine.agossou@mail.com", icon: "bi-mortarboard" },
-    { role: "parrain", label: "Parrain / Marraine", email: "aicha.zannou@mail.fr", icon: "bi-people" },
+    { role: "mentore", label: "Mentoré", email: "rosine.agossou@mail.com", icon: "bi-mortarboard" },
+    { role: "mentor", label: "Mentor", email: "aicha.zannou@mail.fr", icon: "bi-people" },
     { role: "proprietaire", label: "Propriétaire", email: "marc.lefevre@mail.fr", icon: "bi-house-door" },
     { role: "admin", label: "Administrateur", email: "admin@diaspoconnect.fr", icon: "bi-shield-lock" },
     { role: "staff", label: "Direction (équipe)", email: "serge.donou@diaspoconnect.fr", icon: "bi-compass" },

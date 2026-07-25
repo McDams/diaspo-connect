@@ -62,7 +62,7 @@
         <span class="small text-muted-dc">${m.profileCompleteness}%</span>
         <button class="btn btn-sm btn-outline-secondary" data-action="remind" data-email="${u.email}">Relancer</button>
       </div>`;
-    }).join("") : `<div class="dc-empty-state py-3"><p class="small mb-0">Tous les dossiers filleuls sont complets.</p></div>`;
+    }).join("") : `<div class="dc-empty-state py-3"><p class="small mb-0">Tous les dossiers mentorés sont complets.</p></div>`;
   }
 
   async function init() {

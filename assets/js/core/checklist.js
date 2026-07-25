@@ -1,6 +1,6 @@
 /**
  * Checklist - checklist d'arrivée en France, attachée dynamiquement au
- * profil filleul (mentee.checklist). Générée par défaut si absente ; les
+ * profil mentoré (mentee.checklist). Générée par défaut si absente ; les
  * cases cochées vivent en mémoire dans DataStore le temps de la session,
  * en attendant une vraie persistance côté backend.
  */

@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../assets/css/variables.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/base.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/layout.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/components.css?v=3" rel="stylesheet">
-  <link href="../../assets/css/pages.css?v=3" rel="stylesheet">
+  <link href="../../assets/css/variables.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/base.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/layout.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/components.css?v=10" rel="stylesheet">
+  <link href="../../assets/css/pages.css?v=10" rel="stylesheet">
 </head>
 <body data-page="documents">
   <script>window.DC_ROOT = "../../";</script>
@@ -20,7 +20,22 @@
     <div id="dc-app-sidebar"></div>
     <div class="dc-content">
       <h1 class="h4 mb-1">Centre de documents</h1>
-      <p class="text-body-secondary small mb-4">Pièces justificatives déposées par les filleuls, parrains et propriétaires : suivi des vérifications de conformité.</p>
+      <p class="text-body-secondary small mb-4">Pièces justificatives déposées par les mentorés, mentors et propriétaires : suivi des vérifications de conformité.</p>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="dc-stat-card"><div class="dc-stat-icon dc-icon-warning mb-2"><i class="bi bi-hourglass-split"></i></div><div class="dc-stat-value" id="kpi-doc-pending">-</div><div class="dc-stat-label">En attente</div></div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="dc-stat-card"><div class="dc-stat-icon dc-icon-teal mb-2"><i class="bi bi-patch-check"></i></div><div class="dc-stat-value" id="kpi-doc-valid">-</div><div class="dc-stat-label">Validés</div></div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="dc-stat-card"><div class="dc-stat-icon dc-icon-danger mb-2"><i class="bi bi-x-circle"></i></div><div class="dc-stat-value" id="kpi-doc-rejected">-</div><div class="dc-stat-label">Rejetés</div></div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="dc-stat-card"><div class="dc-stat-icon dc-icon-navy mb-2"><i class="bi bi-files"></i></div><div class="dc-stat-value" id="kpi-doc-total">-</div><div class="dc-stat-label">Total</div></div>
+        </div>
+      </div>
 
       <form id="filters-form" class="dc-filter-panel mb-3">
         <div class="row g-2 align-items-end">
@@ -29,7 +44,7 @@
             <select class="form-select form-select-sm" id="f-status"><option value="all">Tous</option><option value="en_attente">En attente</option><option value="valide">Validé</option><option value="rejete">Rejeté</option></select>
           </div>
           <div class="col-md-3"><label class="form-label small">Rôle propriétaire</label>
-            <select class="form-select form-select-sm" id="f-role"><option value="all">Tous</option><option value="filleul">Filleul</option><option value="parrain">Parrain</option><option value="proprietaire">Propriétaire</option></select>
+            <select class="form-select form-select-sm" id="f-role"><option value="all">Tous</option><option value="mentore">Mentoré</option><option value="mentor">Mentor</option><option value="proprietaire">Propriétaire</option></select>
           </div>
         </div>
       </form>
@@ -38,7 +53,7 @@
       <div class="dc-card p-0">
         <div class="table-responsive">
           <table class="table dc-table mb-0 align-middle">
-            <thead><tr><th>Document</th><th>Propriétaire</th><th>Type</th><th>Déposé le</th><th>Statut</th><th class="text-end">Actions</th></tr></thead>
+            <thead><tr><th>Document</th><th>Propriétaire</th><th>Type</th><th>Déposé le</th><th>Statut</th><th class="text-end"></th></tr></thead>
             <tbody id="docs-tbody"></tbody>
           </table>
         </div>
@@ -46,14 +61,24 @@
     </div>
   </div>
 
+  <!-- Détail document + décision de vérification -->
+  <div class="modal fade" id="docModal" tabindex="-1" aria-labelledby="docModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title" id="docModalLabel">Document</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>
+        <div class="modal-body" id="docModalBody"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../assets/js/core/data-store.js?v=3"></script>
-  <script src="../../assets/js/core/utils.js?v=3"></script>
-  <script src="../../assets/js/core/auth.js?v=3"></script>
-  <script src="../../assets/js/core/notification-center.js?v=3"></script>
-  <script src="../../assets/js/ui/filters.js?v=3"></script>
-  <script src="../../assets/js/ui/modals.js?v=3"></script>
-  <script src="../../assets/js/ui/layout.js?v=3"></script>
-  <script src="../../assets/js/pages/page-admin-documents.js?v=3"></script>
+  <script src="../../assets/js/core/data-store.js?v=10"></script>
+  <script src="../../assets/js/core/utils.js?v=10"></script>
+  <script src="../../assets/js/core/auth.js?v=10"></script>
+  <script src="../../assets/js/core/notification-center.js?v=10"></script>
+  <script src="../../assets/js/ui/filters.js?v=10"></script>
+  <script src="../../assets/js/ui/modals.js?v=10"></script>
+  <script src="../../assets/js/ui/layout.js?v=10"></script>
+  <script src="../../assets/js/pages/page-admin-documents.js?v=10"></script>
 </body>
 </html>
