@@ -53,6 +53,7 @@
       const btn = approveBtn || rejectBtn;
       if (!btn) return;
       const listing = housing.find((h) => h.id === btn.dataset.id);
+      const previousStatus = listing.moderationStatus;
       listing.moderationStatus = approveBtn ? "validee" : "rejetee";
       listing.verified = !!approveBtn;
       await NotificationCenter.push(listing.ownerId, {
@@ -61,10 +62,11 @@
         text: `Votre annonce "${listing.title}" a été ${approveBtn ? "validée" : "rejetée"} par l'équipe de modération.`,
         link: "pages/proprietaire/annonces.html",
       });
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "housing",
         action: approveBtn ? "validation_annonce" : "rejet_annonce", targetType: "housing", targetId: listing.id,
-        date: new Date().toISOString(), details: `Annonce "${listing.title}" ${approveBtn ? "validée" : "rejetée"}.`,
+        before: { moderationStatus: previousStatus }, after: { moderationStatus: listing.moderationStatus },
+        details: `Annonce "${listing.title}" ${approveBtn ? "validée" : "rejetée"}.`,
       });
       DCUtils.toast(approveBtn ? "Annonce validée." : "Annonce rejetée.", "success");
       applyFilters();

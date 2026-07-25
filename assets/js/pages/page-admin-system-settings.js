@@ -24,6 +24,7 @@
 
     document.getElementById("general-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const previous = { ...settings.general };
       Object.assign(settings.general, {
         platformName: document.getElementById("s-name").value,
         supportEmail: document.getElementById("s-email").value,
@@ -31,9 +32,10 @@
         ticketDefaultSlaHours: Number(document.getElementById("s-sla").value),
         maintenanceMode: document.getElementById("s-maintenance").checked,
       });
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
-        action: "parametres_systeme_modifies", targetType: "settings", targetId: "general", date: new Date().toISOString(),
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "settings",
+        action: "parametres_systeme_modifies", targetType: "settings", targetId: "general",
+        before: previous, after: { ...settings.general },
         details: "Paramètres système généraux mis à jour.",
       });
       DCUtils.toast("Paramètres enregistrés (simulation frontend).", "success");
@@ -43,10 +45,12 @@
       const cb = e.target.closest(".flag-toggle");
       if (!cb) return;
       const flag = settings.featureFlags.find((f) => f.id === cb.dataset.id);
+      const previousEnabled = flag.enabled;
       flag.enabled = cb.checked;
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
-        action: "feature_flag_modifie", targetType: "feature_flag", targetId: flag.id, date: new Date().toISOString(),
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "settings",
+        action: "feature_flag_modifie", targetType: "feature_flag", targetId: flag.id,
+        before: { enabled: previousEnabled }, after: { enabled: flag.enabled },
         details: `Feature flag « ${flag.name} » ${flag.enabled ? "activé" : "désactivé"}.`,
       });
       DCUtils.toast(`« ${flag.name} » ${flag.enabled ? "activé" : "désactivé"}.`, "info");

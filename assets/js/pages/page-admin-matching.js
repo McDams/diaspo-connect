@@ -115,11 +115,13 @@
 
   async function reactivate(matchingId) {
     const m = matchings.find((x) => x.id === matchingId);
+    const previousStatus = m.status;
     m.status = "active";
     pushHistory(m, "active", "Accompagnement réactivé par l'administration.");
-    await DataStore.insert("auditLog", {
-      id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
-      action: "reactivation_matching", targetType: "matching", targetId: m.id, date: new Date().toISOString(),
+    await AuditLog.record({
+      actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "mentorship",
+      action: "reactivation_matching", targetType: "matching", targetId: m.id,
+      before: { status: previousStatus }, after: { status: "active" },
       details: `Binôme ${m.id} réactivé par l'administration.`,
     });
     DCUtils.toast("Accompagnement réactivé.", "success");
@@ -142,13 +144,14 @@
     const targetStatus = document.getElementById("reason-target-status").value;
     const reason = document.getElementById("reason-text").value.trim();
     const m = matchings.find((x) => x.id === matchingId);
+    const previousStatus = m.status;
     m.status = targetStatus;
     if (targetStatus === "terminee") m.endReason = reason;
     pushHistory(m, targetStatus, reason);
-    await DataStore.insert("auditLog", {
-      id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
+    await AuditLog.record({
+      actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "mentorship",
       action: targetStatus === "terminee" ? "fin_matching" : "suspension_matching", targetType: "matching", targetId: m.id,
-      date: new Date().toISOString(), details: `Binôme ${m.id} ${targetStatus === "terminee" ? "terminé" : "suspendu"} — ${reason}`,
+      before: { status: previousStatus }, after: { status: targetStatus }, details: `Binôme ${m.id} ${targetStatus === "terminee" ? "terminé" : "suspendu"} — ${reason}`,
     });
     bootstrap.Modal.getInstance(document.getElementById("reasonModal")).hide();
     DCUtils.toast(targetStatus === "terminee" ? "Accompagnement terminé." : "Accompagnement suspendu.", "success");
@@ -232,10 +235,11 @@
       pushHistory(old, "terminee", `Remplacé par le binôme ${newMatching.id}.`);
     }
 
-    await DataStore.insert("auditLog", {
-      id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
+    await AuditLog.record({
+      actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "mentorship",
       action: reassignOf ? "reassignation_matching" : "matching_manuel", targetType: "matching", targetId: newMatching.id,
-      date: new Date().toISOString(), details: `Binôme ${menteeLabel(mentee)} ↔ ${mentorLabel(mentor)} créé manuellement${reassignOf ? " (réassignation)" : ""}.`,
+      before: reassignOf ? { previousMatchId: reassignOf } : null, after: { mentorId: mentor.id, menteeId: mentee.id, status: "validee" },
+      details: `Binôme ${menteeLabel(mentee)} ↔ ${mentorLabel(mentor)} créé manuellement${reassignOf ? " (réassignation)" : ""}.`,
     });
 
     await NotificationCenter.push(menteeUser(mentee).id, {

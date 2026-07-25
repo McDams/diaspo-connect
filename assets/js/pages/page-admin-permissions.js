@@ -34,9 +34,10 @@
       const cb = e.target.closest(".perm-toggle");
       if (!cb) return;
       RBAC.toggle(currentRole, cb.dataset.module, cb.dataset.action);
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
-        action: "permission_modifiee", targetType: "role", targetId: currentRole, date: new Date().toISOString(),
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "permissions",
+        action: "permission_modifiee", targetType: "role", targetId: currentRole,
+        before: { [`${cb.dataset.module}.${cb.dataset.action}`]: !cb.checked }, after: { [`${cb.dataset.module}.${cb.dataset.action}`]: cb.checked },
         details: `Permission ${cb.dataset.module}/${cb.dataset.action} ${cb.checked ? "accordée à" : "retirée à"} ${RBAC.ROLE_LABELS[currentRole]}.`,
       });
       DCUtils.toast("Permission mise à jour (simulation frontend).", "success");

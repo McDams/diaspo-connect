@@ -68,12 +68,13 @@
       const btn = resolveBtn || rejectBtn;
       if (!btn) return;
       const report = reports.find((r) => r.id === btn.dataset.id);
+      const previousStatus = report.status;
       report.status = resolveBtn ? "resolu" : "rejete";
       report.adminNote = resolveBtn ? "Signalement traité, mesures appliquées si nécessaire." : "Signalement examiné, aucune action requise.";
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "moderation",
         action: resolveBtn ? "resolution_signalement" : "rejet_signalement", targetType: "report", targetId: report.id,
-        date: new Date().toISOString(), details: report.adminNote,
+        before: { status: previousStatus }, after: { status: report.status }, details: report.adminNote,
       });
       DCUtils.toast("Signalement mis à jour.", "success");
       applyFilters();

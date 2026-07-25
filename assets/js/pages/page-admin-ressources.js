@@ -10,12 +10,12 @@
     demarches_administratives: "Démarches administratives", logement: "Logement", banque: "Banque",
     assurance: "Assurance", transport: "Transport", sante: "Santé", checklist_arrivee: "Checklist d'arrivée", faq: "FAQ",
   };
-  const AUDIENCE_LABELS = { tous: "Tous les visiteurs", mentore: "Mentorés", mentor: "Mentors / mentors", proprietaire: "Propriétaires" };
+  const AUDIENCE_LABELS = { tous: "Tous les visiteurs", mentore: "Mentorés", mentor: "Mentors", proprietaire: "Propriétaires" };
 
-  async function logAudit(action, targetType, targetId, details) {
-    await DataStore.insert("auditLog", {
-      id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
-      action, targetType, targetId, date: new Date().toISOString(), details,
+  async function logAudit(action, targetType, targetId, details, before, after) {
+    await AuditLog.record({
+      actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role },
+      module: "content", action, targetType, targetId, before: before || null, after: after || null, details,
     });
   }
 

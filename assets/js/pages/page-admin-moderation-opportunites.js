@@ -51,11 +51,13 @@
       const btn = approveBtn || rejectBtn;
       if (!btn) return;
       const opp = opportunities.find((o) => o.id === btn.dataset.id);
+      const previousStatus = opp.moderationStatus;
       opp.moderationStatus = approveBtn ? "validee" : "rejetee";
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "opportunities",
         action: approveBtn ? "validation_offre" : "rejet_offre", targetType: "opportunity", targetId: opp.id,
-        date: new Date().toISOString(), details: `Offre "${opp.title}" ${approveBtn ? "validée" : "rejetée"}.`,
+        before: { moderationStatus: previousStatus }, after: { moderationStatus: opp.moderationStatus },
+        details: `Offre "${opp.title}" ${approveBtn ? "validée" : "rejetée"}.`,
       });
       await NotificationCenter.push(opp.publisherId, {
         type: "offre_validee",

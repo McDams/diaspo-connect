@@ -130,10 +130,12 @@
       if (["resolu", "ferme"].includes(newStatus)) t.closedAt = now;
     }
     if (newAssignee !== t.assignedTo) {
+      const previousAssignee = t.assignedTo;
       t.history.push({ date: now, status: t.status, note: `Ticket réassigné.`, byStaffId: ctx.staff.id });
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: ctx.staff.id, actorName: `${ctx.user.firstName} ${ctx.user.lastName}`,
-        action: "assignation_ticket", targetType: "ticket", targetId: t.id, date: now, details: `Ticket assigné.`,
+      await AuditLog.record({
+        actor: { id: ctx.user.id, label: `${ctx.user.firstName} ${ctx.user.lastName}`, role: ctx.user.role || "staff" }, module: "tickets",
+        action: "assignation_ticket", targetType: "ticket", targetId: t.id,
+        before: { assignedTo: previousAssignee }, after: { assignedTo: newAssignee }, details: `Ticket assigné.`,
       });
     }
     t.status = newStatus;

@@ -56,7 +56,7 @@ const Layout = (() => {
       <div class="dc-site-banner" role="status">
         <div class="container d-flex align-items-center gap-2 py-2">
           <i class="bi bi-megaphone flex-shrink-0"></i>
-          <span class="flex-grow-1 small"><strong>${active.title}</strong> — ${active.body}</span>
+          <span class="flex-grow-1 small"><strong>${DCUtils.escapeHtml(active.title)}</strong> — ${DCUtils.escapeHtml(active.body)}</span>
           <button type="button" class="btn-close btn-close-white flex-shrink-0" aria-label="Fermer" id="dc-site-banner-close"></button>
         </div>
       </div>`;
@@ -152,8 +152,19 @@ const Layout = (() => {
       <span>Vous visualisez la plateforme en tant que <strong>${DCUtils.escapeHtml(info.targetLabel)}</strong> (${ROLE_LABELS[info.targetRole] || info.targetRole}).</span>
       <button type="button" class="btn btn-sm btn-light ms-auto" id="dc-stop-impersonation-btn">Revenir à mon compte admin</button>`;
     document.body.prepend(banner);
-    document.getElementById("dc-stop-impersonation-btn").addEventListener("click", () => {
-      Auth.stopImpersonation();
+    document.getElementById("dc-stop-impersonation-btn").addEventListener("click", async () => {
+      const stoppedInfo = Auth.stopImpersonation();
+      if (stoppedInfo) {
+        const adminUsers = await DataStore.getUsers();
+        const admin = adminUsers.find((u) => u.id === stoppedInfo.adminSession.userId);
+        await AuditLog.record({
+          actor: { id: stoppedInfo.adminSession.userId, label: admin ? `${admin.firstName} ${admin.lastName}` : "Administrateur", role: "admin" },
+          module: "users",
+          action: "impersonation_terminee", targetType: "user", targetId: stoppedInfo.targetUserId,
+          before: { impersonating: stoppedInfo.targetUserId, role: stoppedInfo.targetRole }, after: null,
+          details: `Incarnation de ${stoppedInfo.targetLabel} (${stoppedInfo.targetRole}) terminée, retour au compte administrateur.`,
+        });
+      }
       window.location.href = `${window.DC_ROOT || "./"}pages/admin/utilisateurs.html`;
     });
   }

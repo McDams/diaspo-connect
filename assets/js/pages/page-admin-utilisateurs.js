@@ -165,15 +165,16 @@
     if (id) {
       const user = users.find((u) => u.id === id);
       const roleChanged = user.role !== role;
+      const before = { firstName: user.firstName, lastName: user.lastName, email: user.email, phone: user.phone, city: user.city, role: user.role, status: user.status, verified: user.verified };
       Object.assign(user, {
         firstName, lastName, email, phone, city, role,
         status: document.getElementById("uf-status").value,
         verified: document.getElementById("uf-verified").checked,
       });
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
+      await AuditLog.record({
+        actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "users",
         action: roleChanged ? "changement_role" : "modification_utilisateur", targetType: "user", targetId: user.id,
-        date: new Date().toISOString(),
+        before, after: { firstName: user.firstName, lastName: user.lastName, email: user.email, phone: user.phone, city: user.city, role: user.role, status: user.status, verified: user.verified },
         details: roleChanged
           ? `Rôle de ${firstName} ${lastName} changé vers « ${ROLE_LABELS[role]} » par l'administration.`
           : `Fiche de ${firstName} ${lastName} modifiée par l'administration.`,
@@ -187,10 +188,11 @@
         createdAt: new Date().toISOString(), lastLoginAt: null,
       };
       await DataStore.insert("users", newUser);
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
+      await AuditLog.record({
+        actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "users",
         action: "creation_utilisateur", targetType: "user", targetId: newUser.id,
-        date: new Date().toISOString(), details: `Compte ${firstName} ${lastName} (${ROLE_LABELS[role]}) créé manuellement par l'administration.`,
+        before: null, after: { role, firstName, lastName, email },
+        details: `Compte ${firstName} ${lastName} (${ROLE_LABELS[role]}) créé manuellement par l'administration.`,
       });
       DCUtils.toast("Utilisateur créé.", "success");
     }
@@ -231,9 +233,10 @@
           onConfirm: async () => {
             const result = await Auth.startImpersonation(target.id);
             if (!result.ok) { DCUtils.toast(result.message, "danger"); return; }
-            await DataStore.insert("auditLog", {
-              id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
-              action: "impersonation_demarree", targetType: "user", targetId: target.id, date: new Date().toISOString(),
+            await AuditLog.record({
+              actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "users",
+              action: "impersonation_demarree", targetType: "user", targetId: target.id,
+              before: null, after: { impersonating: target.id, role: target.role },
               details: `Incarnation de ${target.firstName} ${target.lastName} (${target.role}) démarrée par l'administration.`,
             });
             let destination = `pages/${target.role}/dashboard.html`;
@@ -253,10 +256,12 @@
           confirmLabel: "Suspendre",
           onConfirm: async () => {
             const target = users.find((u) => u.id === suspendBtn.dataset.id);
+            const previousStatus = target.status;
             await DataStore.update("users", suspendBtn.dataset.id, { status: "suspendu" });
-            await DataStore.insert("auditLog", {
-              id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
-              action: "suspension_compte", targetType: "user", targetId: target.id, date: new Date().toISOString(),
+            await AuditLog.record({
+              actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "users",
+              action: "suspension_compte", targetType: "user", targetId: target.id,
+              before: { status: previousStatus }, after: { status: "suspendu" },
               details: `Compte ${target.firstName} ${target.lastName} (${target.role}) suspendu par l'administration.`,
             });
             DCUtils.toast("Compte suspendu.", "success");
@@ -266,10 +271,12 @@
       }
       if (reactivateBtn) {
         const target = users.find((u) => u.id === reactivateBtn.dataset.id);
+        const previousStatus = target.status;
         DataStore.update("users", reactivateBtn.dataset.id, { status: "actif" }).then(async () => {
-          await DataStore.insert("auditLog", {
-            id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
-            action: "reactivation_compte", targetType: "user", targetId: target.id, date: new Date().toISOString(),
+          await AuditLog.record({
+            actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "users",
+            action: "reactivation_compte", targetType: "user", targetId: target.id,
+            before: { status: previousStatus }, after: { status: "actif" },
             details: `Compte ${target.firstName} ${target.lastName} (${target.role}) réactivé par l'administration.`,
           });
           DCUtils.toast("Compte réactivé.", "success");

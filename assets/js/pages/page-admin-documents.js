@@ -106,12 +106,14 @@
 
   async function decide(id, decision) {
     const doc = documents.find((d) => d.id === id);
+    const previousStatus = doc.status;
     const notesInput = document.getElementById("doc-notes");
     const notes = notesInput ? notesInput.value.trim() : doc.notes;
     await DataStore.update("documents", id, { status: decision, notes, reviewedBy: "staff-011", reviewedAt: new Date().toISOString() });
-    await DataStore.insert("auditLog", {
-      id: DataStore.nextId("audit"), actorId: adminUser.id, actorName: `${adminUser.firstName} ${adminUser.lastName}`,
-      action: decision === "valide" ? "document_valide" : "document_rejete", targetType: "document", targetId: id, date: new Date().toISOString(),
+    await AuditLog.record({
+      actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "documents",
+      action: decision === "valide" ? "document_valide" : "document_rejete", targetType: "document", targetId: id,
+      before: { status: previousStatus }, after: { status: decision },
       details: `Document « ${doc.title} » (${ownerName(doc.ownerId)}) ${decision === "valide" ? "validé" : "rejeté"} par l'administration.`,
     });
     DCUtils.toast(decision === "valide" ? "Document validé." : "Document rejeté.", decision === "valide" ? "success" : "danger");

@@ -108,13 +108,15 @@
       const newAssignee = DCUtils.qs("#td-assignee").value || null;
       const newStatus = DCUtils.qs("#td-status").value;
       const newPriority = DCUtils.qs("#td-priority").value;
+      const before = { assignedTo: t.assignedTo, status: t.status, priority: t.priority };
       const historyEntry = { date: new Date().toISOString(), status: newStatus, note: "Mis à jour par l'administration.", byStaffId: null };
       t.history = t.history || [];
       t.history.push(historyEntry);
       await DataStore.update("tickets", t.id, { assignedTo: newAssignee, status: newStatus, priority: newPriority });
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
-        action: "ticket_reassigne", targetType: "ticket", targetId: t.id, date: new Date().toISOString(),
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "tickets",
+        action: "ticket_reassigne", targetType: "ticket", targetId: t.id,
+        before, after: { assignedTo: newAssignee, status: newStatus, priority: newPriority },
         details: `Ticket ${t.id} réassigné/mis à jour par l'administration (statut : ${newStatus}).`,
       });
       DCUtils.toast("Ticket mis à jour.", "success");
@@ -123,9 +125,11 @@
     });
 
     document.getElementById("td-escalate").addEventListener("click", async () => {
-      await DataStore.insert("auditLog", {
-        id: DataStore.nextId("audit"), actorId: admin.id, actorName: `${admin.firstName} ${admin.lastName}`,
-        action: "ticket_escalade", targetType: "ticket", targetId: t.id, date: new Date().toISOString(),
+      const before = { priority: t.priority, urgent: t.urgent };
+      await AuditLog.record({
+        actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "tickets",
+        action: "ticket_escalade", targetType: "ticket", targetId: t.id,
+        before, after: { priority: "urgente", urgent: true },
         details: `Ticket ${t.id} escaladé à la direction.`,
       });
       await DataStore.update("tickets", t.id, { priority: "urgente", urgent: true });
