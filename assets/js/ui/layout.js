@@ -14,7 +14,10 @@ const Layout = (() => {
 
   function markActive(root, currentPage) {
     root.querySelectorAll("[data-page]").forEach((el) => {
-      if (el.dataset.page === currentPage) el.classList.add("active");
+      if (el.dataset.page === currentPage) {
+        el.classList.add("active");
+        el.setAttribute("aria-current", "page");
+      }
     });
   }
 
@@ -67,6 +70,11 @@ const Layout = (() => {
     });
   }
 
+  /**
+   * Icônes conditionnelles "si connecté" (notifications, profil, administration)
+   * dans le menu public : mêmes destinations que l'ancien bouton "Mon espace",
+   * enrichies d'un accès direct au profil et, pour un admin, à l'administration.
+   */
   async function reflectSessionInPublicNav() {
     const session = await Auth.getSession();
     const authArea = document.getElementById("dc-public-auth-area");
@@ -74,16 +82,50 @@ const Layout = (() => {
     if (!session) return; // le partial affiche déjà "Connexion / Inscription" par défaut
     const user = await Auth.getCurrentUser();
     if (!user) return;
-    let href = `pages/${user.role}/dashboard.html`;
-    if (user.role === "staff" && window.Permissions) {
+    const root = window.DC_ROOT || "./";
+
+    let dashboardHref = `pages/${user.role}/dashboard.html`;
+    let profileHref = null;
+    if (user.role === "admin") {
+      profileHref = "pages/admin/parametres.html";
+    } else if (user.role === "staff" && typeof Permissions !== "undefined" && typeof Permissions.landingPageFor === "function") {
       const staffList = await DataStore.getStaff();
       const staff = staffList.find((s) => s.userId === user.id);
-      if (staff) href = `pages/staff/${await Permissions.landingPageFor(staff.accessLevel)}`;
+      if (staff) dashboardHref = `pages/staff/${await Permissions.landingPageFor(staff.accessLevel)}`;
+      // Pas de page de profil dédiée côté espace interne.
+    } else {
+      profileHref = `pages/${user.role}/profil.html`;
     }
+
+    const adminIcon = user.role === "admin"
+      ? `<a href="${root}pages/admin/dashboard.html" class="btn btn-outline-secondary btn-sm dc-icon-btn" title="Administration" aria-label="Administration"><i class="bi bi-shield-lock-fill" aria-hidden="true"></i></a>`
+      : "";
+    const profileIcon = profileHref
+      ? `<a href="${root}${profileHref}" class="btn btn-outline-secondary btn-sm dc-icon-btn" title="Mon profil" aria-label="Mon profil"><i class="bi bi-person-circle" aria-hidden="true"></i></a>`
+      : "";
+
     authArea.innerHTML = `
-      <a href="{{ROOT}}${href}" class="btn btn-primary btn-sm">
-        Mon espace <i class="bi bi-arrow-right"></i>
-      </a>`.replaceAll("{{ROOT}}", window.DC_ROOT || "./");
+      ${adminIcon}
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dc-icon-btn dc-notif-btn" type="button" id="dc-public-notif-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+          <i class="bi bi-bell-fill" aria-hidden="true"></i>
+          <span id="dc-notif-badge" class="dc-notif-dot d-none"></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end p-0 shadow-lg" style="width: 320px;" aria-labelledby="dc-public-notif-toggle">
+          <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+            <strong class="small">Notifications</strong>
+          </div>
+          <div id="dc-notif-dropdown-body" style="max-height: 360px; overflow-y:auto;"></div>
+        </div>
+      </div>
+      ${profileIcon}
+      <a href="${root}${dashboardHref}" class="btn btn-primary btn-sm">Mon espace <i class="bi bi-arrow-right"></i></a>
+    `;
+
+    if (typeof NotificationCenter !== "undefined") {
+      const notifBody = document.getElementById("dc-notif-dropdown-body");
+      if (notifBody) await NotificationCenter.mount(notifBody, user.id);
+    }
   }
 
   function wireMobileNavClose() {

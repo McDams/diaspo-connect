@@ -13,6 +13,62 @@
 .dc-navbar .nav-link { font-weight: 600; color: var(--dc-ink-700); }
 .dc-navbar .nav-link.active, .dc-navbar .nav-link:hover { color: var(--dc-navy-700); }
 
+/* --- Menu public en icônes (accessible) --- */
+.dc-icon-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.7rem !important;
+  border-radius: var(--dc-radius-sm);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.dc-icon-nav-link .bi { font-size: 1.05rem; line-height: 1; }
+.dc-icon-nav-link:hover { background: var(--dc-navy-100); }
+/* L'état actif ne repose jamais sur la seule couleur : poids de police + soulignement + icône plus marquée. */
+.dc-icon-nav-link.active {
+  font-weight: 800;
+  border-bottom-color: var(--dc-teal-600);
+}
+.dc-icon-nav-link.active .bi { color: var(--dc-teal-600); }
+.dc-icon-nav-link:focus-visible,
+.dc-icon-btn:focus-visible {
+  outline: 2px solid var(--dc-navy-700);
+  outline-offset: 2px;
+  border-radius: var(--dc-radius-sm);
+}
+
+.dc-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+}
+.dc-icon-btn .bi { font-size: 1.1rem; }
+
+@media (max-width: 991.98px) {
+  .dc-icon-nav-link {
+    padding: 0.75rem 0.9rem !important;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+  }
+  .dc-icon-nav-link .bi { width: 1.4rem; text-align: center; }
+  .dc-icon-nav-link.active {
+    background: var(--dc-navy-100);
+    border-left-color: var(--dc-teal-600);
+  }
+  #dc-public-auth-area {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--dc-ink-100);
+    flex-wrap: wrap;
+  }
+}
+
 /* --- Header applicatif (dashboards) --- */
 .dc-app-header {
   height: var(--dc-header-h);

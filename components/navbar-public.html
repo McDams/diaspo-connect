@@ -1,20 +1,52 @@
 <div id="dc-site-banner"></div>
-<nav class="navbar navbar-expand-lg dc-navbar sticky-top py-2" aria-label="Navigation principale">
+<nav class="navbar navbar-expand-lg dc-navbar dc-icon-navbar sticky-top py-2" aria-label="Navigation principale">
   <div class="container">
     <a class="navbar-brand" href="{{ROOT}}index.html">Diaspo<span>Connect</span></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dcPublicNav" aria-controls="dcPublicNav" aria-expanded="false" aria-label="Ouvrir le menu">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dcPublicNav" aria-controls="dcPublicNav" aria-expanded="false" aria-label="Ouvrir le menu de navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="dcPublicNav">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-1">
-        <li class="nav-item"><a class="nav-link" data-page="accueil" href="{{ROOT}}index.html">Accueil</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="comment-ca-marche" href="{{ROOT}}pages/public/comment-ca-marche.html">Comment ça marche</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="mentors" href="{{ROOT}}pages/public/mentors.html">Trouver un mentor</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="logements" href="{{ROOT}}pages/public/logements.html">Logements</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="opportunites" href="{{ROOT}}pages/public/opportunites.html">Opportunités</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="ressources" href="{{ROOT}}pages/public/ressources.html">Ressources</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="about" href="{{ROOT}}pages/public/about.html">À propos</a></li>
-        <li class="nav-item"><a class="nav-link" data-page="contact-team" href="{{ROOT}}pages/public/contact-team.html">Contact</a></li>
+      <ul class="navbar-nav dc-icon-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="accueil" href="{{ROOT}}index.html" title="Accueil">
+            <i class="bi bi-house-door-fill" aria-hidden="true"></i><span>Accueil</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="about" href="{{ROOT}}pages/public/about.html" title="À propos — à propos de DiaspoConnect">
+            <i class="bi bi-info-circle-fill" aria-hidden="true"></i><span>À propos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="comment-ca-marche" href="{{ROOT}}pages/public/comment-ca-marche.html" title="Fonctionnement — comment fonctionne DiaspoConnect">
+            <i class="bi bi-signpost-split-fill" aria-hidden="true"></i><span>Fonctionnement</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="mentors" href="{{ROOT}}pages/public/mentors.html" title="Mentors — trouver un mentor">
+            <i class="bi bi-people-fill" aria-hidden="true"></i><span>Mentors</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="logements" href="{{ROOT}}pages/public/logements.html" title="Logement — annonces de logement">
+            <i class="bi bi-building-fill" aria-hidden="true"></i><span>Logement</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="opportunites" href="{{ROOT}}pages/public/opportunites.html" title="Opportunités — offres et stages">
+            <i class="bi bi-briefcase-fill" aria-hidden="true"></i><span>Opportunités</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="ressources" href="{{ROOT}}pages/public/ressources.html" title="Ressources — guides et ressources pratiques">
+            <i class="bi bi-journal-richtext" aria-hidden="true"></i><span>Ressources</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dc-icon-nav-link" data-page="contact-team" href="{{ROOT}}pages/public/contact-team.html" title="Contact — contacter l'équipe">
+            <i class="bi bi-envelope-fill" aria-hidden="true"></i><span>Contact</span>
+          </a>
+        </li>
       </ul>
       <div class="d-flex gap-2 align-items-center" id="dc-public-auth-area">
         <a href="{{ROOT}}pages/public/login.html" class="btn btn-outline-primary btn-sm">Connexion</a>
