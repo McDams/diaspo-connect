@@ -7,7 +7,7 @@
 const StaffGuard = (() => {
   async function require(moduleId) {
     const root = window.DC_ROOT || "./";
-    const session = Auth.getSession();
+    const session = await Auth.getSession();
     if (!session || (session.role !== "staff" && session.role !== "admin")) {
       window.location.href = `${root}pages/public/login.html`;
       return null;

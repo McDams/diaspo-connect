@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: diaspoconnect-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: diaspoconnect
+      POSTGRES_PASSWORD: diaspoconnect_dev_pw
+      POSTGRES_DB: diaspoconnect
+    ports:
+      - "5433:5432"
+    volumes:
+      - diaspoconnect_pgdata:/var/lib/postgresql/data
+
+volumes:
+  diaspoconnect_pgdata:
+    external: true

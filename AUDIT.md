@@ -1,32 +1,46 @@
 # Audit structuré — DiaspoConnect (Phase 5)
 
-Date de l'audit : 2026-07-25.
-Périmètre : prototype frontend statique (HTML/CSS/JS vanilla, Bootstrap 5, aucun backend, données mockées en JSON, persistance mémoire par chargement de page).
+Date de l'audit : 2026-07-25. Mise à jour (backend réel) : 2026-07-25.
+Périmètre initial : prototype frontend statique (HTML/CSS/JS vanilla, Bootstrap 5, aucun backend, données mockées en JSON, persistance mémoire par chargement de page).
 
 Légende sévérité : 🔴 Critique · 🟠 Élevée · 🟡 Moyenne · ⚪ Faible.
 Légende statut : **Corrigé** (code modifié dans cette session et vérifié) · **Limitation documentée** (comportement inhérent à un frontend sans backend, non corrigible sans API réelle) · **Reporté** (amélioration identifiée, non traitée dans cette session par choix de priorisation).
 
 ---
 
-## ⚠️ Constat prioritaire : exposition des données publiques
+## ✅ Mise à jour majeure : un vrai backend remplace le prototype statique
 
-🔴 **Critique** — **Limitation documentée**
+Les deux limitations les plus sérieuses de cet audit (exposition publique des données, absence de sécurité réelle des comptes) étaient explicitement documentées comme **non corrigibles sans backend**. Un backend réel a depuis été construit et branché : Node/Express + PostgreSQL (voir `server/README.md`), avec authentification par mot de passe hashé (bcrypt) + session httpOnly côté serveur, et permissions RBAC **appliquées pour de vrai sur chaque endpoint** (`assets/js/core/rbac.js` est désormais partagé entre client et serveur, une seule grille de permissions).
 
-Comme il n'existe aucun backend, **tous les fichiers `assets/data/*.json` sont récupérables par n'importe qui**, simplement en connaissant leur URL (`/assets/data/users.json`, `/assets/data/messages.json`, `/assets/data/reports.json`, `/assets/data/documents.json`, `/assets/data/audit-log.json`...), indépendamment de tout rôle, session ou droit affiché dans l'interface. Le cloisonnement par rôle (RBAC, `StaffGuard`, `Auth.guard`) ne s'applique qu'à l'affichage côté client : il ne protège aucune donnée côté serveur puisqu'il n'y a pas de serveur applicatif.
+Ce qui change concrètement :
+- **Plus aucune donnée n'est un fichier statique public.** Chaque ressource passe par une API authentifiée ; testé et confirmé qu'un appel non authentifié à `/api/users`, `/api/audit-log`, etc. renvoie `401`, alors que les mêmes fichiers JSON étaient auparavant lisibles par quiconque connaissait l'URL.
+- **Les mots de passe sont réellement vérifiés** (bcrypt), les sessions sont des cookies `httpOnly` gérés serveur (plus de `sessionStorage` pour l'authentification), et le journal d'audit dérive désormais l'identité de l'acteur de la session authentifiée — un client ne peut plus usurper "qui a fait quoi" en falsifiant le corps de sa requête.
+- **Bug de fond découvert et corrigé pendant la migration** : plusieurs actions (acceptation/refus de matching par le mentor, réactivation/réassignation de matching par l'admin, sauvegarde des paramètres système, coche de checklist et ajout de commentaire sur une carte Kanban) mutaient un objet en mémoire **sans jamais appeler `DataStore.update()`** — sous l'ancien mock, cela "fonctionnait" en apparence car rien n'était de toute façon persisté au-delà du rechargement de page ; avec un vrai backend, l'oubli devenait un vrai bug (la donnée ne survivait pas à un rechargement). Corrigé dans `page-mentor-demandes.js`, `page-admin-matching.js`, `page-admin-system-settings.js`, `assets/js/engine/kanban-engine.js` (`toggleChecklistItem`, `addComment`), et la messagerie (`messaging-thread.js` : envoi de message et accusés de lecture ne persistaient pas non plus).
+- Vérifié de bout en bout en navigateur : connexion réelle, RBAC bloquant un rôle non autorisé (403), incarnation démarrée/arrêtée avec trace d'audit correcte, carte Kanban modifiée et confirmée en base, matching accepté et confirmé en base, message envoyé et confirmé en base.
 
-Concrètement, un visiteur non authentifié peut lire : la liste complète des utilisateurs (noms, emails, villes), le contenu intégral des conversations privées, les signalements de modération, les documents/justificatifs déposés, le journal d'audit, les paramètres système.
+**Limite honnête** : le passage au vrai backend n'a pas visé une isolation parfaite ligne par ligne pour chaque ressource (voir `server/README.md` § Limites connues — notamment `matchings`, où toute personne authentifiée peut créer/modifier un binôme faute de résolution fiche→utilisateur pour un contrôle de propriété strict). C'est une amélioration nette et mesurée, pas une réécriture totale prétendant à une sécurité parfaite.
 
-**Conséquence pour ce projet** : acceptable pour un prototype de démonstration, mais **bloquant avant toute mise en production réelle**. Le passage à un vrai backend (API + base de données + authentification serveur + autorisation par endpoint) est un prérequis absolu, pas une optimisation. `DataStore` a été conçu dès l'origine comme une façade isolant cette dépendance (voir sa documentation interne) pour rendre cette transition la moins coûteuse possible.
+---
+
+## ⚠️ Constat prioritaire (résolu) : exposition des données publiques
+
+🔴 **Critique** — **Corrigé** (voir section ci-dessus)
+
+Comme il n'existait aucun backend, **tous les fichiers `assets/data/*.json` étaient récupérables par n'importe qui**, simplement en connaissant leur URL, indépendamment de tout rôle, session ou droit affiché dans l'interface. Le cloisonnement par rôle (RBAC, `StaffGuard`, `Auth.guard`) ne s'appliquait qu'à l'affichage côté client.
+
+Concrètement, un visiteur non authentifié pouvait lire : la liste complète des utilisateurs (noms, emails, villes), le contenu intégral des conversations privées, les signalements de modération, les documents/justificatifs déposés, le journal d'audit, les paramètres système.
+
+**Statut** : résolu par le backend réel — toutes ces routes exigent désormais une session authentifiée, vérifié par des appels `curl` sans cookie renvoyant `401` sur chacune.
 
 ---
 
 ## 1. Sécurité des comptes
 
-🟠 **Élevée** — **Limitation documentée** (partiellement atténuée) + **Corrigé** (auto-suspension)
+🟢 **Corrigé** (mots de passe réels + sessions serveur) — reste hors périmètre : 2FA, verrouillage après échecs, expiration de session courte
 
-- Authentification simulée : `Auth` stocke la session dans `sessionStorage` (jamais `localStorage`), ce qui limite la persistance à l'onglet/la session navigateur — bon réflexe pour un mock, mais **aucun mot de passe n'est réellement vérifié** (pas de hash, pas de backend d'authentification).
-- Pas de verrouillage après tentatives échouées, pas de 2FA, pas d'expiration de session — hors périmètre d'un frontend sans backend.
-- ✅ **Corrigé** : `assets/js/pages/page-admin-utilisateurs.js` — un admin pouvait se suspendre lui-même (testé en session : `u-001` a pu se suspendre lui-même via son propre bouton d'action). Corrigé par : (1) le bouton "Suspendre" est désormais désactivé sur la propre ligne de l'admin connecté (`disabled` + `title` explicite) ; (2) un garde-fou dans le handler de clic bloque quand même l'action et affiche un toast si elle était déclenchée ; (3) le formulaire d'édition (`submitUserForm`) empêche également l'admin de changer son propre rôle hors `"admin"` ou de désactiver son propre statut. Vérifié en navigateur : le bouton apparaît bien désactivé sur la ligne de l'admin connecté.
+- ✅ **Corrigé** : authentification réelle. `Auth` appelle désormais `/api/auth/login`, qui vérifie le mot de passe via `bcrypt.compare()` contre un hash stocké en base — il n'y a plus de vérification de façade. La session vit dans un cookie `httpOnly`/`sameSite=lax` généré et validé côté serveur (table `session`, via `connect-pg-simple`), plus dans `sessionStorage` (qu'un script de page pouvait lire ou falsifier).
+- Pas de verrouillage après tentatives échouées, pas de 2FA, pas d'expiration courte de session — non traité dans cette passe (amélioration future, pas une régression : ces protections n'existaient dans aucune version antérieure du prototype).
+- ✅ **Corrigé** (déjà fait en Phase 5, toujours vrai) : `assets/js/pages/page-admin-utilisateurs.js` — un admin pouvait se suspendre lui-même. Corrigé par : (1) le bouton "Suspendre" est désormais désactivé sur la propre ligne de l'admin connecté (`disabled` + `title` explicite) ; (2) un garde-fou dans le handler de clic bloque quand même l'action et affiche un toast si elle était déclenchée ; (3) le formulaire d'édition (`submitUserForm`) empêche également l'admin de changer son propre rôle hors `"admin"` ou de désactiver son propre statut. Vérifié en navigateur : le bouton apparaît bien désactivé sur la ligne de l'admin connecté.
 
 ## 2. Permissions / rôles
 
@@ -148,7 +162,7 @@ Contrôle d'intégrité référentielle automatisé exécuté sur l'ensemble des
 
 ## 16. Exposition des données publiques
 
-Voir le constat prioritaire en tête de document — 🔴 **Critique**, **limitation documentée**, non corrigible sans backend réel.
+Voir le constat prioritaire en tête de document — 🔴 **Critique**, **Corrigé** par le backend réel (authentification requise sur toutes les routes de données).
 
 ## 17. Gestion des erreurs
 
@@ -163,18 +177,20 @@ Voir point 3 — corrigé : le seul gap réel trouvé (formulaire paramètres sy
 
 ## 19. Risques d'abus / dérive
 
-🟠 **Élevée** — **Limitation documentée** (structurelle) + gaps applicatifs **corrigés**
+🟢 **Corrigé** (risque structurant résolu) — un résidu documenté subsiste sur `matchings`
 
-- Le risque le plus sérieux reste l'exposition publique des données JSON (point 16), qui rend tout "cloisonnement par rôle" strictement cosmétique en l'absence de backend — un attaquant n'a jamais besoin de contourner l'UI, il lui suffit d'appeler l'URL du fichier de données. Non corrigible sans backend réel.
+- ✅ **Corrigé** : l'exposition publique des données (point 16) est résolue par le backend réel — un attaquant ne peut plus simplement appeler l'URL d'un fichier de données, chaque endpoint exige une session authentifiée et applique RBAC côté serveur.
 - ✅ **Corrigé** : auto-suspension admin possible sans garde-fou (point 1).
-- `RBAC.toggle()` et les mutations `settings`/`permissions` ne sont jamais persistées au-delà du cache mémoire de l'onglet — un admin "malveillant" ne peut donc pas dégrader durablement les permissions d'un rôle dans ce prototype (la mutation se perd au reload), ce qui limite involontairement ce vecteur de dérive dans le contexte actuel.
+- Résidu documenté (voir `server/README.md`) : les endpoints `matchings` acceptent l'écriture de toute personne authentifiée (pas de résolution fiche-mentor/fiche-mentee → utilisateur pour un contrôle de propriété strict) — un mentore authentifié pourrait en théorie modifier un binôme qui n'est pas le sien via un appel API direct. Amélioration nette par rapport à l'accès public antérieur, mais pas une isolation parfaite.
+- `RBAC.toggle()` (grille en mémoire process du serveur, pas encore persistée en base) et les mutations de `settings` sont maintenant réellement écrites en base pour `settings` ; `RBAC.toggle()` lui-même reste une mutation en mémoire du serveur Node (perdue à un redémarrage du serveur) — cohérent avec le fait que la page `admin/permissions.html` a toujours été présentée comme une simulation.
 
 ## 20. Points faibles d'architecture
 
-- 🔴 Absence de backend = absence de toute sécurité réelle des données (point 16), c'est le point faible structurant de tout le reste — **non corrigible côté frontend**, prérequis pour toute mise en production.
-- ✅ Duplication de règles métier RBAC vs `canCreate` codé en dur dans les pages Kanban (point 2/15) — corrigée.
-- ✅ Hook `onPoll` de `MessagingTransport` câblé (point 4) — reste toutefois un filet de secours limité par l'absence de backend (voir limitation documentée au point 4).
+- ✅ Absence de backend (point 16) — résolue : Node/Express + PostgreSQL, authentification réelle, RBAC serveur.
+- ✅ Duplication de règles métier RBAC vs `canCreate` codé en dur dans les pages Kanban (point 2/15) — corrigée, et désormais la même grille `RBAC.MATRIX` est partagée entre client et serveur (`assets/js/core/rbac.js` exporté vers Node).
+- ✅ Hook `onPoll` de `MessagingTransport` câblé (point 4) — la messagerie persiste désormais réellement côté serveur (conversations/messages relationnels), ce qui réduit encore l'écart entre "architecturé pour" et "fonctionne réellement".
 - ✅ État d'erreur utilisateur ajouté en cas d'échec de chargement de données (point 17).
+- Nouveau point faible identifié pendant la migration, corrigé où trouvé : plusieurs flux mutaient un objet en mémoire sans jamais appeler `DataStore.update()` (voir section "Mise à jour majeure" en tête de document) — un type de bug qui restait invisible sous l'ancien mock (rien n'y survivait de toute façon à un rechargement) et qui devient un vrai bug fonctionnel avec un backend réel. Les instances trouvées ont été corrigées ; une revue exhaustive de tout le code applicatif à la recherche d'autres occurrences n'a pas été refaite (portée "pragmatique" de cette migration).
 
 ---
 

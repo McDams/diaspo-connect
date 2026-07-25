@@ -150,3 +150,10 @@ const RBAC = (() => {
 
   return { ACTIONS, MODULES, ROLE_LABELS, MATRIX, roleKeyFor, can, hasFullAccess, actionsFor, toggle };
 })();
+
+// Partagé avec le serveur Node (server/middleware/rbac.js) pour une seule source
+// de vérité entre le contrôle d'affichage côté client et l'application réelle
+// des droits côté serveur. N'affecte pas l'usage navigateur (RBAC reste global).
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = RBAC;
+}

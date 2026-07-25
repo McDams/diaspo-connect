@@ -118,6 +118,7 @@
     const previousStatus = m.status;
     m.status = "active";
     pushHistory(m, "active", "Accompagnement réactivé par l'administration.");
+    await DataStore.update("matchings", m.id, { status: m.status, statusHistory: m.statusHistory });
     await AuditLog.record({
       actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "mentorship",
       action: "reactivation_matching", targetType: "matching", targetId: m.id,
@@ -148,6 +149,7 @@
     m.status = targetStatus;
     if (targetStatus === "terminee") m.endReason = reason;
     pushHistory(m, targetStatus, reason);
+    await DataStore.update("matchings", m.id, { status: m.status, endReason: m.endReason, statusHistory: m.statusHistory });
     await AuditLog.record({
       actor: { id: adminUser.id, label: `${adminUser.firstName} ${adminUser.lastName}`, role: adminUser.role }, module: "mentorship",
       action: targetStatus === "terminee" ? "fin_matching" : "suspension_matching", targetType: "matching", targetId: m.id,
@@ -227,12 +229,14 @@
     };
     await DataStore.insert("matchings", newMatching);
     mentee.matchingId = newMatching.id;
+    await DataStore.update("mentees", mentee.id, { matchingId: newMatching.id });
 
     if (reassignOf) {
       const old = matchings.find((m) => m.id === reassignOf);
       old.status = "terminee";
       old.endReason = "Réassignation à un autre mentor.";
       pushHistory(old, "terminee", `Remplacé par le binôme ${newMatching.id}.`);
+      await DataStore.update("matchings", old.id, { status: old.status, endReason: old.endReason, statusHistory: old.statusHistory });
     }
 
     await AuditLog.record({

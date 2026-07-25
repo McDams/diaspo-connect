@@ -119,6 +119,7 @@ const KanbanEngine = (() => {
     if (!item) return null;
     item.done = !item.done;
     card.updatedAt = new Date().toISOString();
+    await DataStore.update("cards", cardId, { checklist: card.checklist, updatedAt: card.updatedAt });
     await logActivity(cardId, actor, "checklist_updated", `Case « ${item.text} » ${item.done ? "cochée" : "décochée"}.`);
     return card;
   }
@@ -130,6 +131,7 @@ const KanbanEngine = (() => {
     const comment = { id: DataStore.nextId("cm"), authorId: actor.id, authorLabel: actor.label, text, createdAt: new Date().toISOString() };
     card.comments = card.comments || [];
     card.comments.push(comment);
+    await DataStore.update("cards", cardId, { comments: card.comments });
     await logActivity(cardId, actor, "commented", text.length > 80 ? text.slice(0, 80) + "…" : text);
     return comment;
   }

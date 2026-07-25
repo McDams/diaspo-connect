@@ -23,6 +23,7 @@
         firstName: fd.get("firstName"),
         lastName: fd.get("lastName"),
         email: fd.get("email"),
+        password: fd.get("password"),
         phone: fd.get("phone"),
         city: fd.get("cityOfOrigin"),
       });

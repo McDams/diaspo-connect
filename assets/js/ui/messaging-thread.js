@@ -56,7 +56,9 @@ const MessagingThread = (() => {
     if (!unread.length) return;
     const now = new Date().toISOString();
     unread.forEach((m) => { m.read = true; m.readAt = now; });
-    MessagingTransport.notifyRead(conv.id, currentUser.id, unread.map((m) => m.id));
+    const ids = unread.map((m) => m.id);
+    DataStore.markMessagesRead(conv.id, ids).catch(() => {});
+    MessagingTransport.notifyRead(conv.id, currentUser.id, ids);
   }
 
   function renderTypingRow(conv) {
@@ -105,7 +107,7 @@ const MessagingThread = (() => {
       }
     });
 
-    document.getElementById("message-form").addEventListener("submit", (e) => {
+    document.getElementById("message-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const input = document.getElementById("message-input");
       const text = input.value.trim();
@@ -114,6 +116,7 @@ const MessagingThread = (() => {
       conv.messages.push(message);
       conv.lastMessageAt = message.sentAt;
       input.value = "";
+      await DataStore.sendMessage(conv.id, message);
       MessagingTransport.notifyNewMessage(conv.id, message);
       renderMessages(conv);
       renderList();

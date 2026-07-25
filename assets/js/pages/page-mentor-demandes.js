@@ -56,6 +56,9 @@
     matching.respondedAt = now;
     matching.statusHistory.push({ status: "validee", date: now, note: "Acceptée par le mentor" });
     matching.statusHistory.push({ status: "active", date: now, note: "Accompagnement démarré" });
+    await DataStore.update("matchings", matching.id, {
+      status: matching.status, respondedAt: matching.respondedAt, statusHistory: matching.statusHistory,
+    });
     const mentee = mentees.find((m) => m.id === matching.menteeId);
     const menteeUser = users.find((u) => u.id === mentee.userId);
     await NotificationCenter.push(menteeUser.id, {
@@ -75,6 +78,9 @@
     matching.status = "terminee";
     matching.endReason = reason || "Refusée par le mentor";
     matching.statusHistory.push({ status: "terminee", date: now, note: `Refusée : ${matching.endReason}` });
+    await DataStore.update("matchings", matching.id, {
+      status: matching.status, endReason: matching.endReason, statusHistory: matching.statusHistory,
+    });
     const mentee = mentees.find((m) => m.id === matching.menteeId);
     await DataStore.update("mentees", mentee.id, { matchingId: null });
     bootstrap.Modal.getInstance(document.getElementById("refuseModal")).hide();

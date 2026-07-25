@@ -68,7 +68,7 @@ const Layout = (() => {
   }
 
   async function reflectSessionInPublicNav() {
-    const session = Auth.getSession();
+    const session = await Auth.getSession();
     const authArea = document.getElementById("dc-public-auth-area");
     if (!authArea) return;
     if (!session) return; // le partial affiche déjà "Connexion / Inscription" par défaut
@@ -134,12 +134,12 @@ const Layout = (() => {
     const notifDropdown = document.getElementById("dc-notif-dropdown-body");
     if (notifDropdown) await NotificationCenter.mount(notifDropdown, user.id);
 
-    mountImpersonationBanner();
+    await mountImpersonationBanner();
   }
 
   /** Bandeau persistant affiché sur toute page authentifiée tant qu'une incarnation admin est active. */
-  function mountImpersonationBanner() {
-    const info = Auth.getImpersonationInfo();
+  async function mountImpersonationBanner() {
+    const info = await Auth.getImpersonationInfo();
     let banner = document.getElementById("dc-impersonation-banner");
     if (!info) { if (banner) banner.remove(); return; }
     if (banner) return; // déjà affiché sur cette page
@@ -152,19 +152,11 @@ const Layout = (() => {
       <span>Vous visualisez la plateforme en tant que <strong>${DCUtils.escapeHtml(info.targetLabel)}</strong> (${ROLE_LABELS[info.targetRole] || info.targetRole}).</span>
       <button type="button" class="btn btn-sm btn-light ms-auto" id="dc-stop-impersonation-btn">Revenir à mon compte admin</button>`;
     document.body.prepend(banner);
+    // La fin d'incarnation et sa trace d'audit sont désormais gérées côté serveur
+    // (voir POST /api/auth/impersonate/stop), dérivées de la session authentifiée -
+    // le client n'a plus qu'à déclencher l'appel puis rediriger.
     document.getElementById("dc-stop-impersonation-btn").addEventListener("click", async () => {
-      const stoppedInfo = Auth.stopImpersonation();
-      if (stoppedInfo) {
-        const adminUsers = await DataStore.getUsers();
-        const admin = adminUsers.find((u) => u.id === stoppedInfo.adminSession.userId);
-        await AuditLog.record({
-          actor: { id: stoppedInfo.adminSession.userId, label: admin ? `${admin.firstName} ${admin.lastName}` : "Administrateur", role: "admin" },
-          module: "users",
-          action: "impersonation_terminee", targetType: "user", targetId: stoppedInfo.targetUserId,
-          before: { impersonating: stoppedInfo.targetUserId, role: stoppedInfo.targetRole }, after: null,
-          details: `Incarnation de ${stoppedInfo.targetLabel} (${stoppedInfo.targetRole}) terminée, retour au compte administrateur.`,
-        });
-      }
+      await Auth.stopImpersonation();
       window.location.href = `${window.DC_ROOT || "./"}pages/admin/utilisateurs.html`;
     });
   }

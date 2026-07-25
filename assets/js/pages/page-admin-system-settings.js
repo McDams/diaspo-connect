@@ -40,13 +40,14 @@
         ticketDefaultSlaHours: Number(document.getElementById("s-sla").value),
         maintenanceMode: document.getElementById("s-maintenance").checked,
       });
+      await DataStore.update("settings", "app", { general: settings.general });
       await AuditLog.record({
         actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "settings",
         action: "parametres_systeme_modifies", targetType: "settings", targetId: "general",
         before: previous, after: { ...settings.general },
         details: "Paramètres système généraux mis à jour.",
       });
-      DCUtils.toast("Paramètres enregistrés (simulation frontend).", "success");
+      DCUtils.toast("Paramètres enregistrés.", "success");
     });
 
     document.getElementById("flags-list").addEventListener("change", async (e) => {
@@ -55,6 +56,7 @@
       const flag = settings.featureFlags.find((f) => f.id === cb.dataset.id);
       const previousEnabled = flag.enabled;
       flag.enabled = cb.checked;
+      await DataStore.update("settings", "app", { featureFlags: settings.featureFlags });
       await AuditLog.record({
         actor: { id: admin.id, label: `${admin.firstName} ${admin.lastName}`, role: admin.role }, module: "settings",
         action: "feature_flag_modifie", targetType: "feature_flag", targetId: flag.id,

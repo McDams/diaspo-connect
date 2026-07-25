@@ -1,73 +1,61 @@
 /**
  * DataStore - unique point d'accès aux données de l'application.
  *
- * Aujourd'hui : lit des fichiers JSON statiques et garde un cache mémoire
- * (les écritures ne modifient que ce cache, elles ne persistent pas au reload).
- * Demain : il suffira de remplacer l'implémentation de `load()` et des
- * méthodes `create/update` par de vrais appels réseau (fetch vers une API
- * Node/Laravel/Django) - le reste de l'application consomme DataStore
- * sans connaître la source réelle des données.
+ * Backend réel : chaque méthode appelle l'API Express (/api/...) qui lit/écrit
+ * PostgreSQL, avec authentification par cookie de session et permissions
+ * appliquées côté serveur (RBAC). Le reste de l'application continue de
+ * consommer DataStore exactement comme avant (mêmes noms de méthodes, mêmes
+ * formes d'objets retournés) sans savoir que la source a changé - c'était
+ * l'intention dès la conception de ce module.
+ *
+ * Volontairement AUCUN cache : chaque appel `getX()` refait un aller-retour
+ * réseau. Un cache aurait masqué les endroits du code qui mutent un objet en
+ * mémoire sans jamais appeler `update()`/`insert()` pour le persister (bug
+ * réel trouvé et corrigé à plusieurs endroits lors du passage au vrai
+ * backend) : sans cache, un tel oubli redevient immédiatement visible (la
+ * donnée ne survit pas à un rechargement) plutôt que de sembler fonctionner
+ * par accident.
  */
 const DataStore = (() => {
-  const FILES = {
-    users: "users.json",
-    mentors: "mentors.json",
-    mentees: "mentees.json",
-    housing: "housing.json",
-    opportunities: "opportunities.json",
-    messages: "messages.json",
-    reports: "reports.json",
-    matchings: "matchings.json",
-    resources: "resources.json",
-    notifications: "notifications.json",
-    staff: "staff.json",
-    departments: "departments.json",
-    tickets: "tickets.json",
-    contactRequests: "contact-requests.json",
-    publicTeam: "public-team.json",
-    permissions: "permissions.json",
-    orgChart: "org-chart.json",
-    auditLog: "audit-log.json",
-    boards: "boards.json",
-    lists: "lists.json",
-    cards: "cards.json",
-    labels: "labels.json",
-    cardActivity: "card_activity.json",
-    documents: "documents.json",
-    settings: "settings.json",
-    announcements: "announcements.json",
+  const ENDPOINTS = {
+    users: "users", mentors: "mentors", mentees: "mentees", housing: "housing",
+    opportunities: "opportunities", reports: "reports", matchings: "matchings",
+    resources: "resources", notifications: "notifications", staff: "staff",
+    departments: "departments", tickets: "tickets", contactRequests: "contact-requests",
+    publicTeam: "public-team", permissions: "permissions", orgChart: "org-chart",
+    boards: "boards", lists: "lists", cards: "cards", labels: "labels",
+    cardActivity: "card-activity", documents: "documents", announcements: "announcements",
   };
 
-  const cache = {};
-  const pending = {};
-
-  function dataUrl(key) {
-    const root = window.DC_ROOT || "./";
-    return `${root}assets/data/${FILES[key]}`;
+  function apiRoot() {
+    return `${window.DC_ROOT || "./"}api/`;
   }
 
-  async function load(key) {
-    if (cache[key]) return cache[key];
-    if (pending[key]) return pending[key];
-    pending[key] = fetch(dataUrl(key))
-      .then((res) => {
-        if (!res.ok) throw new Error(`Chargement impossible : ${key}`);
-        return res.json();
-      })
-      .then((data) => {
-        cache[key] = data;
-        delete pending[key];
-        return data;
-      })
-      .catch((err) => {
-        delete pending[key];
-        console.error(err);
-        if (typeof DCUtils !== "undefined" && DCUtils.toast) {
-          DCUtils.toast("Impossible de charger certaines données. Vérifiez votre connexion et rechargez la page.", "danger");
-        }
-        throw err;
-      });
-    return pending[key];
+  async function request(path, options = {}) {
+    const res = await fetch(`${apiRoot()}${path}`, {
+      credentials: "include",
+      headers: options.body ? { "Content-Type": "application/json" } : undefined,
+      ...options,
+    });
+    if (!res.ok) {
+      let message = `Erreur réseau (${res.status})`;
+      try {
+        const data = await res.json();
+        if (data && data.error) message = data.error;
+      } catch (e) { /* réponse non-JSON, on garde le message générique */ }
+      if (typeof DCUtils !== "undefined" && DCUtils.toast) DCUtils.toast(message, "danger");
+      const err = new Error(message);
+      err.status = res.status;
+      throw err;
+    }
+    if (res.status === 204) return null;
+    return res.json();
+  }
+
+  function load(key) {
+    const endpoint = ENDPOINTS[key];
+    if (!endpoint) throw new Error(`Ressource inconnue : ${key}`);
+    return request(endpoint);
   }
 
   function nextId(prefix) {
@@ -80,7 +68,7 @@ const DataStore = (() => {
     getMentees: () => load("mentees"),
     getHousing: () => load("housing"),
     getOpportunities: () => load("opportunities"),
-    getMessages: () => load("messages"),
+    getMessages: () => request("messages"),
     getReports: () => load("reports"),
     getMatchings: () => load("matchings"),
     getResources: () => load("resources"),
@@ -92,40 +80,44 @@ const DataStore = (() => {
     getPublicTeam: () => load("publicTeam"),
     getPermissions: () => load("permissions"),
     getOrgChart: () => load("orgChart"),
-    getAuditLog: () => load("auditLog"),
+    getAuditLog: () => request("audit-log"),
     getBoards: () => load("boards"),
     getLists: () => load("lists"),
     getCards: () => load("cards"),
     getLabels: () => load("labels"),
     getCardActivity: () => load("cardActivity"),
     getDocuments: () => load("documents"),
-    getSettings: () => load("settings"),
+    getSettings: () => request("settings/app"),
     getAnnouncements: () => load("announcements"),
 
-    /** Insère un enregistrement dans le cache en mémoire (simulation d'écriture). */
+    /** Insère un enregistrement (POST authentifié, vérifié par RBAC côté serveur). */
     async insert(key, record) {
-      const collection = await load(key);
-      collection.push(record);
-      return record;
+      if (key === "auditLog") return request("audit-log", { method: "POST", body: JSON.stringify(record) });
+      const endpoint = ENDPOINTS[key];
+      if (!endpoint) throw new Error(`Ressource inconnue : ${key}`);
+      return request(endpoint, { method: "POST", body: JSON.stringify(record) });
     },
 
-    /** Met à jour un enregistrement identifié par `id` dans une collection. */
+    /** Fusionne un patch dans un enregistrement existant (PUT authentifié). */
     async update(key, id, patch) {
-      const collection = await load(key);
-      const item = collection.find((r) => r.id === id);
-      if (!item) return null;
-      Object.assign(item, patch);
-      return item;
+      if (key === "settings") return request(`settings/${id}`, { method: "PUT", body: JSON.stringify(patch) });
+      const endpoint = ENDPOINTS[key];
+      if (!endpoint) throw new Error(`Ressource inconnue : ${key}`);
+      return request(`${endpoint}/${id}`, { method: "PUT", body: JSON.stringify(patch) });
     },
 
-    /** Retire un enregistrement du cache en mémoire (simulation de suppression), en mutant la collection en place. */
+    /** Supprime un enregistrement (DELETE authentifié). */
     async remove(key, id) {
-      const collection = await load(key);
-      const index = collection.findIndex((r) => r.id === id);
-      if (index === -1) return false;
-      collection.splice(index, 1);
+      const endpoint = ENDPOINTS[key];
+      if (!endpoint) throw new Error(`Ressource inconnue : ${key}`);
+      await request(`${endpoint}/${id}`, { method: "DELETE" });
       return true;
     },
+
+    // Messagerie : relationnelle côté serveur (conversations + messages), pas
+    // couverte par le schéma générique insert/update/remove ci-dessus.
+    sendMessage: (conversationId, message) => request(`messages/${conversationId}/messages`, { method: "POST", body: JSON.stringify(message) }),
+    markMessagesRead: (conversationId, messageIds) => request(`messages/${conversationId}/messages/read`, { method: "PUT", body: JSON.stringify({ messageIds }) }),
 
     nextId,
   };
