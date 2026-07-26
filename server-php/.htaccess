@@ -1,0 +1,4 @@
+# Bloque tout accès web direct à ce dossier (config, libs, schéma SQL, .env).
+# Seul server-php/api/index.php reste joignable (voir server-php/api/.htaccess),
+# atteint uniquement via la réécriture /api/* définie dans le .htaccess racine.
+Require all denied

@@ -1,0 +1,10 @@
+# Route /api/* vers le front controller PHP (server-php/api/index.php).
+# Tout le reste (HTML/CSS/JS) est servi tel quel par Apache, sans passer par PHP.
+RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^api(/.*)?$ server-php/api/index.php/$1 [L,QSA]
+
+# Ne jamais servir .env, la config ou les libs PHP si quelqu'un devine l'URL.
+<FilesMatch "^\.env">
+  Require all denied
+</FilesMatch>

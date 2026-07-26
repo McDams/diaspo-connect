@@ -1,0 +1,3 @@
+# Réautorise uniquement ce dossier (surcharge le "Require all denied" du parent) :
+# c'est le seul point d'entrée du backend PHP.
+Require all granted

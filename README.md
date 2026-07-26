@@ -2,11 +2,20 @@
 
 Plateforme d'accompagnement pour les étudiants africains, avec un focus initial sur les étudiants **béninois** préparant leur arrivée en France. DiaspoConnect met en relation des **mentorés** avec des **mentors/mentors** déjà installés en France, et donne accès à un **logement vérifié**, des **opportunités** (jobs saisonniers, stages, alternances) et des **ressources pratiques**. La plateforme est aussi organisée comme une **vraie structure métier**, avec une équipe interne (direction, secrétariat, conseillers, modération, support, partenariats, contenu, conformité, technique), un organigramme public **fonctionnel** (sans identité nominative), un centre de tickets, et un **système de gestion de tâches Kanban intégré** à chaque espace utilisateur, jusqu'à un Kanban central pour l'administration.
 
-Le frontend est HTML5 / CSS3 / JavaScript natif + Bootstrap 5. Il est désormais branché sur un **vrai backend** (`server/`) : Node.js/Express + PostgreSQL, authentification par mot de passe hashé (bcrypt) et session serveur `httpOnly`, permissions RBAC appliquées pour de vrai sur chaque endpoint (pas seulement en affichage côté client). Voir [section 11](#11-backend-réel) pour l'architecture et [`server/README.md`](server/README.md) pour le détail technique et les limites connues.
+Le frontend est HTML5 / CSS3 / JavaScript natif + Bootstrap 5. Il est désormais branché sur un **vrai backend**, disponible en **deux implémentations interchangeables** exposant exactement la même API REST (`/api/...`) — le frontend ne voit aucune différence entre les deux :
+
+- **`server/`** : Node.js/Express + PostgreSQL — pensé pour un **VPS** (process persistant).
+- **`server-php/`** : PHP + MySQL/MariaDB — pensé pour de l'**hébergement mutualisé/Cloud classique** (ex. Hostinger), sans process persistant ni accès root.
+
+Les deux appliquent réellement l'authentification par mot de passe hashé, la session serveur `httpOnly` et le RBAC sur chaque endpoint (pas seulement en affichage côté client). Voir [section 11](#11-backend-réel) pour l'architecture, [`server/README.md`](server/README.md) et [`server-php/README.md`](server-php/README.md) pour le détail technique et les limites connues de chacun.
 
 ---
 
 ## 1. Lancer le projet
+
+Deux backends possibles — choisir celui qui correspond à la cible d'hébergement (voir section 11 et 12). Les deux servent l'API **et** le frontend statique.
+
+### Option A — Node.js + PostgreSQL (`server/`, pour VPS)
 
 Un seul serveur sert à la fois l'API et le frontend statique — un seul port, `http://localhost:4000`.
 
@@ -29,6 +38,19 @@ npm start
 ```
 
 Puis ouvrir **http://localhost:4000**. Détails complets, architecture des routes et limites connues : [`server/README.md`](server/README.md).
+
+### Option B — PHP + MySQL/MariaDB (`server-php/`, pour hébergement mutualisé)
+
+Nécessite Apache + `mod_rewrite` (ex. XAMPP en local, mutualisé classique en production) — pas de commande `npm start` ici, Apache sert directement le dépôt.
+
+```bash
+mysql -u root -e "CREATE DATABASE diaspoconnect CHARACTER SET utf8mb4;"
+mysql -u root diaspoconnect < server-php/db/schema.sql
+cp server-php/.env.example server-php/.env   # ajuster les identifiants DB
+cd server-php && php seed.php
+```
+
+Puis servir le dossier racine du dépôt via Apache (docroot = racine du repo, `.htaccess` gère la réécriture `/api/*`). Détails complets et déploiement Hostinger : [`server-php/README.md`](server-php/README.md).
 
 ### Lancer en local avec VS Code
 
@@ -82,6 +104,14 @@ diaspo-connect/
 │   ├── middleware/                 # Auth (session), RBAC serveur
 │   ├── routes/                     # auth, users, messages, audit-log, settings, resources (factory générique)
 │   └── README.md                   # Instructions de lancement + limites connues
+├── server-php/                      # Backend alternatif (PHP + MySQL/MariaDB) — pour hébergement mutualisé, voir section 11
+│   ├── api/index.php               # Point d'entrée (routeur), seul chemin exposé via .htaccess
+│   ├── db/schema.sql               # Schéma MySQL équivalent à server/db/schema.sql
+│   ├── seed.php                    # Migration assets/data/*.json → MySQL (CLI uniquement)
+│   ├── lib/                        # db, auth (session native PHP), rbac (port de rbac.js), audit, resource (CRUD générique)
+│   ├── routes/                     # auth, users, messages, audit-log, settings, resources
+│   └── README.md                   # Instructions de lancement + déploiement Hostinger + limites connues
+├── .htaccess                        # Réécrit /api/* vers server-php/api/index.php (utilisé uniquement avec server-php/)
 ├── pages/
 │   ├── public/                     # Pages accessibles sans connexion
 │   │   ├── comment-ca-marche.html, mentors.html, logements.html,
@@ -340,14 +370,15 @@ Le calendrier global (`admin/calendar.html`), la charge de travail par pôle (`a
 
 ---
 
-## 8. Deux schémas SQL, deux rôles différents
+## 8. Trois schémas SQL, des rôles différents
 
-Il y a volontairement **deux fichiers de schéma**, avec des rôles distincts — ne pas les confondre :
+Il y a volontairement **trois fichiers de schéma**, avec des rôles distincts — ne pas les confondre :
 
 | Fichier | Rôle |
 |---|---|
-| `server/db/schema.sql` | **Le schéma réellement exécuté** par le backend en service aujourd'hui (section 11). Pragmatique : colonnes réelles pour l'auth/l'appartenance/le RBAC, JSONB pour le reste du contenu métier, au plus près de la forme des anciens fichiers `assets/data/*.json`. |
-| `database/schema.sql` | Modèle de données **de référence**, normalisé et riche (74 tables, 19 types enum, 109 clés étrangères) — une conception à laquelle une V2 de production pourrait migrer. Vérifié exécutable de bout en bout sur PostgreSQL 16 (base jetable), zéro erreur. **N'est pas branché sur l'application aujourd'hui.** |
+| `server/db/schema.sql` | Le schéma **PostgreSQL** réellement exécuté par le backend Node (`server/`, section 11). Pragmatique : colonnes réelles pour l'auth/l'appartenance/le RBAC, JSONB pour le reste du contenu métier, au plus près de la forme des anciens fichiers `assets/data/*.json`. |
+| `server-php/db/schema.sql` | Le schéma **MySQL/MariaDB** réellement exécuté par le backend PHP (`server-php/`, section 11). Même design pragmatique que ci-dessus, adapté aux contraintes MySQL (id `VARCHAR(64)`, `JSON` au lieu de `JSONB`, `DATETIME` au lieu de `TIMESTAMPTZ`, pas de table de session). |
+| `database/schema.sql` | Modèle de données **de référence**, normalisé et riche (74 tables, 19 types enum, 109 clés étrangères) — une conception à laquelle une V2 de production pourrait migrer. Vérifié exécutable de bout en bout sur PostgreSQL 16 (base jetable), zéro erreur. **N'est branché sur aucun des deux backends aujourd'hui.** |
 
 Points clés de `database/schema.sql` : Kanban (15 tables : `boards`, `board_columns`, `cards`, `card_assignees`, `card_labels`, `card_checklists`, `card_comments`, `card_activity_logs`...), `mentor_profiles.max_active_mentees` bridé à 2 par `CHECK` + index unique partiel empêchant un mentoré d'avoir deux binômes `active` simultanés (même règle que `MatchingEngine` côté frontend), `linked_record_type`/`linked_record_id` sur `cards` et `document_records` (liaison polymorphe résolue côté application), `audit_logs` en `JSONB` pour `before_state`/`after_state`.
 
@@ -370,38 +401,52 @@ Points clés de `database/schema.sql` : Kanban (15 tables : `boards`, `board_col
 
 ---
 
-## 11. Backend réel
+## 11. Backend réel — deux implémentations
 
-Le passage à un vrai backend, décrit comme une trajectoire future dans les versions antérieures de ce README, est fait : `server/` (Node.js/Express + PostgreSQL). Aucune page HTML ni composant CSS n'a eu besoin d'être repensé pour cette migration — seule la couche `assets/js/core/` (`data-store.js`, `auth.js`, `rbac.js`) a changé d'implémentation interne, exactement comme prévu dès la conception initiale de ces modules.
+Le passage à un vrai backend, décrit comme une trajectoire future dans les versions antérieures de ce README, est fait, avec **deux implémentations au choix** selon la cible d'hébergement — toutes deux exposent exactement la même API REST (`/api/...`), donc aucune page HTML ni composant CSS n'a eu besoin d'être repensé : seule la couche `assets/js/core/` (`data-store.js`, `auth.js`, `rbac.js`) parle au backend, sans savoir lequel des deux tourne derrière.
 
-**Ce qui est réellement en place** (détails et instructions de lancement dans [`server/README.md`](server/README.md)) :
+| | `server/` | `server-php/` |
+|---|---|---|
+| Langage/runtime | Node.js/Express (process persistant) | PHP (exécuté à la requête par Apache) |
+| Base de données | PostgreSQL | MySQL/MariaDB |
+| Sessions | `connect-pg-simple` (table `session`) | Sessions fichiers PHP natives |
+| Hébergement cible | VPS (section 12) | Mutualisé/Cloud classique, ex. Hostinger (section 12) |
+| Détails | [`server/README.md`](server/README.md) | [`server-php/README.md`](server-php/README.md) |
 
-1. Base PostgreSQL (schéma pragmatique `server/db/schema.sql`, seedée depuis `assets/data/*.json` par `server/seed/seed.js`).
+**Ce qui est réellement en place, dans les deux** :
+
+1. Base relationnelle (schéma pragmatique `server/db/schema.sql` ou `server-php/db/schema.sql`), seedée depuis `assets/data/*.json` par le script de seed de chaque backend.
 2. `DataStore` appelle l'API REST réelle (`GET/POST/PUT/DELETE /api/...`) au lieu de fichiers JSON statiques.
-3. `Auth.login/register/logout` appellent de vraies routes d'authentification ; mot de passe hashé (bcrypt), session `httpOnly` côté serveur.
-4. `RBAC.can()` (le même fichier, partagé) est appliqué réellement sur chaque endpoint d'écriture — un rôle non autorisé reçoit un vrai `403`, pas juste un bouton caché.
+3. `Auth.login/register/logout` appellent de vraies routes d'authentification ; mot de passe hashé (bcrypt côté Node, `password_hash()` côté PHP — même algorithme), session `httpOnly` côté serveur.
+4. RBAC appliqué réellement sur chaque endpoint d'écriture (`assets/js/core/rbac.js` côté Node, portée fidèlement en PHP dans `server-php/lib/rbac.php`) — un rôle non autorisé reçoit un vrai `403`, pas juste un bouton caché.
 5. Journal d'audit persisté (table `audit_log`), acteur toujours dérivé de la session authentifiée, jamais du client.
 6. Messagerie relationnelle (`conversations`/`conversation_messages`), avec accusés de lecture réellement persistés.
 
-**Limites connues, assumées et documentées** (voir `server/README.md` § Limites connues) :
+**Limites connues, assumées et documentées** (identiques sur les deux backends, comportement dérivé de la même logique métier) :
 
 - Les endpoints `matchings` acceptent l'écriture de toute personne authentifiée plutôt qu'un contrôle de propriété strict par binôme (pas de résolution fiche-mentor/fiche-mentee → utilisateur). Net progrès par rapport à l'accès public d'avant, pas une isolation parfaite.
 - Les comptes créés par un admin (`POST /api/users`) reçoivent un mot de passe temporaire fixe — pas de flux "définir son mot de passe" à la première connexion.
 - Pas de rate-limiting, de verrouillage après échecs de connexion, ni de 2FA.
 - Uploads de photos/pièces jointes toujours simulés (pas de vrai stockage de fichiers S3-compatible).
-- `database/schema.sql` (section 8) reste un modèle de référence non branché — une migration vers ce modèle plus riche et normalisé resterait pertinente pour une V2 de production.
+- `database/schema.sql` (section 8) reste un modèle de référence non branché sur aucun des deux — une migration vers ce modèle plus riche et normalisé resterait pertinente pour une V2 de production.
+- Côté PHP, `server-php/lib/rbac.php` est un **port manuel** de `assets/js/core/rbac.js` (PHP ne peut pas exécuter du JS) : toute évolution de la matrice RBAC doit être répercutée dans les deux fichiers.
 
 ---
 
-## 12. Déploiement en production (VPS, ex. Hostinger)
+## 12. Déploiement en production
 
-⚠️ **Avant toute mise en ligne publique**, relire les limites connues (section 11) — ce projet reste un prototype fonctionnel, pas un système durci pour la production. En particulier : **vider ou changer le mot de passe des comptes de démo** (`demo1234`, seedés par `npm run seed`) avant d'exposer le site sur internet — sinon n'importe qui peut se connecter en admin avec des identifiants publiés dans ce dépôt.
+⚠️ **Avant toute mise en ligne publique**, relire les limites connues (section 11) — ce projet reste un prototype fonctionnel, pas un système durci pour la production. En particulier : **vider ou changer le mot de passe des comptes de démo** (`demo1234`) avant d'exposer le site sur internet — sinon n'importe qui peut se connecter en admin avec des identifiants publiés dans ce dépôt.
 
-### Pourquoi un VPS, pas de l'hébergement mutualisé
+Deux chemins de déploiement, selon le backend choisi (section 11) :
 
-Ce projet a besoin d'un **process Node.js persistant** (le serveur tourne en continu, ce n'est pas du PHP exécuté à la requête) et d'une **vraie base PostgreSQL**. L'hébergement mutualisé/business classique (chez Hostinger comme ailleurs) est pensé pour du PHP + MySQL et ne convient pas tel quel. Il faut un plan avec accès root à un serveur Linux complet : chez Hostinger, c'est l'offre **VPS** (KVM). Un plan d'entrée (1-2 Go de RAM) suffit largement pour ce projet.
+- **12.A — VPS** (`server/`, Node/PostgreSQL) : nécessaire si vous gardez le backend Node.
+- **12.B — Hébergement mutualisé/Cloud classique** (`server-php/`, PHP/MySQL), ex. Hostinger : le chemin le plus simple et le moins cher si vous n'avez pas besoin du backend Node.
 
-### Étapes
+### 12.A Déploiement sur VPS (Node/PostgreSQL)
+
+Ce backend a besoin d'un **process Node.js persistant** (le serveur tourne en continu) et d'une **vraie base PostgreSQL**. L'hébergement mutualisé/business classique (chez Hostinger comme ailleurs) est pensé pour du PHP + MySQL et ne convient pas tel quel — il faut un plan avec accès root à un serveur Linux complet : chez Hostinger, c'est l'offre **VPS** (KVM). Un plan d'entrée (1-2 Go de RAM) suffit largement pour ce projet. *(Si vous n'avez pas besoin du backend Node, préférez 12.B — plus simple, moins cher, pas de serveur à administrer.)*
+
+#### Étapes
 
 1. **Provisionner le VPS** et pointer le nom de domaine dessus : dans la zone DNS du domaine (hPanel Hostinger si le domaine y est aussi géré), créer un enregistrement `A` vers l'IP publique du VPS.
 2. **Se connecter en SSH** (identifiants fournis par Hostinger à la création du VPS) et installer les prérequis (exemple Ubuntu/Debian) :
@@ -444,3 +489,14 @@ Ce projet a besoin d'un **process Node.js persistant** (le serveur tourne en con
     - `server/index.js` : ajouter `app.set("trust proxy", 1);` avant le montage des routes.
 11. **Pare-feu** : n'ouvrir que 22 (SSH), 80 et 443 (`sudo ufw allow 22,80,443/tcp && sudo ufw enable`).
 12. **Sauvegardes** : un `pg_dump` programmé (cron) vers un stockage externe, à minima quotidien.
+
+### 12.B Déploiement sur hébergement mutualisé (PHP/MySQL, ex. Hostinger)
+
+Le backend `server-php/` ne nécessite aucun accès root ni process persistant — un plan mutualisé/Cloud classique (PHP + MySQL) suffit. Étapes détaillées, y compris le cas sans accès SSH pour lancer le seed : [`server-php/README.md`](server-php/README.md#déploiement-sur-hébergement-mutualisé-ex-hostinger). En résumé :
+
+1. Créer la base MySQL dans hPanel et importer `server-php/db/schema.sql` via phpMyAdmin.
+2. Uploader tout le dépôt (FTP/File Manager), en conservant le `.htaccess` racine.
+3. Créer `server-php/.env` sur le serveur (jamais commité) avec les vrais identifiants MySQL et `SESSION_SECURE=1` si HTTPS.
+4. Lancer `php server-php/seed.php` (SSH) ou suivre l'alternative documentée si SSH n'est pas disponible sur le plan.
+5. Activer HTTPS (Hostinger fournit un certificat gratuit dans hPanel) — sans quoi `SESSION_SECURE=1` empêcherait la session de fonctionner.
+6. Vider/changer les mots de passe de démo avant toute vraie mise en ligne (même avertissement qu'en 12.A).
