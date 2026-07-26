@@ -1,13 +1,14 @@
 /**
  * MessagingTransport - couche de transport temps réel pour la messagerie.
  *
- * Aujourd'hui (prototype sans backend) : un `BroadcastChannel` propage les
- * évènements instantanément entre onglets de la même origine (message envoyé,
- * "en train d'écrire", accusé de lecture), complété par un polling de secours
- * qui revérifie périodiquement DataStore pour couvrir le cas où un seul
- * onglet est ouvert (ex. une carte/un message créé ailleurs dans la session).
+ * Les messages sont réellement persistés côté serveur (DataStore.sendMessage,
+ * table conversation_messages), mais leur PROPAGATION instantanée reste un
+ * `BroadcastChannel` : il ne fonctionne qu'entre onglets du même navigateur,
+ * pas entre deux appareils différents (limitation documentée dans
+ * server/README.md). Complété par un polling de secours (`onPoll`) qui
+ * revérifie périodiquement DataStore pour rattraper un évènement manqué.
  *
- * Demain (vrai backend) : remplacer uniquement `publish()`/`onEvent()` par un
+ * Évolution possible : remplacer uniquement `publish()`/`onEvent()` par un
  * client WebSocket ou un EventSource (SSE) qui pousse les mêmes formes
  * d'évènements ({type, conversationId, ...}). Aucune page de messagerie n'a
  * à changer : elles ne consomment que `subscribe()`, `notifyNewMessage()`,

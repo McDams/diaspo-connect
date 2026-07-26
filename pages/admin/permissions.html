@@ -20,7 +20,7 @@
     <div id="dc-app-sidebar"></div>
     <div class="dc-content">
       <h1 class="h4 mb-1">Permissions (RBAC)</h1>
-      <p class="text-body-secondary small mb-4">Matrice module × action par rôle interne. <code>admin</code> et <code>super_admin</code> ont un accès total, non représenté ligne par ligne (toujours coché). Les cases sont modifiables ici à titre de simulation frontend — la source de vérité réelle sera la table <code>role_permissions</code> côté backend.</p>
+      <p class="text-body-secondary small mb-4">Matrice module × action par rôle interne, appliquée réellement côté serveur sur chaque endpoint d'écriture. <code>admin</code> et <code>super_admin</code> ont un accès total, non représenté ligne par ligne (toujours coché). Les cases sont modifiables ici à titre de simulation (mutation en mémoire du process serveur, perdue à un redémarrage) — une vraie table <code>role_permissions</code> persistée reste une évolution possible.</p>
 
       <div class="mb-3">
         <label for="role-select" class="form-label small">Rôle interne</label>

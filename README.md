@@ -2,27 +2,37 @@
 
 Plateforme d'accompagnement pour les étudiants africains, avec un focus initial sur les étudiants **béninois** préparant leur arrivée en France. DiaspoConnect met en relation des **mentorés** avec des **mentors/mentors** déjà installés en France, et donne accès à un **logement vérifié**, des **opportunités** (jobs saisonniers, stages, alternances) et des **ressources pratiques**. La plateforme est aussi organisée comme une **vraie structure métier**, avec une équipe interne (direction, secrétariat, conseillers, modération, support, partenariats, contenu, conformité, technique), un organigramme public **fonctionnel** (sans identité nominative), un centre de tickets, et un **système de gestion de tâches Kanban intégré** à chaque espace utilisateur, jusqu'à un Kanban central pour l'administration.
 
-Ce dépôt contient le **prototype frontend** de la plateforme : HTML5 / CSS3 / JavaScript natif + Bootstrap 5, sans aucune dépendance backend. Toutes les données sont simulées via des fichiers JSON locaux, mais l'architecture — et le schéma relationnel fourni dans `database/schema.sql` — sont pensés pour être branchés demain sur une vraie API et une vraie base PostgreSQL (Node.js, Laravel ou Django) sans réécrire les pages.
+Le frontend est HTML5 / CSS3 / JavaScript natif + Bootstrap 5. Il est désormais branché sur un **vrai backend** (`server/`) : Node.js/Express + PostgreSQL, authentification par mot de passe hashé (bcrypt) et session serveur `httpOnly`, permissions RBAC appliquées pour de vrai sur chaque endpoint (pas seulement en affichage côté client). Voir [section 11](#11-backend-réel) pour l'architecture et [`server/README.md`](server/README.md) pour le détail technique et les limites connues.
 
 ---
 
-## 1. Lancer le prototype
+## 1. Lancer le projet
 
-Le site charge ses données via `fetch()` (JSON) et injecte des composants HTML partagés (navbar, sidebar, footer) via `fetch()` également. **Cela nécessite un serveur local** — ouvrir les fichiers directement (`file://`) ne fonctionnera pas à cause des restrictions CORS des navigateurs sur `fetch`.
-
-Depuis le dossier `diaspo-connect/`, lancer l'une de ces commandes :
+Un seul serveur sert à la fois l'API et le frontend statique — un seul port, `http://localhost:4000`.
 
 ```bash
-python -m http.server 8893
+# 1. Base de données (conteneur PostgreSQL dédié)
+docker volume create diaspoconnect_pgdata   # une seule fois
+cd server
+docker compose up -d
+
+# 2. Dépendances + configuration
+npm install
+cp .env.example .env   # ajuster si besoin
+
+# 3. Schéma + données de démo
+PGPASSWORD=diaspoconnect_dev_pw psql -h localhost -p 5433 -U diaspoconnect -d diaspoconnect -f db/schema.sql
+npm run seed
+
+# 4. Lancer
+npm start
 ```
 
-Puis ouvrir **http://localhost:8893** dans le navigateur.
-
-> Si vous utilisez `npx serve` à la place, pensez à désactiver son mode "clean URLs" (option `-n` insuffisante ; ajoutez un `serve.json` avec `"cleanUrls": false`) : par défaut `serve` redirige `page.html?id=123` vers `page` en supprimant la query string, ce qui casse les liens profonds du site (ex. `team-member-detail.html?id=...`, `tickets-management.html?id=...`).
+Puis ouvrir **http://localhost:4000**. Détails complets, architecture des routes et limites connues : [`server/README.md`](server/README.md).
 
 ### Comptes de démonstration
 
-La page de connexion (`pages/public/login.html`) propose des raccourcis vers 4 comptes de démonstration (un clic pré-remplit l'email + un mot de passe démo). Le mot de passe n'est pas vérifié contre une vraie valeur dans ce prototype : n'importe quel mot de passe d'au moins 6 caractères fonctionne, à condition que l'email corresponde à un compte existant dans `assets/data/users.json`.
+La page de connexion (`pages/public/login.html`) propose des raccourcis vers les comptes de démonstration (un clic pré-remplit l'email + le mot de passe démo). Le mot de passe **est réellement vérifié** côté serveur (hash bcrypt) — tous les comptes de démo partagent le mot de passe `demo1234` (défini par le script de seed), ce n'est plus "n'importe quel mot de passe de 6 caractères" comme dans les versions antérieures de ce prototype.
 
 | Rôle | Email |
 |---|---|
@@ -42,7 +52,7 @@ La page de connexion (`pages/public/login.html`) propose des raccourcis vers 4 c
 | Conformité / vérification | `sophie.marchal@diaspoconnect.fr` |
 | Technique | `yannick.adjahoui@diaspoconnect.fr` |
 
-Il est aussi possible de créer un nouveau compte via les pages d'inscription (`register-mentore.html`, `register-mentor.html`, `register-proprietaire.html`) — le compte créé n'existe qu'en mémoire le temps de la session (voir section 5).
+Il est aussi possible de créer un nouveau compte via les pages d'inscription (`register-mentore.html`, `register-mentor.html`, `register-proprietaire.html`) — le compte est réellement créé en base (mot de passe hashé) et persiste après le rechargement de la page.
 
 > **Deux points d'entrée, une seule mainmise réelle.** L'espace `pages/admin/*` (rôle `admin`) reste la console de supervision de la plateforme étudiante, désormais **enrichie** du Kanban central, des tickets, des documents, de l'audit, des permissions et des paramètres système (section 6.5). L'espace `pages/staff/*` (rôle `staff`) est la couche organisationnelle interne par pôle, décrite en section 6. Conformément à la règle produit *"l'admin et surtout le super admin doivent pouvoir faire tout ce que les autres rôles font"*, `StaffGuard` (section 6.2) donne désormais au rôle `admin` un accès total à `pages/staff/*` au même titre qu'un membre `super_admin` — les deux espaces restent deux façades distinctes côté frontend, mais aucun des deux n'est jamais restreint face à l'autre.
 
@@ -54,8 +64,16 @@ Il est aussi possible de créer un nouveau compte via les pages d'inscription (`
 diaspo-connect/
 ├── index.html                      # Page d'accueil publique
 ├── README.md
+├── AUDIT.md                         # Audit sécurité/permissions/accessibilité structuré (20 points)
 ├── database/
-│   └── schema.sql                  # Schéma PostgreSQL de référence (~74 tables, voir section 7)
+│   └── schema.sql                  # Schéma PostgreSQL de RÉFÉRENCE (74 tables, non branché — voir section 8)
+├── server/                          # Backend réel (Node/Express + PostgreSQL) — voir section 11
+│   ├── index.js                    # Point d'entrée : sert l'API + le frontend statique
+│   ├── db/schema.sql               # Schéma RÉELLEMENT exécuté (pragmatique)
+│   ├── seed/seed.js                # Migration assets/data/*.json → PostgreSQL
+│   ├── middleware/                 # Auth (session), RBAC serveur
+│   ├── routes/                     # auth, users, messages, audit-log, settings, resources (factory générique)
+│   └── README.md                   # Instructions de lancement + limites connues
 ├── pages/
 │   ├── public/                     # Pages accessibles sans connexion
 │   │   ├── comment-ca-marche.html, mentors.html, logements.html,
@@ -176,7 +194,9 @@ Toutes les règles ci-dessous sont appliquées dans `assets/js/engine/matching-e
 
 ---
 
-## 5. Fichiers JSON de démonstration (`assets/data/`)
+## 5. Fichiers JSON de démonstration (`assets/data/`) — données de départ (seed)
+
+Ces fichiers ne sont plus la source de données servie à l'application : ils sont migrés une fois vers PostgreSQL par `server/seed/seed.js` (`npm run seed`), qui reste la référence pour repartir d'un jeu de données propre. La forme des enregistrements ci-dessous correspond exactement à ce que renvoie l'API aujourd'hui (`GET /api/mentors`, etc.) — c'est un choix de conception assumé (voir `server/db/schema.sql`) pour que `DataStore` n'ait presque rien eu à changer lors du passage au vrai backend.
 
 | Fichier | Contenu |
 |---|---|
@@ -216,10 +236,9 @@ await DataStore.insert("matchings", newMatching);
 await DataStore.update("mentees", menteeId, { profileCompleteness: 80 });
 ```
 
-- **Aujourd'hui** : `DataStore` charge les fichiers JSON via `fetch()` et garde un **cache mémoire** ; les écritures (`insert`/`update`) ne modifient que ce cache — elles sont donc perdues au rechargement de la page. C'est un choix assumé de prototype : aucune donnée métier n'est stockée dans `localStorage`.
-- **Demain** : il suffira de réécrire l'intérieur de `load()`, `insert()` et `update()` pour qu'ils appellent une vraie API REST (`fetch('/api/mentors')`, etc.). **Aucune page ni composant n'aura à changer**, car ils ne connaissent que l'interface de `DataStore`.
+`DataStore` appelle désormais l'API réelle (`fetch('/api/mentors')`, etc.) avec `credentials:"include"` pour envoyer le cookie de session — plus de cache mémoire, chaque appel `getX()` refait un aller-retour réseau (voir `server/README.md` sur ce choix : un cache aurait masqué les endroits du code qui oublient d'appeler `update()`). **Aucune page ni composant consommateur n'a eu à changer** : ils ne connaissent que l'interface `getX()/insert()/update()/remove()` de `DataStore`, exactement comme prévu dès la conception initiale de ce module.
 
-De la même façon, `Auth` (`assets/js/core/auth.js`) simule une connexion par email/mot de passe et garde uniquement l'**identifiant de session** (`userId`, `role`) dans `sessionStorage` — jamais les données métier. Ce choix garde `sessionStorage` cantonné à un rôle d'auth minimal, facilement remplaçable par un vrai token JWT / cookie de session plus tard.
+De la même façon, `Auth` (`assets/js/core/auth.js`) appelle `/api/auth/login`, `/api/auth/register`, `/api/auth/session` : la session vit dans un cookie `httpOnly` généré et vérifié côté serveur, plus dans `sessionStorage`. Le mot de passe est vérifié pour de vrai (bcrypt) côté serveur.
 
 ---
 
@@ -260,7 +279,7 @@ De la même façon, `Auth` (`assets/js/core/auth.js`) simule une connexion par e
 - La page publique `contact-team.html` propose 9 services (Direction, Secrétariat, Conseiller démarches/logement/emploi, Support, Modération, Partenariats, Rejoindre l'équipe). Chaque soumission crée **à la fois** une entrée dans `contact-requests.json` (la demande brute, avec mention de consentement RGPD) **et** un ticket dans `tickets.json` déjà routé vers le bon `targetService` — c'est la même logique que reprend `join-team.html` pour les candidatures bénévoles.
 - `pages/staff/tickets-management.html` est le centre de tickets transverse : filtres (statut, priorité, service), historique complet, notes internes, réassignation, réponse envoyée. La portée des tickets visibles dépend de `canManageAllTickets` (vrai pour secrétariat/direction/super_admin, faux pour les spécialistes qui ne voient que leurs tickets assignés ou ceux de leur pôle).
 - Chaque dashboard métier (secrétariat, conseil, modération, support, partenariats) affiche une vue filtrée des mêmes tickets, adaptée à son périmètre — pas de duplication de données, juste des filtres différents sur `tickets.json`.
-- Les actions sensibles (suspension de compte, validation/rejet d'annonce ou d'offre, résolution/rejet de signalement, réassignation de ticket) écrivent une ligne dans `audit-log.json` via `DataStore.insert("auditLog", ...)`.
+- Les actions sensibles (suspension de compte, validation/rejet d'annonce ou d'offre, résolution/rejet de signalement, réassignation de ticket) passent par `AuditLog.record()` (`assets/js/core/audit.js`), qui écrit dans la table `audit_log` réelle via `POST /api/audit-log`. Le serveur ignore volontairement l'acteur envoyé par le client et le dérive de la session authentifiée : un client ne peut pas falsifier "qui a fait quoi" dans le journal.
 
 ### 6.4 Organigramme public et confidentialité des fiches équipe
 
@@ -278,7 +297,8 @@ En complément de `Permissions` (qui ne gère que la **visibilité des pages** d
 - **Actions** : `read`, `create`, `update`, `delete`, `assign`, `validate`, `moderate`, `export`, `impersonate`.
 - `RBAC.can(roleKey, module, action)` répond vrai/faux ; `RBAC.roleKeyFor(user, staffRecord)` résout la bonne clé de rôle (`"admin"` pour le rôle legacy, l'`accessLevel` pour un membre `staff`, le rôle brut pour mentore/mentor/propriétaire).
 - `admin` et `super_admin` retournent toujours `true` (accès total, sans même consulter la matrice) — c'est la traduction directe de la règle produit sur leur mainmise totale.
-- La page `pages/admin/permissions.html` affiche cette matrice pour les 14 rôles restants et permet de **basculer** une permission à titre de démonstration (mutation en mémoire via `RBAC.toggle()`, tracée dans `audit-log.json`) — en production, la source de vérité serait la table `role_permissions` du schéma SQL (section 8).
+- **`assets/js/core/rbac.js` est le fichier partagé, tel quel, entre le client et le serveur** (`module.exports` ajouté en fin de fichier, sans rien changer à son usage navigateur) : `server/middleware/auth.js` l'utilise pour vérifier réellement chaque écriture (`RBAC.can(rbacKey, module, action)`), pas seulement pour décider d'afficher ou de masquer un bouton. Une seule grille de permissions, une seule source de vérité.
+- La page `pages/admin/permissions.html` affiche cette matrice pour les 14 rôles restants et permet de **basculer** une permission à titre de démonstration (mutation en mémoire côté process serveur via `RBAC.toggle()`, perdue à un redémarrage — la page a toujours été présentée comme une simulation, tracée dans le journal d'audit réel).
 
 ---
 
@@ -312,18 +332,16 @@ Le calendrier global (`admin/calendar.html`), la charge de travail par pôle (`a
 
 ---
 
-## 8. Base de données relationnelle (`database/schema.sql`)
+## 8. Deux schémas SQL, deux rôles différents
 
-Le prototype est accompagné d'un schéma **PostgreSQL 15+** de référence, pensé pour être la cible exacte du futur backend — chaque table correspond à une collection JSON ou à une vue frontend existante.
+Il y a volontairement **deux fichiers de schéma**, avec des rôles distincts — ne pas les confondre :
 
-- **~74 tables** réparties en 9 blocs : utilisateurs & accès (13), structure interne (4), mentorat/accompagnement (9), logement (5), emploi (4), communication (9), **Kanban (14 tables : `boards`, `board_columns`, `cards`, `card_assignees`, `card_labels`, `card_checklists`, `card_comments`, `card_activity_logs`...)**, gouvernance/conformité (8), CMS léger (7).
-- **19 types énumérés** (`CREATE TYPE ... AS ENUM`) pour tous les statuts métier fermés (`mentorship_status_enum`, `moderation_status_enum`, `priority_enum`, `rbac_action_enum`...), plutôt que des chaînes libres.
-- `created_at`/`updated_at` sur toutes les tables (triggers `set_updated_at()` fournis en exemple), `deleted_at` sur les tables à fort enjeu (utilisateurs, annonces, offres).
-- Contraintes métier traduites en SQL : `mentor_profiles.max_active_mentees` bridé à 2 par `CHECK`, et un **index unique partiel** (`uq_one_active_match_per_mentee`) empêchant un mentoré d'avoir deux binômes `active` simultanés — la même règle que `MatchingEngine` applique côté frontend.
-- `linked_record_type`/`linked_record_id` sur `cards` et `document_records` : liaison polymorphe volontairement non contrainte par FK stricte, résolue côté application — c'est l'équivalent SQL de `linkedRecordType`/`linkedRecordId` dans `cards.json`.
-- `audit_logs` stocke `before_state`/`after_state` en `JSONB` pour rester agnostique du type d'entité modifiée, à l'image de `audit-log.json`.
+| Fichier | Rôle |
+|---|---|
+| `server/db/schema.sql` | **Le schéma réellement exécuté** par le backend en service aujourd'hui (section 11). Pragmatique : colonnes réelles pour l'auth/l'appartenance/le RBAC, JSONB pour le reste du contenu métier, au plus près de la forme des anciens fichiers `assets/data/*.json`. |
+| `database/schema.sql` | Modèle de données **de référence**, normalisé et riche (74 tables, 19 types enum, 109 clés étrangères) — une conception à laquelle une V2 de production pourrait migrer. Vérifié exécutable de bout en bout sur PostgreSQL 16 (base jetable), zéro erreur. **N'est pas branché sur l'application aujourd'hui.** |
 
-Ce fichier n'est **pas exécuté** par le prototype (aucune dépendance backend) : c'est un document de conception, à charger tel quel dans une instance PostgreSQL le jour de la mise en production.
+Points clés de `database/schema.sql` : Kanban (15 tables : `boards`, `board_columns`, `cards`, `card_assignees`, `card_labels`, `card_checklists`, `card_comments`, `card_activity_logs`...), `mentor_profiles.max_active_mentees` bridé à 2 par `CHECK` + index unique partiel empêchant un mentoré d'avoir deux binômes `active` simultanés (même règle que `MatchingEngine` côté frontend), `linked_record_type`/`linked_record_id` sur `cards` et `document_records` (liaison polymorphe résolue côté application), `audit_logs` en `JSONB` pour `before_state`/`after_state`.
 
 ---
 
@@ -339,21 +357,28 @@ Ce fichier n'est **pas exécuté** par le prototype (aucune dépendance backend)
 ## 10. Accessibilité & responsive
 
 - Structure sémantique (`header`, `nav`, `main`, `aside`, `footer`), lien d'évitement ("Aller au contenu principal"), labels explicites sur tous les champs de formulaire, focus clavier visible (`:focus-visible`).
-- Mobile-first : navbar publique en menu Bootstrap collapsible, sidebar applicative repliable (bouton hamburger + overlay) sous 992px, cartes empilées, tableaux basculant en cartes sur petit écran (`.dc-table-responsive-cards`).
+- Mobile-first : sidebar applicative repliable (bouton hamburger + overlay) sous 992px, cartes empilées, tableaux basculant en cartes sur petit écran (`.dc-table-responsive-cards`).
+- **Menu public en icônes** (`components/navbar-public.html`) : icône + libellé visible sur chaque lien (jamais d'icône seule), `aria-current="page"` sur la page active — jamais signalée par la seule couleur (aussi gras + soulignement/bordure), tooltips dont le texte commence toujours par le libellé visible exact (conformité WCAG 2.5.3 "Label in Name"), cibles tactiles ≥44px sur mobile, menu hamburger + dropdowns (notifications/profil) Bootstrap natifs pour la fermeture au clavier/clic extérieur. Icônes conditionnelles "si connecté" : notifications (avec badge non lus), profil, et administration pour le rôle `admin`.
 
 ---
 
-## 11. Évolution vers un vrai backend
+## 11. Backend réel
 
-Ce prototype a été conçu pour minimiser la réécriture lors du passage à un vrai backend (Node.js/Express, Laravel ou Django), en s'appuyant sur `database/schema.sql` (section 8) comme cible :
+Le passage à un vrai backend, décrit comme une trajectoire future dans les versions antérieures de ce README, est fait : `server/` (Node.js/Express + PostgreSQL). Aucune page HTML ni composant CSS n'a eu besoin d'être repensé pour cette migration — seule la couche `assets/js/core/` (`data-store.js`, `auth.js`, `rbac.js`) a changé d'implémentation interne, exactement comme prévu dès la conception initiale de ces modules.
 
-1. Créer la base PostgreSQL à partir de `database/schema.sql`, puis migrer les 26 fichiers JSON vers leurs tables respectives (correspondance quasi directe : `cards.json` → `cards`, `staff.json` → `staff_profiles`, etc.).
-2. Remplacer l'implémentation interne de `DataStore` (fetch JSON → fetch API REST/GraphQL) ; les méthodes `insert`/`update` deviennent de vrais appels `POST`/`PATCH`.
-3. Remplacer `Auth.login/register` par de vrais appels d'authentification (session serveur ou JWT), en gardant la même interface (`Auth.getCurrentUser()`, `Auth.guard()`).
-4. Déplacer `MatchingEngine` et `KanbanEngine` côté serveur (ou les dupliquer en garde-fou côté serveur) pour empêcher tout contournement des règles de quota/compatibilité/permissions depuis le client — en particulier l'index unique partiel sur `mentorship_matches` et les contraintes RBAC de `role_permissions`.
-5. Remplacer les uploads de photos et pièces jointes simulés par un vrai stockage de fichiers (S3-compatible), référencé par `file_url` dans `document_records`/`card_attachments`.
-6. Ajouter une vraie modération temps réel (webhooks, files d'attente) à la place des tableaux de statut en mémoire.
-7. Déplacer `Permissions`/`RBAC`/`StaffGuard` côté serveur (middleware d'autorisation par rôle, table `role_permissions`) pour qu'un accès refusé côté client ne soit jamais contournable via l'API, et unifier à cette occasion les rôles `admin` (legacy) et `staff` sous le même système `roles`/`user_roles` du schéma SQL.
-8. Brancher un vrai moteur d'export (`reports.html`, `audit.html`) et un vrai calcul de KPI agrégés côté SQL (vues matérialisées) plutôt que des calculs en JavaScript sur les collections chargées en mémoire.
+**Ce qui est réellement en place** (détails et instructions de lancement dans [`server/README.md`](server/README.md)) :
 
-Aucune page HTML ni composant CSS n'a besoin d'être repensé pour cette migration : seule la couche `assets/js/core/` et `assets/js/engine/` change d'implémentation interne.
+1. Base PostgreSQL (schéma pragmatique `server/db/schema.sql`, seedée depuis `assets/data/*.json` par `server/seed/seed.js`).
+2. `DataStore` appelle l'API REST réelle (`GET/POST/PUT/DELETE /api/...`) au lieu de fichiers JSON statiques.
+3. `Auth.login/register/logout` appellent de vraies routes d'authentification ; mot de passe hashé (bcrypt), session `httpOnly` côté serveur.
+4. `RBAC.can()` (le même fichier, partagé) est appliqué réellement sur chaque endpoint d'écriture — un rôle non autorisé reçoit un vrai `403`, pas juste un bouton caché.
+5. Journal d'audit persisté (table `audit_log`), acteur toujours dérivé de la session authentifiée, jamais du client.
+6. Messagerie relationnelle (`conversations`/`conversation_messages`), avec accusés de lecture réellement persistés.
+
+**Limites connues, assumées et documentées** (voir `server/README.md` § Limites connues) :
+
+- Les endpoints `matchings` acceptent l'écriture de toute personne authentifiée plutôt qu'un contrôle de propriété strict par binôme (pas de résolution fiche-mentor/fiche-mentee → utilisateur). Net progrès par rapport à l'accès public d'avant, pas une isolation parfaite.
+- Les comptes créés par un admin (`POST /api/users`) reçoivent un mot de passe temporaire fixe — pas de flux "définir son mot de passe" à la première connexion.
+- Pas de rate-limiting, de verrouillage après échecs de connexion, ni de 2FA.
+- Uploads de photos/pièces jointes toujours simulés (pas de vrai stockage de fichiers S3-compatible).
+- `database/schema.sql` (section 8) reste un modèle de référence non branché — une migration vers ce modèle plus riche et normalisé resterait pertinente pour une V2 de production.
