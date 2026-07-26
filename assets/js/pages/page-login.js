@@ -1,30 +1,4 @@
 (function () {
-  const DEMO_ACCOUNTS = [
-    { role: "mentore", label: "Mentoré", email: "rosine.agossou@mail.com", icon: "bi-mortarboard" },
-    { role: "mentor", label: "Mentor", email: "aicha.zannou@mail.fr", icon: "bi-people" },
-    { role: "proprietaire", label: "Propriétaire", email: "marc.lefevre@mail.fr", icon: "bi-house-door" },
-    { role: "admin", label: "Administrateur", email: "admin@diaspoconnect.fr", icon: "bi-shield-lock" },
-    { role: "staff", label: "Direction (équipe)", email: "serge.donou@diaspoconnect.fr", icon: "bi-compass" },
-    { role: "staff", label: "Secrétariat", email: "aminata.djossou@diaspoconnect.fr", icon: "bi-inboxes" },
-    { role: "staff", label: "Conseiller démarches", email: "fabrice.koudjo@diaspoconnect.fr", icon: "bi-person-badge" },
-  ];
-
-  function renderDemoAccounts() {
-    const host = document.getElementById("demo-accounts");
-    host.innerHTML = DEMO_ACCOUNTS.map((d) => `
-      <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" data-email="${d.email}">
-        <i class="bi ${d.icon}"></i>${d.label}
-      </button>`).join("");
-    host.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-email]");
-      if (!btn) return;
-      document.getElementById("l-email").value = btn.dataset.email;
-      document.getElementById("l-password").value = "demo1234";
-      document.getElementById("l-email").classList.remove("is-invalid");
-      document.getElementById("l-password").classList.remove("is-invalid");
-    });
-  }
-
   async function redirectByRole(role, user) {
     if (role === "staff") {
       const staffList = await DataStore.getStaff();
@@ -37,7 +11,6 @@
   }
 
   function init() {
-    renderDemoAccounts();
     const form = document.getElementById("login-form");
     FormValidation.attach(form, {
       email: [FormValidation.rules.required, FormValidation.rules.email],
