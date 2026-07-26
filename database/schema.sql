@@ -1,10 +1,15 @@
 -- ============================================================================
 -- DiaspoConnect — schéma relationnel de référence (PostgreSQL 15+)
 -- ============================================================================
--- Ce schéma est la cible backend du prototype frontend. Les entités et
--- statuts correspondent 1:1 aux fichiers JSON de /assets/data et aux règles
--- métier implémentées côté frontend (quota de 2 mentorés actifs par mentor,
--- statuts de mentorat, modération logement/emploi, RBAC interne, Kanban).
+-- Ce schéma est un modèle de données cible, normalisé et riche (74 tables) —
+-- une conception à laquelle un backend de production pourrait migrer plus tard.
+-- Le backend RÉELLEMENT branché sur le frontend aujourd'hui utilise un schéma
+-- volontairement plus pragmatique : voir server/db/schema.sql (colonnes réelles
+-- pour l'auth/l'appartenance/le RBAC + JSONB pour le reste du contenu métier,
+-- au plus près de la forme des anciens fichiers assets/data/*.json). Les deux
+-- schémas partagent les mêmes noms de statuts et la même intention métier ;
+-- ce fichier-ci sert de référence de conception plus complète, pas de source
+-- de vérité pour l'implémentation actuelle.
 --
 -- Conventions :
 --   - PK           : BIGSERIAL (identifiants internes simples et lisibles)
@@ -276,6 +281,7 @@ CREATE TABLE mentorship_matches (
   status          mentorship_status_enum NOT NULL DEFAULT 'validee',
   started_at      DATE,
   ended_at        DATE,
+  end_reason      TEXT,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -486,10 +492,11 @@ CREATE TABLE messages (
   body              TEXT NOT NULL,
   is_flagged        BOOLEAN NOT NULL DEFAULT FALSE,
   moderation_reviewed BOOLEAN NOT NULL DEFAULT FALSE,
+  read_at           TIMESTAMPTZ,
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
   deleted_at        TIMESTAMPTZ
 );
-COMMENT ON TABLE messages IS 'Messagerie surveillable : is_flagged déclenché par message_reports, moderation_reviewed tracé pour audit (règle métier n°6).';
+COMMENT ON TABLE messages IS 'Messagerie surveillable : is_flagged déclenché par message_reports, moderation_reviewed tracé pour audit (règle métier n°6). read_at porte l accusé de lecture par le destinataire.';
 CREATE INDEX idx_messages_conversation ON messages(conversation_id, created_at);
 
 CREATE TABLE message_reports (
@@ -910,7 +917,10 @@ CREATE TRIGGER trg_tickets_updated_at BEFORE UPDATE ON tickets FOR EACH ROW EXEC
 CREATE TRIGGER trg_cards_updated_at BEFORE UPDATE ON cards FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- ============================================================================
--- Fin du schéma — ~68 tables couvrant : accès (13), structure interne (4),
--- mentorat (9), logement (5), emploi (4), communication (9), Kanban (14),
+-- Fin du schéma — 74 tables couvrant : accès (13), structure interne (4),
+-- mentorat (9), logement (5), emploi (4), communication (9), Kanban (15),
 -- gouvernance/conformité (8), CMS (7).
+-- Vérifié : exécution complète sans erreur sur PostgreSQL 16 (schéma jamais
+-- exécuté avant cette vérification), renommage mentor/mentoré confirmé sans
+-- résidu, 19 types enum, 109 contraintes de clé étrangère toutes résolues.
 -- ============================================================================
