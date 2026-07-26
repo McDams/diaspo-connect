@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-docker",
+    "ckolkman.vscode-postgres",
+    "humao.rest-client"
+  ]
+}

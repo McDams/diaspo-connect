@@ -57,6 +57,14 @@ limites connues.
   ajouté en fin de fichier) : une seule grille de permissions, appliquée pour de
   vrai côté serveur au lieu d'être une simple façade d'affichage côté client.
 
+## Déploiement en production
+
+Voir la section 12 du `README.md` racine (VPS, Nginx, HTTPS, PM2). Deux réglages
+de ce backend changent entre local et production :
+`middleware/session.js` (`cookie.secure: true` derrière HTTPS) et `index.js`
+(`app.set("trust proxy", 1)`), nécessaires pour que le cookie de session
+fonctionne correctement derrière un reverse proxy.
+
 ## Limites connues (documentées, pas silencieuses)
 
 - **`matchings`** : toute personne authentifiée peut créer/modifier un

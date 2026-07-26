@@ -30,6 +30,14 @@ npm start
 
 Puis ouvrir **http://localhost:4000**. Détails complets, architecture des routes et limites connues : [`server/README.md`](server/README.md).
 
+### Lancer en local avec VS Code
+
+1. Ouvrir le dossier racine du projet dans VS Code (`code .` depuis un terminal, ou *Fichier > Ouvrir le dossier*).
+2. À la première ouverture, VS Code propose d'installer les **extensions recommandées** du projet (`.vscode/extensions.json`) : Docker (gérer le conteneur PostgreSQL depuis l'onglet Docker), PostgreSQL (parcourir les tables sans quitter l'éditeur), REST Client (appeler les routes `/api/...` depuis un fichier `.http`).
+3. Ouvrir un terminal intégré (`` Ctrl+` ``) et exécuter les commandes de la section précédente (`docker compose up -d`, `npm install`, `npm run seed`, etc.) depuis `server/`.
+4. Pour lancer le serveur avec le débogueur Node intégré (points d'arrêt, inspection des variables) plutôt que `npm start` : onglet **Exécuter et déboguer** (`Ctrl+Shift+D`) → sélectionner **"DiaspoConnect: lancer le serveur (debug)"** → `F5`. La configuration (`.vscode/launch.json`) charge automatiquement `server/.env` et démarre `server/index.js`.
+5. Ouvrir `http://localhost:4000` dans le navigateur — comme pour un lancement classique, ce n'est pas une webview VS Code, juste un navigateur normal pointant sur le serveur qui tourne en local.
+
 ### Comptes de démonstration
 
 La page de connexion (`pages/public/login.html`) propose des raccourcis vers les comptes de démonstration (un clic pré-remplit l'email + le mot de passe démo). Le mot de passe **est réellement vérifié** côté serveur (hash bcrypt) — tous les comptes de démo partagent le mot de passe `demo1234` (défini par le script de seed), ce n'est plus "n'importe quel mot de passe de 6 caractères" comme dans les versions antérieures de ce prototype.
@@ -382,3 +390,57 @@ Le passage à un vrai backend, décrit comme une trajectoire future dans les ver
 - Pas de rate-limiting, de verrouillage après échecs de connexion, ni de 2FA.
 - Uploads de photos/pièces jointes toujours simulés (pas de vrai stockage de fichiers S3-compatible).
 - `database/schema.sql` (section 8) reste un modèle de référence non branché — une migration vers ce modèle plus riche et normalisé resterait pertinente pour une V2 de production.
+
+---
+
+## 12. Déploiement en production (VPS, ex. Hostinger)
+
+⚠️ **Avant toute mise en ligne publique**, relire les limites connues (section 11) — ce projet reste un prototype fonctionnel, pas un système durci pour la production. En particulier : **vider ou changer le mot de passe des comptes de démo** (`demo1234`, seedés par `npm run seed`) avant d'exposer le site sur internet — sinon n'importe qui peut se connecter en admin avec des identifiants publiés dans ce dépôt.
+
+### Pourquoi un VPS, pas de l'hébergement mutualisé
+
+Ce projet a besoin d'un **process Node.js persistant** (le serveur tourne en continu, ce n'est pas du PHP exécuté à la requête) et d'une **vraie base PostgreSQL**. L'hébergement mutualisé/business classique (chez Hostinger comme ailleurs) est pensé pour du PHP + MySQL et ne convient pas tel quel. Il faut un plan avec accès root à un serveur Linux complet : chez Hostinger, c'est l'offre **VPS** (KVM). Un plan d'entrée (1-2 Go de RAM) suffit largement pour ce projet.
+
+### Étapes
+
+1. **Provisionner le VPS** et pointer le nom de domaine dessus : dans la zone DNS du domaine (hPanel Hostinger si le domaine y est aussi géré), créer un enregistrement `A` vers l'IP publique du VPS.
+2. **Se connecter en SSH** (identifiants fournis par Hostinger à la création du VPS) et installer les prérequis (exemple Ubuntu/Debian) :
+   ```bash
+   sudo apt update && sudo apt install -y nodejs npm postgresql nginx
+   sudo npm install -g pm2
+   ```
+3. **Récupérer le code** : `git clone https://github.com/McDams/diaspo-connect.git` (ou transférer les fichiers autrement).
+4. **Créer la base et l'utilisateur PostgreSQL**, puis charger le schéma :
+   ```bash
+   sudo -u postgres psql -c "CREATE USER diaspoconnect WITH PASSWORD 'un-vrai-mot-de-passe-fort';"
+   sudo -u postgres psql -c "CREATE DATABASE diaspoconnect OWNER diaspoconnect;"
+   psql -U diaspoconnect -d diaspoconnect -f server/db/schema.sql
+   ```
+5. **Configurer `server/.env` pour la production** — jamais les valeurs de `.env.example` telles quelles :
+   - `PGPASSWORD` = le vrai mot de passe créé à l'étape 4.
+   - `SESSION_SECRET` = une valeur aléatoire longue et unique (ex. `openssl rand -base64 48`).
+   - `NODE_ENV=production`.
+6. **Installer les dépendances et, éventuellement, semer les données de démo** (`npm install --omit=dev && npm run seed` — à sauter, ou à faire suivre d'un changement de mot de passe, si le site doit accueillir de vrais utilisateurs dès le départ).
+7. **Lancer le serveur avec PM2** (pour qu'il survive à la fermeture du SSH et redémarre après un reboot) :
+   ```bash
+   pm2 start index.js --name diaspoconnect --cwd server
+   pm2 save && pm2 startup   # suivre l'instruction affichée pour activer le démarrage automatique
+   ```
+8. **Nginx en reverse proxy** devant le port 4000 (Node ne doit pas être exposé directement) — bloc de config minimal :
+   ```nginx
+   server {
+     listen 80;
+     server_name votredomaine.com;
+     location / {
+       proxy_pass http://localhost:4000;
+       proxy_set_header Host $host;
+       proxy_set_header X-Forwarded-Proto $scheme;
+     }
+   }
+   ```
+9. **HTTPS gratuit** avec Certbot : `sudo apt install certbot python3-certbot-nginx && sudo certbot --nginx -d votredomaine.com`.
+10. **Deux ajustements de code nécessaires derrière HTTPS/un reverse proxy**, sans lesquels le cookie de session ne sera pas envoyé correctement :
+    - `server/middleware/session.js` : passer `cookie.secure` à `true`.
+    - `server/index.js` : ajouter `app.set("trust proxy", 1);` avant le montage des routes.
+11. **Pare-feu** : n'ouvrir que 22 (SSH), 80 et 443 (`sudo ufw allow 22,80,443/tcp && sudo ufw enable`).
+12. **Sauvegardes** : un `pg_dump` programmé (cron) vers un stockage externe, à minima quotidien.
