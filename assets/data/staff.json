@@ -49,7 +49,7 @@
     "collaboratorStatus": "prestataire", "workloadPct": 35, "availability": "faible",
     "city": "Paris", "mainActivity": "Consultante en développement de partenariats", "specialty": "Relations écoles et entreprises",
     "languages": ["Français", "Anglais"],
-    "bio": "",
+    "bio": "Je noue des partenariats avec des écoles et des entreprises pour ouvrir plus d'opportunités aux mentorés, en France comme au Bénin.",
     "publicVisibility": "interne", "consentPublicDisplay": false, "contactAllowed": false, "contactLink": null,
     "joinedAt": "2025-06-01"
   },
@@ -94,7 +94,7 @@
     "collaboratorStatus": "actif", "workloadPct": 45, "availability": "moyenne",
     "city": "Paris", "mainActivity": "Chargée de conformité", "specialty": "Vérification d'identité et conformité des annonces",
     "languages": ["Français"],
-    "bio": "",
+    "bio": "Je vérifie l'identité des utilisateurs et la conformité des annonces publiées, pour que la confiance reste au cœur de la plateforme.",
     "publicVisibility": "interne", "consentPublicDisplay": false, "contactAllowed": false, "contactLink": null,
     "joinedAt": "2025-10-05"
   },
@@ -103,7 +103,7 @@
     "collaboratorStatus": "permanent", "workloadPct": 50, "availability": "moyenne",
     "city": "Paris", "mainActivity": "Ingénieur logiciel", "specialty": "Maintenance et fiabilité de la plateforme",
     "languages": ["Français", "Anglais"],
-    "bio": "",
+    "bio": "Je maintiens la plateforme en état de marche au quotidien et je veille à la fiabilité et à la sécurité de l'infrastructure.",
     "publicVisibility": "cache", "consentPublicDisplay": false, "contactAllowed": false, "contactLink": null,
     "joinedAt": "2024-09-01"
   }

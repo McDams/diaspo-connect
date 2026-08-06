@@ -141,6 +141,9 @@
 
 .dc-content {
   flex-grow: 1;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
   padding: 1.75rem clamp(1rem, 3vw, 2.5rem);
   min-width: 0;
 }
